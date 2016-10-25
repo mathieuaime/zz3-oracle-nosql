@@ -18,11 +18,10 @@ import oracle.kv.Value;
  */
 public class Auteur {
     /*
-     * The catalogId is a unique identifier and is used to construct
+     * The auteurId is a unique identifier and is used to construct
      * the Key's major path.
      */
     private final String auteurId;
-
 
     /*
      * The MAJOR_KEY is used to construct
