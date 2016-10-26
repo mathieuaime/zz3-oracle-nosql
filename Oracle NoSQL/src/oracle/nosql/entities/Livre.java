@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql;
+package oracle.nosql.entities;
 
-import com.sun.org.apache.xpath.internal.compiler.Keywords;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import oracle.kv.Key;
 import oracle.kv.Value;
-import static oracle.nosql.Auteur.MAJOR_KEY;
 
 /**
  *
@@ -24,23 +21,42 @@ public class Livre {
      * The livreId is a unique identifier and is used to construct
      * the Key's major path.
      */
-    private final String livreId;
+    private static int livreId = 1;
 
     /*
      * The MAJOR_KEY is used to construct
      * the Key's major path component.
      */
-    static final String MAJOR_KEY = "livre";
+    public static final String MAJOR_KEY = "livre";
 
     private String titre;
     private String resume;
-    private ArrayList<Auteur> auteurs = new ArrayList();
-    private ArrayList<String> keywords = new ArrayList();
+    private float prix;
     
-    Livre(String livreId) {
-        this.livreId = livreId;
+    public Livre(String titre, String resume, float prix) {
+        this.titre = titre;
+        this.resume = resume;
+        this.prix = prix;
+        ++livreId;
+    }
+    
+    public Livre(int livreId, byte[] bytes) {
+        String auteur = new String(bytes);
+        String[] elt = auteur.split(";");
+        Livre.livreId = livreId;
+        titre = elt[0];
+        resume = elt[1];        
+        prix = Float.parseFloat(elt[2]);   
     }
 
+    public static int getLivreId() {
+        return livreId;
+    }
+
+    public static void setLivreId(int livreId) {
+        Livre.livreId = livreId;
+    }
+    
     public String getTitre() {
         return titre;
     }
@@ -57,27 +73,19 @@ public class Livre {
         this.resume = resume;
     }
 
-    public ArrayList<Auteur> getAuteurs() {
-        return auteurs;
-    }
-    
-    public void addAuteur(Auteur auteur) {
-        auteurs.add(auteur);
+    public float getPrix() {
+        return prix;
     }
 
-    public ArrayList<String> getKeywords() {
-        return keywords;
+    public void setPrix(float prix) {
+        this.prix = prix;
     }
     
-    public void addKeyword(String keyword) {
-        keywords.add(keyword);
-    }    
-    
-    Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,livreId), minorKey);
+    public Key getStoreKey(String minorKey) {
+        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(livreId)), minorKey);
     }
 
-    Value getStoreValue() {
+    public Value getStoreValue() {
 
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
@@ -87,10 +95,8 @@ public class Livre {
             dataOutputStream.writeUTF(titre);            
             dataOutputStream.writeUTF(";");
             dataOutputStream.writeUTF(resume);
-            for (Auteur auteur : auteurs) {
-                dataOutputStream.writeUTF(";");
-                dataOutputStream.writeUTF(auteur.toString());                
-            }
+            dataOutputStream.writeUTF(";");
+            dataOutputStream.writeUTF(String.valueOf(prix));
             
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -101,7 +107,7 @@ public class Livre {
     
     @Override
     public String toString() {
-        return livreId + " / " + titre + " / " + resume;
+        return livreId + " / " + titre + " / " + resume + " / " + prix;
     }
     
 }

@@ -10,10 +10,9 @@ import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
 import oracle.kv.KVStoreFactory;
 import oracle.kv.ValueVersion;
-
 import oracle.kv.Value;
 import oracle.kv.Key;
-import static oracle.nosql.Auteur.MAJOR_KEY;
+import oracle.nosql.entities.Auteur;
 
 /**
  *
@@ -21,50 +20,42 @@ import static oracle.nosql.Auteur.MAJOR_KEY;
  */
 public class CreateAuteur {
     
+    private final String storeName = "kvstore";
+    private final String hostName = "localhost";
+    private final String hostPort = "5000";
     private static KVStore store;
+
+    public CreateAuteur() {
+        store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
+    }
     
-    public static void main(final String args[]) {
-        try {
-            String storeName = "kvstore";
-            String hostName = "localhost";
-            String hostPort = "5000";
-            store = KVStoreFactory.getStore(new KVStoreConfig(storeName,
-                    hostName + ":" + hostPort));
+    public static Auteur get(int auteurId) {
+        Key key = Key.createKey(Arrays.asList(Auteur.MAJOR_KEY,String.valueOf(auteurId)),"info");
             
-            add();          
-            
-            String auteurId = "auteur5";
-            
-            Key key = Key.createKey(Arrays.asList(MAJOR_KEY,auteurId),"auteur");
-            
-            ValueVersion vv2 = store.get(key);
-            
-            Value value2 = vv2.getValue();
-            byte[] bytes2 = value2.getValue();
-            Auteur a = new Auteur(auteurId, bytes2);
-            
-            System.out.println(a);
-            
-            
-        } catch (Exception e) {
-            System.err.println(e);
-        } finally {
-            store.close();
-        }
+        ValueVersion vv2 = store.get(key);
+
+        Value value2 = vv2.getValue();
+        byte[] bytes2 = value2.getValue();
+        Auteur a = new Auteur(bytes2);
+        a.setAuteurId(auteurId);
+        
+        return a;        
     }
 
-    private static void add() {
-        String auteurId = "auteur";
-
-        Auteur auteur = new Auteur(auteurId);
-
-        auteur.setNom("Aimé");
-        auteur.setPrenom("Mathieu");
-        auteur.setAdresse("Aubière");
-        auteur.setPhone(String.valueOf((int) (Math.random() * 9999)));
-        
+    public static void add(Auteur auteur) {        
         store.putIfAbsent(auteur.getStoreKey("info"), auteur.getStoreValue());
-
+    }    
+    
+    public static void update(int auteurId, Auteur newAuteur) {
+        Auteur a = get(auteurId);
+        newAuteur.setAuteurId(auteurId);
+        store.delete(a.getStoreKey("info"));
+        store.putIfAbsent(a.getStoreKey("info"), newAuteur.getStoreValue());        
+    }    
+    
+    public static void delete(int auteurId) {
+        Auteur a = get(auteurId);
+        store.delete(a.getStoreKey("info"));
     }
     
 }

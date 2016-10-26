@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql;
+package oracle.nosql.entities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -21,35 +21,42 @@ public class Auteur {
      * The auteurId is a unique identifier and is used to construct
      * the Key's major path.
      */
-    private final String auteurId;
+    private static int auteurId = 1;
 
     /*
      * The MAJOR_KEY is used to construct
      * the Key's major path component.
      */
-    static final String MAJOR_KEY = "auteur";
+    public static final String MAJOR_KEY = "auteur";
 
     private String nom;
     private String prenom;
     private String adresse;
     private String phone;
     
-    Auteur(final String auteurId) {
-        this.auteurId = auteurId;
+    public Auteur(String nom, String prenom, String adresse, String phone) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.adresse = adresse;
+        this.phone = phone;
+        ++auteurId;
     }
     
-    Auteur(final String auteurId, byte[] bytes) {
+    public Auteur(byte[] bytes) {
         String auteur = new String(bytes);
         String[] elt = auteur.split(";");
-        this.auteurId = auteurId;
         nom = elt[0];
         prenom = elt[1];        
         adresse = elt[2];        
         phone = elt[3];        
     }
 
-    String getAuteurId() {
+    public int getAuteurId() {
         return auteurId;
+    }
+    
+    public void setAuteurId(int auteurId) {
+        Auteur.auteurId = auteurId;
     }
     
     public String getNom() {
@@ -84,17 +91,16 @@ public class Auteur {
         this.phone = phone;
     }
 
-    Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,auteurId), minorKey);
+    public Key getStoreKey(String minorKey) {
+        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(auteurId)), minorKey);
     }
 
-    Value getStoreValue() {
+    public Value getStoreValue() {
 
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
         try {
-             
             dataOutputStream.writeUTF(nom);            
             dataOutputStream.writeUTF(";");
             dataOutputStream.writeUTF(prenom);
