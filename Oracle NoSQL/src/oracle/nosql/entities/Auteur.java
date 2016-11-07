@@ -21,7 +21,7 @@ public class Auteur {
      * The auteurId is a unique identifier and is used to construct
      * the Key's major path.
      */
-    private static int auteurId = 1;
+    private int auteurId;
 
     /*
      * The MAJOR_KEY is used to construct
@@ -34,15 +34,16 @@ public class Auteur {
     private String adresse;
     private String phone;
     
-    public Auteur(String nom, String prenom, String adresse, String phone) {
+    public Auteur(int auteurId, String nom, String prenom, String adresse, String phone) {
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
         this.phone = phone;
-        ++auteurId;
+        this.auteurId = auteurId;
     }
     
-    public Auteur(byte[] bytes) {
+    public Auteur(int auteurId, byte[] bytes) {
+        this.auteurId = auteurId;
         String auteur = new String(bytes);
         String[] elt = auteur.split(";");
         nom = elt[0];
@@ -56,7 +57,7 @@ public class Auteur {
     }
     
     public void setAuteurId(int auteurId) {
-        Auteur.auteurId = auteurId;
+        this.auteurId = auteurId;
     }
     
     public String getNom() {

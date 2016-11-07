@@ -21,7 +21,7 @@ public class Livre {
      * The livreId is a unique identifier and is used to construct
      * the Key's major path.
      */
-    private static int livreId = 1;
+    private int livreId;
 
     /*
      * The MAJOR_KEY is used to construct
@@ -33,28 +33,28 @@ public class Livre {
     private String resume;
     private float prix;
     
-    public Livre(String titre, String resume, float prix) {
+    public Livre(int livreId, String titre, String resume, float prix) {
         this.titre = titre;
         this.resume = resume;
         this.prix = prix;
-        ++livreId;
+        this.livreId = livreId;
     }
     
     public Livre(int livreId, byte[] bytes) {
         String auteur = new String(bytes);
         String[] elt = auteur.split(";");
-        Livre.livreId = livreId;
+        this.livreId = livreId;
         titre = elt[0];
         resume = elt[1];        
         prix = Float.parseFloat(elt[2]);   
     }
 
-    public static int getLivreId() {
+    public int getLivreId() {
         return livreId;
     }
 
-    public static void setLivreId(int livreId) {
-        Livre.livreId = livreId;
+    public void setLivreId(int livreId) {
+        this.livreId = livreId;
     }
     
     public String getTitre() {
