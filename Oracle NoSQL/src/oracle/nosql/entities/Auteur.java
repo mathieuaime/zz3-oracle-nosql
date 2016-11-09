@@ -46,10 +46,14 @@ public class Auteur {
         this.auteurId = auteurId;
         String auteur = new String(bytes);
         String[] elt = auteur.split(";");
-        nom = elt[0];
-        prenom = elt[1];        
-        adresse = elt[2];        
-        phone = elt[3];        
+        nom = elt[0].trim();
+        prenom = elt[1].trim();        
+        adresse = elt[2].trim();        
+        phone = elt[3].trim();        
+    }
+    
+    public Auteur() {
+        this(-1,"","","","");
     }
 
     public int getAuteurId() {
@@ -118,7 +122,7 @@ public class Auteur {
     
     @Override
     public String toString() {
-        return auteurId + " / " + nom + " / " + prenom + " / " + adresse + " / " + phone;
+        return auteurId + "/" + nom + "/" + prenom + "/" + adresse + "/" + phone;
     }
     
 }

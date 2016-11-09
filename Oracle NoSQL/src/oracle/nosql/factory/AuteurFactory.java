@@ -6,13 +6,17 @@
 package oracle.nosql.factory;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import oracle.kv.Direction;
 import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
 import oracle.kv.KVStoreFactory;
 import oracle.kv.ValueVersion;
 import oracle.kv.Value;
 import oracle.kv.Key;
+import oracle.kv.KeyValueVersion;
 import oracle.nosql.entities.Auteur;
+import oracle.nosql.entities.Livre;
 
 /**
  *
@@ -27,6 +31,29 @@ public class AuteurFactory {
 
     public AuteurFactory() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
+    }
+    
+    public Auteur read(String nom) {    
+        Key myKey2 = Key.createKey(Auteur.MAJOR_KEY);
+        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
+        
+        Auteur auteur = new Auteur();
+        
+        while (i.hasNext()) 
+          {
+           Key k = i.next().getKey();
+
+           ValueVersion valueVersionrecherche = store.get(k); 
+           Value v = valueVersionrecherche.getValue();
+           byte[] bytes2 = v.getValue();
+           Auteur a = new Auteur(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
+           String t = a.getNom();
+           
+           if (t.equals(nom)) auteur = a;      
+        }
+        
+        return auteur;
+        
     }
     
     public Auteur read(int auteurId) {
@@ -63,15 +90,15 @@ public class AuteurFactory {
     }
     
     public void genererTest(int n) {       
-        
+
         for (int i = 0; i < n; i++) {
             create(i, "Aimé"+i, "Mathieu", "Clermont", "4444");
             //delete(i); //pour vider la base
         } 
     }
-    
+
     public void afficherTest(int n) {       
-        
+
         for (int i = 0; i < n; i++) {
             Auteur a = read(i);
             System.out.println(a);

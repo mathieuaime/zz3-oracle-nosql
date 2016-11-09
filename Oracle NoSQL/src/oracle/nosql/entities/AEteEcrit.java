@@ -35,6 +35,7 @@ public class AEteEcrit {
         this.livreId = livreId;
         
         String auteur = new String(bytes);
+        auteur = auteur.trim();
         
         this.auteurId = Integer.parseInt(auteur);
     }

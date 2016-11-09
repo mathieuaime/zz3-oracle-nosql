@@ -34,8 +34,8 @@ public class Livre {
     private float prix;
     
     public Livre(int livreId, String titre, String resume, float prix) {
-        this.titre = titre;
-        this.resume = resume;
+        this.titre = titre.trim();
+        this.resume = resume.trim();
         this.prix = prix;
         this.livreId = livreId;
     }
@@ -44,9 +44,13 @@ public class Livre {
         String auteur = new String(bytes);
         String[] elt = auteur.split(";");
         this.livreId = livreId;
-        titre = elt[0];
-        resume = elt[1];        
-        prix = Float.parseFloat(elt[2]);   
+        titre = elt[0].trim();
+        resume = elt[1].trim();        
+        prix = Float.parseFloat(elt[2].trim());   
+    }
+    
+    public Livre() {
+        this(-1,"","",-1);
     }
 
     public int getLivreId() {
@@ -107,7 +111,7 @@ public class Livre {
     
     @Override
     public String toString() {
-        return livreId + " / " + titre + " / " + resume + " / " + prix;
+        return livreId + "/" + titre + "/" + resume + "/" + prix;
     }
     
 }

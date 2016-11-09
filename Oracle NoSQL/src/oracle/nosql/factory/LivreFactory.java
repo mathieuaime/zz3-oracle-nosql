@@ -5,11 +5,17 @@
  */
 package oracle.nosql.factory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import oracle.kv.Depth;
+import oracle.kv.Direction;
 import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
 import oracle.kv.KVStoreFactory;
 import oracle.kv.Key;
+import oracle.kv.KeyValueVersion;
 import oracle.kv.Value;
 import oracle.kv.ValueVersion;
 import oracle.nosql.entities.Livre;
@@ -27,6 +33,29 @@ public class LivreFactory {
 
     public LivreFactory() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
+    }
+    
+    public Livre read(String titre) {    
+        Key myKey2 = Key.createKey(Livre.MAJOR_KEY);
+        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
+        
+        Livre livre = new Livre();
+        
+        while (i.hasNext()) 
+          {
+           Key k = i.next().getKey();
+
+           ValueVersion valueVersionrecherche = store.get(k); 
+           Value v = valueVersionrecherche.getValue();
+           byte[] bytes2 = v.getValue();
+           Livre l = new Livre(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
+           String t = l.getTitre();
+           
+           if (t.equals(titre)) livre = l;      
+        }
+        
+        return livre;
+        
     }
     
     public Livre read(int livreId) {

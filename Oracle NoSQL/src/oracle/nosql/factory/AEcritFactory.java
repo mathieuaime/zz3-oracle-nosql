@@ -18,6 +18,7 @@ import oracle.kv.Value;
 import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.nosql.entities.AEcrit;
+import oracle.nosql.entities.Auteur;
 
 /**
  *
@@ -85,6 +86,15 @@ public class AEcritFactory {
     public void delete(int auteurId, int rang) {
         AEcrit a = read(auteurId, rang);
         store.delete(a.getStoreKey("info"));
+    }
+    
+    public void genererTest(int n) {       
+        
+        for (int i = 0; i < n; i+=2) {
+            create(i,2*i,1);
+            create(i,1+2*i,2);
+            //delete(i); //pour vider la base
+        } 
     }
     
 }

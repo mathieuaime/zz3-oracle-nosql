@@ -5,7 +5,12 @@
  */
 package oracle.nosql;
 
+import oracle.nosql.entities.AEcrit;
+import oracle.nosql.entities.AEteEcrit;
 import oracle.nosql.entities.Auteur;
+import oracle.nosql.entities.Livre;
+import oracle.nosql.factory.AEcritFactory;
+import oracle.nosql.factory.AEteEcritFactory;
 import oracle.nosql.factory.AuteurFactory;
 import oracle.nosql.factory.LivreFactory;
 
@@ -20,31 +25,145 @@ public class OracleNoSQL {
      */
     public static void main(String[] args) {
         
+        //genererTest(100000);
+        rechercheAuteur("Le bateau180160");
+        rechercheLivre("Aimé87654",1);      
+    }    
+    
+    public static void genererTest(int n) {
+        //Création de 100000 auteurs
         AuteurFactory auteurFactory = new AuteurFactory();
         
         long startTime = System.currentTimeMillis();
         
-        auteurFactory.genererTest(100000);
+        auteurFactory.genererTest(n);
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
-        System.out.println("Création de 100000 auteurs en "+ elapsedTime +" ms");
-                
+        System.out.println("Création de "+n+" auteurs en "+ elapsedTime +" ms");
         
+        
+        //Création de 200000 livres                
         LivreFactory livreFactory = new LivreFactory();
         
         startTime = System.currentTimeMillis();
         
-        livreFactory.genererTest(200000);
+        livreFactory.genererTest(2*n);
         
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
-        System.out.println("Création de 200000 livres en "+ elapsedTime +" ms");
+        System.out.println("Création de "+(2*n)+" livres en "+ elapsedTime +" ms");
+                
+        //Création des relations a écrit
+        AEcritFactory aEcritFactory = new AEcritFactory();
         
-        auteurFactory.afficherTest(100000);
-        livreFactory.afficherTest(200000);
+        startTime = System.currentTimeMillis();
         
+        aEcritFactory.genererTest(n);
+        
+        stopTime = System.currentTimeMillis();
+        elapsedTime = stopTime - startTime;
+        System.out.println("Création de "+(2*n)+" relations auteurs - > livres en "+ elapsedTime +" ms");
+        
+        //Création des relations a été écrit
+        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
+        
+        startTime = System.currentTimeMillis();
+        
+        aEteEcritFactory.genererTest(n);
+        
+        stopTime = System.currentTimeMillis();
+        elapsedTime = stopTime - startTime;
+        System.out.println("Création de "+(2*n)+" relations livres - > auteurs en "+ elapsedTime +" ms"); 
+    } 
+    
+    public static void rechercheAuteur(String livre) {
+
+        //Recherche de l'id du livre à partir du titre du livre
+        LivreFactory livreFactory = new LivreFactory();
+        AuteurFactory auteurFactory = new AuteurFactory();
+        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
+        
+        long startTime1 = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
+        
+        Livre l = livreFactory.read(livre);
+        int idLivre = l.getLivreId();
+        
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.println("Recherche de l'id du livre en "+ elapsedTime +" ms");
+        
+        //Recherche de l'id de l'auteur à partir de l'id du livre
+        
+        startTime = System.currentTimeMillis();
+        
+        AEteEcrit aEteEcrit = aEteEcritFactory.read(idLivre);
+        int idAuteur = aEteEcrit.getAuteurId();
+        
+        stopTime = System.currentTimeMillis();
+        elapsedTime = stopTime - startTime;
+        System.out.println("Recherche de l'id de l'auteur en "+ elapsedTime +" ms");
+        
+        //Recherche du nom de l'auteur à partir de l'id de l'auteur
+
+        startTime = System.currentTimeMillis();
+        
+        Auteur auteur = auteurFactory.read(idAuteur);
+        String nomAuteur = auteur.getNom();
+        
+        stopTime = System.currentTimeMillis();
+        elapsedTime = stopTime - startTime;
+        System.out.println("Recherche du nom de l'auteur en "+ elapsedTime +" ms");
+        
+        System.out.println("Recherche totale en "+(stopTime - startTime1)+" ms");   
+        
+        System.out.println(livre + " a été écrit par " + nomAuteur);
         
     }
-    
+
+    private static void rechercheLivre(String auteur, int rang) {
+        
+        //Recherche de l'id de l'auteur à partir du nom de l'auteur
+        LivreFactory livreFactory = new LivreFactory();
+        AuteurFactory auteurFactory = new AuteurFactory();
+        AEcritFactory aEcritFactory = new AEcritFactory();
+        
+        long startTime1 = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
+        
+        Auteur a = auteurFactory.read(auteur);
+        int idAuteur = a.getAuteurId();
+        
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.println("Recherche de l'id de l'auteur en "+ elapsedTime +" ms");
+        
+        //Recherche de l'id du livre à partir de l'id de l'auteur
+        
+        startTime = System.currentTimeMillis();
+        
+        AEcrit aEcrit = aEcritFactory.read(idAuteur, rang);
+        int idLivre = aEcrit.getLivreId();
+        
+        stopTime = System.currentTimeMillis();
+        elapsedTime = stopTime - startTime;
+        System.out.println("Recherche de l'id du livre en "+ elapsedTime +" ms");
+        
+        //Recherche du nom du livre à partir de l'id du livre
+
+        startTime = System.currentTimeMillis();
+        
+        Livre livre = livreFactory.read(idLivre);
+        String titreLivre = livre.getTitre();
+        
+        stopTime = System.currentTimeMillis();
+        elapsedTime = stopTime - startTime;
+        System.out.println("Recherche du nom du livre en "+ elapsedTime +" ms");
+        
+        System.out.println("Recherche totale en "+(stopTime - startTime1)+" ms");   
+        
+        System.out.println(auteur + " a écrit par " + titreLivre);
+        
+    }
 }
