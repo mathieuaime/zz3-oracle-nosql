@@ -20,37 +20,37 @@ public class AEcrit {
      */
     public static final String MAJOR_KEY = "a_ecrit";
 
-    private int auteurId;
-    private int livreId;
+    private String auteurNom;
+    private String livreTitre;
     private int rang;
 
-    public AEcrit(int auteurId, int livreId, int rang) {
-        this.auteurId = auteurId;
-        this.livreId = livreId;
+    public AEcrit(String auteurNom, String livreTitre, int rang) {
+        this.auteurNom = auteurNom;
+        this.livreTitre = livreTitre;
         this.rang = rang;
     }
     
-    public AEcrit(int auteurId, int rang, byte[] bytes) {
-        this.auteurId = auteurId;
+    public AEcrit(String auteurNom, int rang, byte[] bytes) {
+        this.auteurNom = auteurNom;
         this.rang = rang;
-        String livre = new String(bytes);
-        this.livreId = Integer.parseInt(livre);
+        String titre = new String(bytes);
+        this.livreTitre = titre;
     }
 
-    public int getAuteurId() {
-        return auteurId;
+    public String getAuteurNom() {
+        return auteurNom;
     }
 
-    public void setAuteurId(int auteurId) {
-        this.auteurId = auteurId;
+    public void setAuteurNom(String auteurNom) {
+        this.auteurNom = auteurNom;
     }
 
-    public int getLivreId() {
-        return livreId;
+    public String getLivreTitre() {
+        return livreTitre;
     }
 
-    public void setLivreId(int livreId) {
-        this.livreId = livreId;
+    public void setLivreTitre(String livreTitre) {
+        this.livreTitre = livreTitre;
     }    
 
     public int getRang() {
@@ -62,16 +62,16 @@ public class AEcrit {
     }
     
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(auteurId), String.valueOf(rang)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY,auteurNom, String.valueOf(rang)), minorKey);
     }
 
     public Value getStoreValue() {
-        return Value.createValue(String.valueOf(livreId).getBytes());
+        return Value.createValue(livreTitre.getBytes());
     }
     
     @Override
     public String toString() {
-        return auteurId + " / " + livreId;
+        return auteurNom + " / " + livreTitre;
     }
     
 }

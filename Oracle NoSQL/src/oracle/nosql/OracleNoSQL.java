@@ -5,10 +5,9 @@
  */
 package oracle.nosql;
 
-import oracle.nosql.entities.AEcrit;
+import java.util.Random;
 import oracle.nosql.entities.AEteEcrit;
 import oracle.nosql.entities.Auteur;
-import oracle.nosql.entities.Livre;
 import oracle.nosql.factory.AEcritFactory;
 import oracle.nosql.factory.AEteEcritFactory;
 import oracle.nosql.factory.AuteurFactory;
@@ -25,9 +24,9 @@ public class OracleNoSQL {
      */
     public static void main(String[] args) {
         
+        //supprimerTest(100000);
         //genererTest(100000);
-        rechercheAuteur("Le bateau180160");
-        rechercheLivre("Aimé87654",1);      
+        //runTest(20);        
     }    
     
     public static void genererTest(int n) {
@@ -48,7 +47,7 @@ public class OracleNoSQL {
         
         startTime = System.currentTimeMillis();
         
-        livreFactory.genererTest(2*n);
+        livreFactory.genererTest(2*n); 
         
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
@@ -77,93 +76,193 @@ public class OracleNoSQL {
         System.out.println("Création de "+(2*n)+" relations livres - > auteurs en "+ elapsedTime +" ms"); 
     } 
     
-    public static void rechercheAuteur(String livre) {
-
-        //Recherche de l'id du livre à partir du titre du livre
-        LivreFactory livreFactory = new LivreFactory();
+    public static void supprimerTest(int n) {
         AuteurFactory auteurFactory = new AuteurFactory();
-        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
         
-        long startTime1 = System.currentTimeMillis();
-        long startTime = System.currentTimeMillis();
-        
-        Livre l = livreFactory.read(livre);
-        int idLivre = l.getLivreId();
-        
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-        System.out.println("Recherche de l'id du livre en "+ elapsedTime +" ms");
-        
-        //Recherche de l'id de l'auteur à partir de l'id du livre
-        
-        startTime = System.currentTimeMillis();
-        
-        AEteEcrit aEteEcrit = aEteEcritFactory.read(idLivre);
-        int idAuteur = aEteEcrit.getAuteurId();
-        
-        stopTime = System.currentTimeMillis();
-        elapsedTime = stopTime - startTime;
-        System.out.println("Recherche de l'id de l'auteur en "+ elapsedTime +" ms");
-        
-        //Recherche du nom de l'auteur à partir de l'id de l'auteur
-
-        startTime = System.currentTimeMillis();
-        
-        Auteur auteur = auteurFactory.read(idAuteur);
-        String nomAuteur = auteur.getNom();
-        
-        stopTime = System.currentTimeMillis();
-        elapsedTime = stopTime - startTime;
-        System.out.println("Recherche du nom de l'auteur en "+ elapsedTime +" ms");
-        
-        System.out.println("Recherche totale en "+(stopTime - startTime1)+" ms");   
-        
-        System.out.println(livre + " a été écrit par " + nomAuteur);
-        
-    }
-
-    private static void rechercheLivre(String auteur, int rang) {
-        
-        //Recherche de l'id de l'auteur à partir du nom de l'auteur
+        auteurFactory.supprimerTest(n);
+                        
         LivreFactory livreFactory = new LivreFactory();
-        AuteurFactory auteurFactory = new AuteurFactory();
+        
+        livreFactory.supprimerTest(2*n); 
+        
         AEcritFactory aEcritFactory = new AEcritFactory();
         
-        long startTime1 = System.currentTimeMillis();
+        aEcritFactory.supprimerTest(n);
+        
+        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
+        
+        aEteEcritFactory.supprimerTest(n);
+    } 
+    
+    public static void runTest(int nb) {
+        long avgTime;
+        
+        System.out.println("Recherche V1 :\n");
+        
+        //Recherche à partir du nom du livre
+        avgTime = 0;
+        
+        System.out.println("Recherche du nom de l'auteur à partir du nom du livre");
+
+        for (int i = 0; i < nb; ++i) {
+            Random r = new Random();
+            int n = r.nextInt(200000);
+            long time = rechercheAuteur("Le bateau"+n);
+            avgTime = (i*avgTime + time) / (1 + i);
+            System.out.println("Recherche " + (1 + i) + " : " + time + "ms; Temps moyen : " + avgTime + "ms");
+        }
+        
+        System.out.println("Temps moyen de recherche : " + avgTime + "ms\n");
+        
+        //Mise à jour à partir de l'id de l'auteur
+        
+        avgTime = 0;
+        
+        System.out.println("Mise à jour de l'auteur à partir de son id");
+        
+        for (int i = 0; i < nb; ++i) {
+            Random r = new Random();
+            int n = r.nextInt(100000);
+            long time = updateAuteur(n, "Cannes");
+            avgTime = (i*avgTime + time) / (1 + i);
+            System.out.println("MAJ " + (1 + i) + " : " + time + "ms; Temps moyen : " + avgTime + "ms");
+        }
+        
+        System.out.println("Temps moyen de mise à jour : " + avgTime + "ms\n");   
+        
+        //Mise à jour à partir du nom de l'auteur
+        
+        avgTime = 0;
+        
+        System.out.println("Mise à jour de l'auteur à partir de son nom");
+        
+        for (int i = 0; i < nb; ++i) {
+            Random r = new Random();
+            int n = r.nextInt(100000);
+            long time = updateAuteur("Aimé"+n, "Cannes");
+            avgTime = (i*avgTime + time) / (1 + i);
+            System.out.println("MAJ " + (1 + i) + " : " + time + "ms; Temps moyen : " + avgTime + "ms");
+        }
+        
+        System.out.println("Temps moyen de mise à jour : " + avgTime + "ms\n"); 
+        
+        //Suppression à partir de l'id de l'auteur
+        
+        avgTime = 0;
+        
+        System.out.println("Suppression de l'auteur à partir de son id");
+        
+        for (int i = 0; i < nb; ++i) {
+            Random r = new Random();
+            int n = r.nextInt(100000);
+            long time = deleteAuteur(n);
+            avgTime = (i*avgTime + time) / (1 + i);
+            System.out.println("Suppression " + (1 + i) + " : " + time + "ms; Temps moyen : " + avgTime + "ms");
+        }
+        
+        System.out.println("Temps moyen de suppression : " + avgTime + "ms\n");   
+        
+        //Suppression à partir du nom de l'auteur
+        
+        avgTime = 0;
+        
+        System.out.println("Suppression de l'auteur à partir de son nom");
+        
+        for (int i = 0; i < nb; ++i) {
+            Random r = new Random();
+            int n = r.nextInt(100000);
+            long time = deleteAuteur("Aimé"+n);
+            avgTime = (i*avgTime + time) / (1 + i);
+            System.out.println("Suppression " + (1 + i) + " : " + time + "ms; Temps moyen : " + avgTime + "ms");
+        }
+        
+        System.out.println("Temps moyen de supression : " + avgTime + "ms\n");
+    }
+
+    public static long rechercheAuteur(String livre) {
+        
+        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
+        
         long startTime = System.currentTimeMillis();
         
-        Auteur a = auteurFactory.read(auteur);
-        int idAuteur = a.getAuteurId();
+        //Recherche du nom de l'auteur à partir du nom du livre        
+        AEteEcrit aEteEcrit = aEteEcritFactory.read(livre);
+        String nomAuteur = aEteEcrit.getAuteurNom();
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
-        System.out.println("Recherche de l'id de l'auteur en "+ elapsedTime +" ms");
         
-        //Recherche de l'id du livre à partir de l'id de l'auteur
+        return elapsedTime;
         
-        startTime = System.currentTimeMillis();
+    }
+       
+    public static long updateAuteur(int idAuteur, String newAdresse) {
+        AuteurFactory auteurFactory = new AuteurFactory();
         
-        AEcrit aEcrit = aEcritFactory.read(idAuteur, rang);
-        int idLivre = aEcrit.getLivreId();
+        long startTime = System.currentTimeMillis();
+             
+        auteurFactory.update(idAuteur, null, null, newAdresse, null);
         
-        stopTime = System.currentTimeMillis();
-        elapsedTime = stopTime - startTime;
-        System.out.println("Recherche de l'id du livre en "+ elapsedTime +" ms");
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
         
-        //Recherche du nom du livre à partir de l'id du livre
-
-        startTime = System.currentTimeMillis();
+        return elapsedTime;
+    }
+    
+    public static long updateAuteur(String nomAuteur, String newAdresse) {
+        AuteurFactory auteurFactory = new AuteurFactory();
         
-        Livre livre = livreFactory.read(idLivre);
-        String titreLivre = livre.getTitre();
+        long startTime = System.currentTimeMillis();
+             
+        Auteur auteur = auteurFactory.read(nomAuteur);
+        int idAuteur = auteur.getAuteurId();
         
-        stopTime = System.currentTimeMillis();
-        elapsedTime = stopTime - startTime;
-        System.out.println("Recherche du nom du livre en "+ elapsedTime +" ms");
+        //Mise à jour de l'auteur
+        auteurFactory.update(idAuteur, null, null, newAdresse, null);
         
-        System.out.println("Recherche totale en "+(stopTime - startTime1)+" ms");   
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
         
-        System.out.println(auteur + " a écrit par " + titreLivre);
+        return elapsedTime;
+    }
+    
+    public static long deleteAuteur(int idAuteur) {
+        AuteurFactory auteurFactory = new AuteurFactory();
         
+        Auteur auteur = auteurFactory.read(idAuteur);
+        
+        long startTime = System.currentTimeMillis();
+        
+        //Suppression de l'auteur        
+        auteurFactory.delete(idAuteur);
+        
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        
+        //rajout de l'auteur supprimé pour les tests suivants
+        auteurFactory.create(auteur);
+        
+        return elapsedTime;
+    }
+    
+    public static long deleteAuteur(String nomAuteur) {
+        AuteurFactory auteurFactory = new AuteurFactory();
+        
+        long startTime = System.currentTimeMillis();
+        
+        //Recherche de l'id de l'auteur à partir de son nom       
+        Auteur auteur = auteurFactory.read(nomAuteur);
+        int idAuteur = auteur.getAuteurId();
+        
+        //Suppression de l'auteur
+        auteurFactory.delete(idAuteur);
+        
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        
+        //rajout de l'auteur supprimé pour les tests suivants
+        auteurFactory.create(auteur);
+        
+        return elapsedTime;
     }
 }

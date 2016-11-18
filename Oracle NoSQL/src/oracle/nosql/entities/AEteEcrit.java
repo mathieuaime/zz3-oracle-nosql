@@ -23,41 +23,41 @@ public class AEteEcrit {
      */
     public static final String MAJOR_KEY = "a_ete_ecrit";
 
-    private int auteurId;
-    private int livreId;
+    private String auteurNom;
+    private String livreTitre;
 
-    public AEteEcrit(int auteurId, int livreId) {
-        this.auteurId = auteurId;
-        this.livreId = livreId;
+    public AEteEcrit(String auteurNom, String livreTitre) {
+        this.auteurNom = auteurNom;
+        this.livreTitre = livreTitre;
     }
     
-    public AEteEcrit(int livreId, byte[] bytes) {
-        this.livreId = livreId;
+    public AEteEcrit(String livreTitre, byte[] bytes) {
+        this.livreTitre = livreTitre;
         
         String auteur = new String(bytes);
         auteur = auteur.trim();
         
-        this.auteurId = Integer.parseInt(auteur);
+        this.auteurNom = auteur;
     }
 
-    public int getAuteurId() {
-        return auteurId;
+    public String getAuteurNom() {
+        return auteurNom;
     }
 
-    public void setAuteurId(int auteurId) {
-        this.auteurId = auteurId;
+    public void setAuteurNom(String auteurNom) {
+        this.auteurNom = auteurNom;
     }
 
-    public int getLivreId() {
-        return livreId;
+    public String getLivreId() {
+        return livreTitre;
     }
 
-    public void setLivreId(int livreId) {
-        this.livreId = livreId;
+    public void setLivreId(String livreTitre) {
+        this.livreTitre = livreTitre;
     }    
     
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(livreId)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY,livreTitre), minorKey);
     }
 
     public Value getStoreValue() {
@@ -65,7 +65,7 @@ public class AEteEcrit {
         final DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
         try {
-            dataOutputStream.writeUTF(String.valueOf(auteurId)); 
+            dataOutputStream.writeUTF(auteurNom); 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -75,7 +75,7 @@ public class AEteEcrit {
     
     @Override
     public String toString() {
-        return livreId + " / " + auteurId;
+        return livreTitre + " / " + auteurNom;
     }
     
 }

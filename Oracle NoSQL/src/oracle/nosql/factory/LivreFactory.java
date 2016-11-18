@@ -51,7 +51,7 @@ public class LivreFactory {
            Livre l = new Livre(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
            String t = l.getTitre();
            
-           if (t.equals(titre)) livre = l;      
+           if (t.equals(titre)) {livre = l;  break; }    
         }
         
         return livre;
@@ -69,18 +69,22 @@ public class LivreFactory {
         
         return l;        
     }
+    
+    public Livre create(Livre livre) {
+        store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
+        return livre;
+    }
 
     public Livre create(int livreId, String titre, String resume, float prix) {
         Livre livre = new Livre(livreId, titre, resume, prix);
-        store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
-        return livre;
+        return create(livre);
     }    
     
     public void update(int livreId, String titre, String resume, float prix) {
         Livre l = read(livreId);
-        l.setTitre(titre);
-        l.setResume(resume);
-        l.setPrix(prix);
+        if (titre != null) l.setTitre(titre);
+        if (resume != null) l.setResume(resume);
+        if (prix >= 0) l.setPrix(prix);
         store.delete(l.getStoreKey("info"));
         store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());        
     }    
@@ -94,7 +98,6 @@ public class LivreFactory {
         
         for (int i = 0; i < n; i++) {
             create(i, "Le bateau"+i, "Une histoire de bateau", 20);
-            //delete(i); //pour vider la base
         } 
     }
     
@@ -106,4 +109,10 @@ public class LivreFactory {
         } 
     }
     
+    public void supprimerTest(int n) {       
+        
+        for (int i = 0; i < n; i++) {
+            delete(i);
+        } 
+    }
 }
