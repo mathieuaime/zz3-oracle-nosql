@@ -30,14 +30,14 @@ public class AEteEcritFactory {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
     
-    public AEteEcrit read(int livreId) {
-        Key key = Key.createKey(Arrays.asList(AEteEcrit.MAJOR_KEY,String.valueOf(livreId)),"info");
+    public AEteEcrit read(String livreTitre) {
+        Key key = Key.createKey(Arrays.asList(AEteEcrit.MAJOR_KEY,livreTitre),"info");
             
         ValueVersion vv2 = store.get(key);
 
         Value value2 = vv2.getValue();
         byte[] bytes2 = value2.getValue();
-        AEteEcrit a = new AEteEcrit(livreId, bytes2);
+        AEteEcrit a = new AEteEcrit(livreTitre, bytes2);
         
         return a;        
     }
@@ -46,37 +46,37 @@ public class AEteEcritFactory {
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
     }    
     
-    public void create(int auteurId, int livreId) {     
-        AEteEcrit aEcrit = new AEteEcrit(auteurId, livreId);
+    public void create(int auteurId, String livreTitre) {     
+        AEteEcrit aEcrit = new AEteEcrit(auteurId, livreTitre);
         create(aEcrit);
     } 
     
-    public void update(int livreId, int newAuteurId) {
-        AEteEcrit a = read(livreId);
-        a.setLivreId(newAuteurId);
+    public void update(String livreTitre, int newAuteurId) {
+        AEteEcrit a = read(livreTitre);
+        a.setAuteurId(newAuteurId);
         store.delete(a.getStoreKey("info"));
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
     }    
     
-    public void delete(int livreId) {
-        AEteEcrit a = read(livreId);
+    public void delete(String livreTitre) {
+        AEteEcrit a = read(livreTitre);
         store.delete(a.getStoreKey("info"));
     }
     
     public void genererTest(int n) {       
         
         for (int i = 0; i < n; i++) {
-            create(i,2*i);
-            create(i,1+2*i);
+            create(i,"Le bateu"+(2*i));
+            create(i,"Le bateau"+(1+2*i));
         } 
     }
     
     public void afficherTest(int n) {       
         
         for (int i = 0; i < n; i++) {
-            AEteEcrit a = read(2*i);
+            AEteEcrit a = read("Le bateu"+(2*i));
             System.out.println(a);
-            a = read(1 + 2*i);
+            a = read("Le bateu"+(1 + 2*i));
             System.out.println(a);
         } 
     }
@@ -84,8 +84,8 @@ public class AEteEcritFactory {
     public void supprimerTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
-            delete(2*i);
-            delete(1+2*i);
+            delete("Le bateu"+(2*i));
+            delete("Le bateu"+(1 + 2*i));
         } 
     }
     

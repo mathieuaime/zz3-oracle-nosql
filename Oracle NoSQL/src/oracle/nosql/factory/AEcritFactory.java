@@ -99,4 +99,22 @@ public class AEcritFactory {
         } 
     }
     
+    public void afficherTest(int n) {       
+        
+        for (int i = 0; i < n; i++) {
+            AEcrit a = read(i,1);
+            System.out.println(a);
+            a = read(i,2);
+            System.out.println(a);
+        } 
+    }
+    
+    public void supprimerTest(int n) {       
+        
+        for (int i = 0; i < n; i+=2) {
+            delete(i,1);
+            delete(i,2);
+        } 
+    }
+    
 }

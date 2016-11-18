@@ -98,7 +98,6 @@ public class LivreFactory {
         
         for (int i = 0; i < n; i++) {
             create(i, "Le bateau"+i, "Une histoire de bateau", 20);
-            //delete(i); //pour vider la base
         } 
     }
     
@@ -110,4 +109,10 @@ public class LivreFactory {
         } 
     }
     
+    public void supprimerTest(int n) {       
+        
+        for (int i = 0; i < n; i++) {
+            delete(i);
+        } 
+    }
 }

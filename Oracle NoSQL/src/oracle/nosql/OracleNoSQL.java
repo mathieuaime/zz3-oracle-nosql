@@ -6,10 +6,8 @@
 package oracle.nosql;
 
 import java.util.Random;
-import oracle.nosql.entities.AEcrit;
 import oracle.nosql.entities.AEteEcrit;
 import oracle.nosql.entities.Auteur;
-import oracle.nosql.entities.Livre;
 import oracle.nosql.factory.AEcritFactory;
 import oracle.nosql.factory.AEteEcritFactory;
 import oracle.nosql.factory.AuteurFactory;
@@ -26,8 +24,9 @@ public class OracleNoSQL {
      */
     public static void main(String[] args) {
         
-        //genererTest(100000);
-        runTest(20);        
+        //supprimerTest(100000);
+        genererTest(100000);
+        //runTest(20);        
     }    
     
     public static void genererTest(int n) {
@@ -75,6 +74,24 @@ public class OracleNoSQL {
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
         System.out.println("Création de "+(2*n)+" relations livres - > auteurs en "+ elapsedTime +" ms"); 
+    } 
+    
+    public static void supprimerTest(int n) {
+        AuteurFactory auteurFactory = new AuteurFactory();
+        
+        auteurFactory.supprimerTest(n);
+                        
+        LivreFactory livreFactory = new LivreFactory();
+        
+        livreFactory.supprimerTest(2*n); 
+        
+        AEcritFactory aEcritFactory = new AEcritFactory();
+        
+        aEcritFactory.supprimerTest(n);
+        
+        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
+        
+        aEteEcritFactory.supprimerTest(n);
     } 
     
     public static void runTest(int nb) {
@@ -164,18 +181,14 @@ public class OracleNoSQL {
 
     public static long rechercheAuteur(String livre) {
         
-        LivreFactory livreFactory = new LivreFactory();
         AuteurFactory auteurFactory = new AuteurFactory();
         AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
         
         long startTime = System.currentTimeMillis();
         
-        //Recherche de l'id du livre à partir du titre du livre        
-        Livre l = livreFactory.read(livre);
-        int idLivre = l.getLivreId();
         
-        //Recherche de l'id de l'auteur à partir de l'id du livre        
-        AEteEcrit aEteEcrit = aEteEcritFactory.read(idLivre);
+        //Recherche de l'id de l'auteur à partir du nom du livre        
+        AEteEcrit aEteEcrit = aEteEcritFactory.read(livre);
         int idAuteur = aEteEcrit.getAuteurId();
         
         //Recherche du nom de l'auteur à partir de l'id de l'auteur        

@@ -97,7 +97,6 @@ public class AuteurFactory {
 
         for (int i = 0; i < n; i++) {
             create(i, "Aimé"+i, "Mathieu", "Clermont", "4444");
-            //delete(i); //pour vider la base
         } 
     }
 
@@ -106,6 +105,13 @@ public class AuteurFactory {
         for (int i = 0; i < n; i++) {
             Auteur a = read(i);
             System.out.println(a);
+        } 
+    }
+    
+    public void supprimerTest(int n) {       
+
+        for (int i = 0; i < n; i++) {
+            delete(i);
         } 
     }
     
