@@ -66,7 +66,7 @@ public class AEteEcritFactory {
     public void genererTest(int n) {       
         
         for (int i = 0; i < n; i++) {
-            create(i,"Le bateu"+(2*i));
+            create(i,"Le bateau"+(2*i));
             create(i,"Le bateau"+(1+2*i));
         } 
     }
@@ -74,9 +74,9 @@ public class AEteEcritFactory {
     public void afficherTest(int n) {       
         
         for (int i = 0; i < n; i++) {
-            AEteEcrit a = read("Le bateu"+(2*i));
+            AEteEcrit a = read("Le bateau"+(2*i));
             System.out.println(a);
-            a = read("Le bateu"+(1 + 2*i));
+            a = read("Le bateau"+(1 + 2*i));
             System.out.println(a);
         } 
     }
@@ -84,8 +84,8 @@ public class AEteEcritFactory {
     public void supprimerTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
-            delete("Le bateu"+(2*i));
-            delete("Le bateu"+(1 + 2*i));
+            delete("Le bateau"+(2*i));
+            delete("Le bateau"+(1 + 2*i));
         } 
     }
     

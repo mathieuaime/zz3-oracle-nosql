@@ -25,8 +25,8 @@ public class OracleNoSQL {
     public static void main(String[] args) {
         
         //supprimerTest(100000);
-        genererTest(100000);
-        //runTest(20);        
+        //genererTest(100000);
+        runTest(20);        
     }    
     
     public static void genererTest(int n) {
@@ -206,8 +206,7 @@ public class OracleNoSQL {
         AuteurFactory auteurFactory = new AuteurFactory();
         
         long startTime = System.currentTimeMillis();
-        
-        //Recherche du nom de l'auteur à partir de l'id de l'auteur        
+             
         auteurFactory.update(idAuteur, null, null, newAdresse, null);
         
         long stopTime = System.currentTimeMillis();
