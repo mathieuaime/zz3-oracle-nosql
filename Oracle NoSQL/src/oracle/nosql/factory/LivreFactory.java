@@ -51,7 +51,7 @@ public class LivreFactory {
            Livre l = new Livre(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
            String t = l.getTitre();
            
-           if (t.equals(titre)) livre = l;      
+           if (t.equals(titre)) {livre = l;  break; }    
         }
         
         return livre;

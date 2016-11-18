@@ -5,6 +5,7 @@
  */
 package oracle.nosql;
 
+import java.util.Random;
 import oracle.nosql.entities.AEcrit;
 import oracle.nosql.entities.AEteEcrit;
 import oracle.nosql.entities.Auteur;
@@ -26,8 +27,18 @@ public class OracleNoSQL {
     public static void main(String[] args) {
         
         //genererTest(100000);
-        rechercheAuteur("Le bateau180160");
-        rechercheLivre("Aimé87654",1);      
+        long startTime = System.currentTimeMillis();
+
+        for (int i = 0; i < 50; ++i) {
+            Random r = new Random();
+            int n = r.nextInt(200000);
+            rechercheAuteur("Le bateau"+n);
+        }
+
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.println("Recherche de 50 auteurs aléatoirement en "+ elapsedTime +" ms");
+      
     }    
     
     public static void genererTest(int n) {
@@ -48,7 +59,7 @@ public class OracleNoSQL {
         
         startTime = System.currentTimeMillis();
         
-        livreFactory.genererTest(2*n);
+        livreFactory.genererTest(2*n); 
         
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
@@ -78,47 +89,29 @@ public class OracleNoSQL {
     } 
     
     public static void rechercheAuteur(String livre) {
-
-        //Recherche de l'id du livre à partir du titre du livre
+        
         LivreFactory livreFactory = new LivreFactory();
         AuteurFactory auteurFactory = new AuteurFactory();
         AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
         
-        long startTime1 = System.currentTimeMillis();
         long startTime = System.currentTimeMillis();
         
+        //Recherche de l'id du livre à partir du titre du livre        
         Livre l = livreFactory.read(livre);
         int idLivre = l.getLivreId();
         
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-        System.out.println("Recherche de l'id du livre en "+ elapsedTime +" ms");
-        
-        //Recherche de l'id de l'auteur à partir de l'id du livre
-        
-        startTime = System.currentTimeMillis();
-        
+        //Recherche de l'id de l'auteur à partir de l'id du livre        
         AEteEcrit aEteEcrit = aEteEcritFactory.read(idLivre);
         int idAuteur = aEteEcrit.getAuteurId();
         
-        stopTime = System.currentTimeMillis();
-        elapsedTime = stopTime - startTime;
-        System.out.println("Recherche de l'id de l'auteur en "+ elapsedTime +" ms");
-        
-        //Recherche du nom de l'auteur à partir de l'id de l'auteur
-
-        startTime = System.currentTimeMillis();
-        
+        //Recherche du nom de l'auteur à partir de l'id de l'auteur        
         Auteur auteur = auteurFactory.read(idAuteur);
         String nomAuteur = auteur.getNom();
         
-        stopTime = System.currentTimeMillis();
-        elapsedTime = stopTime - startTime;
-        System.out.println("Recherche du nom de l'auteur en "+ elapsedTime +" ms");
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;  
         
-        System.out.println("Recherche totale en "+(stopTime - startTime1)+" ms");   
-        
-        System.out.println(livre + " a été écrit par " + nomAuteur);
+        System.out.println(livre + " a été écrit par " + nomAuteur + " (" + elapsedTime+" ms)"); 
         
     }
 

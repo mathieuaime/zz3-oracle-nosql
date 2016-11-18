@@ -49,7 +49,7 @@ public class AuteurFactory {
            Auteur a = new Auteur(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
            String t = a.getNom();
            
-           if (t.equals(nom)) auteur = a;      
+           if (t.equals(nom)) {auteur = a; break; }      
         }
         
         return auteur;
