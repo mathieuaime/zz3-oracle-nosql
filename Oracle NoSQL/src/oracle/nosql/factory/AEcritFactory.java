@@ -71,9 +71,13 @@ public class AEcritFactory {
         return a;        
     }
 
+    public void create(AEcrit a) {     
+        store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
+    }    
+    
     public void create(int auteurId, int livreId, int rang) {     
         AEcrit aEcrit = new AEcrit(auteurId, livreId, rang);
-        store.putIfAbsent(aEcrit.getStoreKey("info"), aEcrit.getStoreValue());
+        create(aEcrit);
     }    
     
     public void update(int auteurId, int rang, int newLivreId) {

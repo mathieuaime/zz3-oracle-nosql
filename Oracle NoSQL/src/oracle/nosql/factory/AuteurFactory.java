@@ -67,19 +67,23 @@ public class AuteurFactory {
         
         return a;        
     }
+      
+    public Auteur create(Auteur auteur) {     
+        store.putIfAbsent(auteur.getStoreKey("info"), auteur.getStoreValue());
+        return auteur;    
+    }
 
     public Auteur create(int auteurId, String nom, String prenom, String adresse, String phone) {     
         Auteur auteur = new Auteur(auteurId, nom, prenom, adresse, phone);
-        store.putIfAbsent(auteur.getStoreKey("info"), auteur.getStoreValue());
-        return auteur;
+        return create(auteur);
     }    
     
     public void update(int auteurId, String nom, String prenom, String adresse, String phone) {
         Auteur a = read(auteurId);
-        a.setNom(nom);
-        a.setPrenom(prenom);
-        a.setAdresse(adresse);
-        a.setPhone(phone);
+        if (nom != null) a.setNom(nom);
+        if (prenom != null) a.setPrenom(prenom);
+        if (adresse != null) a.setAdresse(adresse);
+        if (phone != null) a.setPhone(phone);
         store.delete(a.getStoreKey("info"));
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
     }    

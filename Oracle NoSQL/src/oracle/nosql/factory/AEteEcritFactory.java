@@ -42,10 +42,14 @@ public class AEteEcritFactory {
         return a;        
     }
 
+    public void create(AEteEcrit a) {     
+        store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
+    }    
+    
     public void create(int auteurId, int livreId) {     
         AEteEcrit aEcrit = new AEteEcrit(auteurId, livreId);
-        store.putIfAbsent(aEcrit.getStoreKey("info"), aEcrit.getStoreValue());
-    }    
+        create(aEcrit);
+    } 
     
     public void update(int livreId, int newAuteurId) {
         AEteEcrit a = read(livreId);

@@ -69,18 +69,22 @@ public class LivreFactory {
         
         return l;        
     }
+    
+    public Livre create(Livre livre) {
+        store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
+        return livre;
+    }
 
     public Livre create(int livreId, String titre, String resume, float prix) {
         Livre livre = new Livre(livreId, titre, resume, prix);
-        store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
-        return livre;
+        return create(livre);
     }    
     
     public void update(int livreId, String titre, String resume, float prix) {
         Livre l = read(livreId);
-        l.setTitre(titre);
-        l.setResume(resume);
-        l.setPrix(prix);
+        if (titre != null) l.setTitre(titre);
+        if (resume != null) l.setResume(resume);
+        if (prix >= 0) l.setPrix(prix);
         store.delete(l.getStoreKey("info"));
         store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());        
     }    
