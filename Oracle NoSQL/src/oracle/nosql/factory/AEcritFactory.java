@@ -18,7 +18,6 @@ import oracle.kv.Value;
 import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.nosql.entities.AEcrit;
-import oracle.nosql.entities.Auteur;
 
 /**
  *
@@ -75,14 +74,14 @@ public class AEcritFactory {
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
     }    
     
-    public void create(int auteurId, int livreId, int rang) {     
-        AEcrit aEcrit = new AEcrit(auteurId, livreId, rang);
+    public void create(int auteurId, String livreTitre, int rang) {     
+        AEcrit aEcrit = new AEcrit(auteurId, livreTitre, rang);
         create(aEcrit);
     }    
     
-    public void update(int auteurId, int rang, int newLivreId) {
+    public void update(int auteurId, int rang, String newLivreTitre) {
         AEcrit a = read(auteurId, rang);
-        a.setLivreId(newLivreId);
+        a.setLivreTitre(newLivreTitre);
         store.delete(a.getStoreKey("info"));
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
     }    
@@ -95,9 +94,8 @@ public class AEcritFactory {
     public void genererTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
-            create(i,2*i,1);
-            create(i,1+2*i,2);
-            //delete(i); //pour vider la base
+            create(i,"Le bateau"+(2*i),1);
+            create(i,"Le bateau"+(1+2*i),2);
         } 
     }
     

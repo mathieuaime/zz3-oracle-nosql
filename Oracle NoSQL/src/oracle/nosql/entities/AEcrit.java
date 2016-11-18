@@ -21,20 +21,20 @@ public class AEcrit {
     public static final String MAJOR_KEY = "a_ecrit";
 
     private int auteurId;
-    private int livreId;
+    private String livreTitre;
     private int rang;
 
-    public AEcrit(int auteurId, int livreId, int rang) {
+    public AEcrit(int auteurId, String livreTitre, int rang) {
         this.auteurId = auteurId;
-        this.livreId = livreId;
+        this.livreTitre = livreTitre;
         this.rang = rang;
     }
     
     public AEcrit(int auteurId, int rang, byte[] bytes) {
         this.auteurId = auteurId;
         this.rang = rang;
-        String livre = new String(bytes);
-        this.livreId = Integer.parseInt(livre);
+        String titre = new String(bytes);
+        this.livreTitre = titre;
     }
 
     public int getAuteurId() {
@@ -45,12 +45,12 @@ public class AEcrit {
         this.auteurId = auteurId;
     }
 
-    public int getLivreId() {
-        return livreId;
+    public String getLivreTitre() {
+        return livreTitre;
     }
 
-    public void setLivreId(int livreId) {
-        this.livreId = livreId;
+    public void setLivreTitre(String livreTitre) {
+        this.livreTitre = livreTitre;
     }    
 
     public int getRang() {
@@ -66,12 +66,12 @@ public class AEcrit {
     }
 
     public Value getStoreValue() {
-        return Value.createValue(String.valueOf(livreId).getBytes());
+        return Value.createValue(livreTitre.getBytes());
     }
     
     @Override
     public String toString() {
-        return auteurId + " / " + livreId;
+        return auteurId + " / " + livreTitre;
     }
     
 }

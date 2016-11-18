@@ -24,15 +24,15 @@ public class AEteEcrit {
     public static final String MAJOR_KEY = "a_ete_ecrit";
 
     private int auteurId;
-    private int livreId;
+    private String livreTitre;
 
-    public AEteEcrit(int auteurId, int livreId) {
+    public AEteEcrit(int auteurId, String livreTitre) {
         this.auteurId = auteurId;
-        this.livreId = livreId;
+        this.livreTitre = livreTitre;
     }
     
-    public AEteEcrit(int livreId, byte[] bytes) {
-        this.livreId = livreId;
+    public AEteEcrit(String livreTitre, byte[] bytes) {
+        this.livreTitre = livreTitre;
         
         String auteur = new String(bytes);
         auteur = auteur.trim();
@@ -48,16 +48,16 @@ public class AEteEcrit {
         this.auteurId = auteurId;
     }
 
-    public int getLivreId() {
-        return livreId;
+    public String getLivreId() {
+        return livreTitre;
     }
 
-    public void setLivreId(int livreId) {
-        this.livreId = livreId;
+    public void setLivreId(String livreTitre) {
+        this.livreTitre = livreTitre;
     }    
     
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(livreId)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY,livreTitre), minorKey);
     }
 
     public Value getStoreValue() {
@@ -75,7 +75,7 @@ public class AEteEcrit {
     
     @Override
     public String toString() {
-        return livreId + " / " + auteurId;
+        return livreTitre + " / " + auteurId;
     }
     
 }
