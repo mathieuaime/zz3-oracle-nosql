@@ -23,11 +23,11 @@ public class AEteEcrit {
      */
     public static final String MAJOR_KEY = "a_ete_ecrit";
 
-    private int auteurId;
+    private String auteurNom;
     private String livreTitre;
 
-    public AEteEcrit(int auteurId, String livreTitre) {
-        this.auteurId = auteurId;
+    public AEteEcrit(String auteurNom, String livreTitre) {
+        this.auteurNom = auteurNom;
         this.livreTitre = livreTitre;
     }
     
@@ -37,15 +37,15 @@ public class AEteEcrit {
         String auteur = new String(bytes);
         auteur = auteur.trim();
         
-        this.auteurId = Integer.parseInt(auteur);
+        this.auteurNom = auteur;
     }
 
-    public int getAuteurId() {
-        return auteurId;
+    public String getAuteurNom() {
+        return auteurNom;
     }
 
-    public void setAuteurId(int auteurId) {
-        this.auteurId = auteurId;
+    public void setAuteurNom(String auteurNom) {
+        this.auteurNom = auteurNom;
     }
 
     public String getLivreId() {
@@ -65,7 +65,7 @@ public class AEteEcrit {
         final DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
         try {
-            dataOutputStream.writeUTF(String.valueOf(auteurId)); 
+            dataOutputStream.writeUTF(auteurNom); 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -75,7 +75,7 @@ public class AEteEcrit {
     
     @Override
     public String toString() {
-        return livreTitre + " / " + auteurId;
+        return livreTitre + " / " + auteurNom;
     }
     
 }

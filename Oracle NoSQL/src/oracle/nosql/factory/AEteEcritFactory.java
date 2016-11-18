@@ -46,14 +46,14 @@ public class AEteEcritFactory {
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
     }    
     
-    public void create(int auteurId, String livreTitre) {     
-        AEteEcrit aEcrit = new AEteEcrit(auteurId, livreTitre);
+    public void create(String auteurNom, String livreTitre) {     
+        AEteEcrit aEcrit = new AEteEcrit(auteurNom, livreTitre);
         create(aEcrit);
     } 
     
-    public void update(String livreTitre, int newAuteurId) {
+    public void update(String livreTitre, String newAuteurNom) {
         AEteEcrit a = read(livreTitre);
-        a.setAuteurId(newAuteurId);
+        a.setAuteurNom(newAuteurNom);
         store.delete(a.getStoreKey("info"));
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
     }    
@@ -66,8 +66,8 @@ public class AEteEcritFactory {
     public void genererTest(int n) {       
         
         for (int i = 0; i < n; i++) {
-            create(i,"Le bateau"+(2*i));
-            create(i,"Le bateau"+(1+2*i));
+            create("Aimé"+i,"Le bateau"+(2*i));
+            create("Aimé"+i,"Le bateau"+(1+2*i));
         } 
     }
     

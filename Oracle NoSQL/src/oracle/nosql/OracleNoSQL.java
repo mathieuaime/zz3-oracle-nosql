@@ -26,7 +26,7 @@ public class OracleNoSQL {
         
         //supprimerTest(100000);
         //genererTest(100000);
-        runTest(20);        
+        //runTest(20);        
     }    
     
     public static void genererTest(int n) {
@@ -181,19 +181,13 @@ public class OracleNoSQL {
 
     public static long rechercheAuteur(String livre) {
         
-        AuteurFactory auteurFactory = new AuteurFactory();
         AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
         
         long startTime = System.currentTimeMillis();
         
-        
-        //Recherche de l'id de l'auteur à partir du nom du livre        
+        //Recherche du nom de l'auteur à partir du nom du livre        
         AEteEcrit aEteEcrit = aEteEcritFactory.read(livre);
-        int idAuteur = aEteEcrit.getAuteurId();
-        
-        //Recherche du nom de l'auteur à partir de l'id de l'auteur        
-        Auteur auteur = auteurFactory.read(idAuteur);
-        String nomAuteur = auteur.getNom();
+        String nomAuteur = aEteEcrit.getAuteurNom();
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
@@ -219,8 +213,7 @@ public class OracleNoSQL {
         AuteurFactory auteurFactory = new AuteurFactory();
         
         long startTime = System.currentTimeMillis();
-        
-        //Recherche de l'id de l'auteur à partie de son nom       
+             
         Auteur auteur = auteurFactory.read(nomAuteur);
         int idAuteur = auteur.getAuteurId();
         

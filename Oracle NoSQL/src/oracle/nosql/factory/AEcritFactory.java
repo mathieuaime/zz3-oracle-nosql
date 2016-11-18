@@ -34,8 +34,8 @@ public class AEcritFactory {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
     
-    public ArrayList<AEcrit> read(int auteurId) {
-        Key key = Key.createKey(Arrays.asList(AEcrit.MAJOR_KEY,String.valueOf(auteurId)),"info");
+    public ArrayList<AEcrit> read(String auteurNom) {
+        Key key = Key.createKey(Arrays.asList(AEcrit.MAJOR_KEY,auteurNom),"info");
         
         Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED, 0, key, null, null);
         
@@ -51,21 +51,21 @@ public class AEcritFactory {
 
             Value value2 = vv2.getValue();
             byte[] bytes2 = value2.getValue();
-            AEcrit a = new AEcrit(auteurId, Integer.parseInt(rang), bytes2);
+            AEcrit a = new AEcrit(auteurNom, Integer.parseInt(rang), bytes2);
             ecrits.add(a);
         }
         
         return ecrits;        
     }
     
-    public AEcrit read(int auteurId, int rang) {
-        Key key = Key.createKey(Arrays.asList(AEcrit.MAJOR_KEY,String.valueOf(auteurId),String.valueOf(rang)),"info");
+    public AEcrit read(String auteurNom, int rang) {
+        Key key = Key.createKey(Arrays.asList(AEcrit.MAJOR_KEY,auteurNom,String.valueOf(rang)),"info");
             
         ValueVersion vv2 = store.get(key);
 
         Value value2 = vv2.getValue();
         byte[] bytes2 = value2.getValue();
-        AEcrit a = new AEcrit(auteurId, rang, bytes2);
+        AEcrit a = new AEcrit(auteurNom, rang, bytes2);
         
         return a;        
     }
@@ -74,37 +74,37 @@ public class AEcritFactory {
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
     }    
     
-    public void create(int auteurId, String livreTitre, int rang) {     
-        AEcrit aEcrit = new AEcrit(auteurId, livreTitre, rang);
+    public void create(String auteurNom, String livreTitre, int rang) {     
+        AEcrit aEcrit = new AEcrit(auteurNom, livreTitre, rang);
         create(aEcrit);
     }    
     
-    public void update(int auteurId, int rang, String newLivreTitre) {
-        AEcrit a = read(auteurId, rang);
+    public void update(String auteurNom, int rang, String newLivreTitre) {
+        AEcrit a = read(auteurNom, rang);
         a.setLivreTitre(newLivreTitre);
         store.delete(a.getStoreKey("info"));
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
     }    
     
-    public void delete(int auteurId, int rang) {
-        AEcrit a = read(auteurId, rang);
+    public void delete(String auteurNom, int rang) {
+        AEcrit a = read(auteurNom, rang);
         store.delete(a.getStoreKey("info"));
     }
     
     public void genererTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
-            create(i,"Le bateau"+(2*i),1);
-            create(i,"Le bateau"+(1+2*i),2);
+            create("Aimé"+i,"Le bateau"+(2*i),1);
+            create("Aimé"+i,"Le bateau"+(1+2*i),2);
         } 
     }
     
     public void afficherTest(int n) {       
         
         for (int i = 0; i < n; i++) {
-            AEcrit a = read(i,1);
+            AEcrit a = read("Aimé"+i,1);
             System.out.println(a);
-            a = read(i,2);
+            a = read("Aimé"+i,2);
             System.out.println(a);
         } 
     }
@@ -112,8 +112,8 @@ public class AEcritFactory {
     public void supprimerTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
-            delete(i,1);
-            delete(i,2);
+            delete("Aimé"+i,1);
+            delete("Aimé"+i,2);
         } 
     }
     
