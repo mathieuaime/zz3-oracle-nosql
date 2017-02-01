@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.factory;
+package oracle.nosql.daos;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -22,14 +22,14 @@ import oracle.nosql.entities.Livre;
  *
  * @author mathieu
  */
-public class AuteurFactory {
+public class AuteurDAO {
     
     private final String storeName = "kvstore";
     private final String hostName = "localhost";
     private final String hostPort = "5000";
     private static KVStore store;
 
-    public AuteurFactory() {
+    public AuteurDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
     

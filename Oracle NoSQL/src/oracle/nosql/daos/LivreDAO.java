@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.factory;
+package oracle.nosql.daos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,14 +24,14 @@ import oracle.nosql.entities.Livre;
  *
  * @author mathieu
  */
-public class LivreFactory {
+public class LivreDAO {
     
     private final String storeName = "kvstore";
     private final String hostName = "localhost";
     private final String hostPort = "5000";
     private static KVStore store;
 
-    public LivreFactory() {
+    public LivreDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
     
@@ -68,6 +68,26 @@ public class LivreFactory {
         Livre l = new Livre(livreId, bytes2);
         
         return l;        
+    }
+    
+    public List<Livre> read() {
+        Key myKey2 = Key.createKey(Livre.MAJOR_KEY);
+        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
+        
+        List<Livre> livres = new ArrayList<>();
+        
+        while (i.hasNext()) 
+          {
+           Key k = i.next().getKey();
+
+           ValueVersion valueVersionrecherche = store.get(k); 
+           Value v = valueVersionrecherche.getValue();
+           byte[] bytes2 = v.getValue();
+           Livre l = new Livre(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
+           livres.add(l);
+        }
+        
+        return livres;
     }
     
     public Livre create(Livre livre) {

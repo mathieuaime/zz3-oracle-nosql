@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.factory;
+package oracle.nosql.daos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,14 +23,14 @@ import oracle.nosql.entities.AEcrit;
  *
  * @author mathieu
  */
-public class AEcritFactory {
+public class AEcritDAO {
     
     private final String storeName = "kvstore";
     private final String hostName = "localhost";
     private final String hostPort = "5000";
     private static KVStore store;
 
-    public AEcritFactory() {
+    public AEcritDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
     
@@ -94,17 +94,17 @@ public class AEcritFactory {
     public void genererTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
-            create("Aimé"+i,"Le bateau"+(2*i),1);
-            create("Aimé"+i,"Le bateau"+(1+2*i),2);
+            create("AimÃ©"+i,"Le bateau"+(2*i),1);
+            create("AimÃ©"+i,"Le bateau"+(1+2*i),2);
         } 
     }
     
     public void afficherTest(int n) {       
         
         for (int i = 0; i < n; i++) {
-            AEcrit a = read("Aimé"+i,1);
+            AEcrit a = read("AimÃ©"+i,1);
             System.out.println(a);
-            a = read("Aimé"+i,2);
+            a = read("AimÃ©"+i,2);
             System.out.println(a);
         } 
     }
@@ -112,8 +112,8 @@ public class AEcritFactory {
     public void supprimerTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
-            delete("Aimé"+i,1);
-            delete("Aimé"+i,2);
+            delete("AimÃ©"+i,1);
+            delete("AimÃ©"+i,2);
         } 
     }
     
