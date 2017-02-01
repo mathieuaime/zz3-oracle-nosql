@@ -8,10 +8,10 @@ package oracle.nosql;
 import java.util.Random;
 import oracle.nosql.entities.AEteEcrit;
 import oracle.nosql.entities.Auteur;
-import oracle.nosql.factory.AEcritFactory;
-import oracle.nosql.factory.AEteEcritFactory;
-import oracle.nosql.factory.AuteurFactory;
-import oracle.nosql.factory.LivreFactory;
+import oracle.nosql.daos.AEcritDAO;
+import oracle.nosql.daos.AEteEcritDAO;
+import oracle.nosql.daos.AuteurDAO;
+import oracle.nosql.daos.LivreDAO;
 
 /**
  *
@@ -30,68 +30,68 @@ public class OracleNoSQL {
     }    
     
     public static void genererTest(int n) {
-        //Création de 100000 auteurs
-        AuteurFactory auteurFactory = new AuteurFactory();
+        //CrÃ©ation de 100000 auteurs
+        AuteurDAO auteurDAO = new AuteurDAO();
         
         long startTime = System.currentTimeMillis();
         
-        auteurFactory.genererTest(n);
+        auteurDAO.genererTest(n);
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
-        System.out.println("Création de "+n+" auteurs en "+ elapsedTime +" ms");
+        System.out.println("CrÃ©ation de "+n+" auteurs en "+ elapsedTime +" ms");
         
         
-        //Création de 200000 livres                
-        LivreFactory livreFactory = new LivreFactory();
+        //CrÃ©ation de 200000 livres                
+        LivreDAO livreDAO = new LivreDAO();
         
         startTime = System.currentTimeMillis();
         
-        livreFactory.genererTest(2*n); 
+        livreDAO.genererTest(2*n); 
         
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
-        System.out.println("Création de "+(2*n)+" livres en "+ elapsedTime +" ms");
+        System.out.println("CrÃ©ation de "+(2*n)+" livres en "+ elapsedTime +" ms");
                 
-        //Création des relations a écrit
-        AEcritFactory aEcritFactory = new AEcritFactory();
+        //CrÃ©ation des relations a Ã©crit
+        AEcritDAO aEcritDAO = new AEcritDAO();
         
         startTime = System.currentTimeMillis();
         
-        aEcritFactory.genererTest(n);
+        aEcritDAO.genererTest(n);
         
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
-        System.out.println("Création de "+(2*n)+" relations auteurs - > livres en "+ elapsedTime +" ms");
+        System.out.println("CrÃ©ation de "+(2*n)+" relations auteurs - > livres en "+ elapsedTime +" ms");
         
-        //Création des relations a été écrit
-        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
+        //CrÃ©ation des relations a Ã©tÃ© Ã©crit
+        AEteEcritDAO aEteEcritDAO = new AEteEcritDAO();
         
         startTime = System.currentTimeMillis();
         
-        aEteEcritFactory.genererTest(n);
+        aEteEcritDAO.genererTest(n);
         
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
-        System.out.println("Création de "+(2*n)+" relations livres - > auteurs en "+ elapsedTime +" ms"); 
+        System.out.println("CrÃ©ation de "+(2*n)+" relations livres - > auteurs en "+ elapsedTime +" ms"); 
     } 
     
     public static void supprimerTest(int n) {
-        AuteurFactory auteurFactory = new AuteurFactory();
+        AuteurDAO auteurDAO = new AuteurDAO();
         
-        auteurFactory.supprimerTest(n);
+        auteurDAO.supprimerTest(n);
                         
-        LivreFactory livreFactory = new LivreFactory();
+        LivreDAO livreDAO = new LivreDAO();
         
-        livreFactory.supprimerTest(2*n); 
+        livreDAO.supprimerTest(2*n); 
         
-        AEcritFactory aEcritFactory = new AEcritFactory();
+        AEcritDAO aEcritDAO = new AEcritDAO();
         
-        aEcritFactory.supprimerTest(n);
+        aEcritDAO.supprimerTest(n);
         
-        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
+        AEteEcritDAO aEteEcritDAO = new AEteEcritDAO();
         
-        aEteEcritFactory.supprimerTest(n);
+        aEteEcritDAO.supprimerTest(n);
     } 
     
     public static void runTest(int nb) {
@@ -99,10 +99,10 @@ public class OracleNoSQL {
         
         System.out.println("Recherche V1 :\n");
         
-        //Recherche à partir du nom du livre
+        //Recherche Ã  partir du nom du livre
         avgTime = 0;
         
-        System.out.println("Recherche du nom de l'auteur à partir du nom du livre");
+        System.out.println("Recherche du nom de l'auteur Ã  partir du nom du livre");
 
         for (int i = 0; i < nb; ++i) {
             Random r = new Random();
@@ -114,11 +114,11 @@ public class OracleNoSQL {
         
         System.out.println("Temps moyen de recherche : " + avgTime + "ms\n");
         
-        //Mise à jour à partir de l'id de l'auteur
+        //Mise Ã  jour Ã  partir de l'id de l'auteur
         
         avgTime = 0;
         
-        System.out.println("Mise à jour de l'auteur à partir de son id");
+        System.out.println("Mise Ã  jour de l'auteur Ã  partir de son id");
         
         for (int i = 0; i < nb; ++i) {
             Random r = new Random();
@@ -128,29 +128,29 @@ public class OracleNoSQL {
             System.out.println("MAJ " + (1 + i) + " : " + time + "ms; Temps moyen : " + avgTime + "ms");
         }
         
-        System.out.println("Temps moyen de mise à jour : " + avgTime + "ms\n");   
+        System.out.println("Temps moyen de mise Ã  jour : " + avgTime + "ms\n");   
         
-        //Mise à jour à partir du nom de l'auteur
+        //Mise Ã  jour Ã  partir du nom de l'auteur
         
         avgTime = 0;
         
-        System.out.println("Mise à jour de l'auteur à partir de son nom");
+        System.out.println("Mise Ã  jour de l'auteur Ã  partir de son nom");
         
         for (int i = 0; i < nb; ++i) {
             Random r = new Random();
             int n = r.nextInt(100000);
-            long time = updateAuteur("Aimé"+n, "Cannes");
+            long time = updateAuteur("AimÃ©"+n, "Cannes");
             avgTime = (i*avgTime + time) / (1 + i);
             System.out.println("MAJ " + (1 + i) + " : " + time + "ms; Temps moyen : " + avgTime + "ms");
         }
         
-        System.out.println("Temps moyen de mise à jour : " + avgTime + "ms\n"); 
+        System.out.println("Temps moyen de mise Ã  jour : " + avgTime + "ms\n"); 
         
-        //Suppression à partir de l'id de l'auteur
+        //Suppression Ã  partir de l'id de l'auteur
         
         avgTime = 0;
         
-        System.out.println("Suppression de l'auteur à partir de son id");
+        System.out.println("Suppression de l'auteur Ã  partir de son id");
         
         for (int i = 0; i < nb; ++i) {
             Random r = new Random();
@@ -162,16 +162,16 @@ public class OracleNoSQL {
         
         System.out.println("Temps moyen de suppression : " + avgTime + "ms\n");   
         
-        //Suppression à partir du nom de l'auteur
+        //Suppression Ã  partir du nom de l'auteur
         
         avgTime = 0;
         
-        System.out.println("Suppression de l'auteur à partir de son nom");
+        System.out.println("Suppression de l'auteur Ã  partir de son nom");
         
         for (int i = 0; i < nb; ++i) {
             Random r = new Random();
             int n = r.nextInt(100000);
-            long time = deleteAuteur("Aimé"+n);
+            long time = deleteAuteur("AimÃ©"+n);
             avgTime = (i*avgTime + time) / (1 + i);
             System.out.println("Suppression " + (1 + i) + " : " + time + "ms; Temps moyen : " + avgTime + "ms");
         }
@@ -181,12 +181,12 @@ public class OracleNoSQL {
 
     public static long rechercheAuteur(String livre) {
         
-        AEteEcritFactory aEteEcritFactory = new AEteEcritFactory();
+        AEteEcritDAO aEteEcritDAO = new AEteEcritDAO();
         
         long startTime = System.currentTimeMillis();
         
-        //Recherche du nom de l'auteur à partir du nom du livre        
-        AEteEcrit aEteEcrit = aEteEcritFactory.read(livre);
+        //Recherche du nom de l'auteur Ã  partir du nom du livre        
+        AEteEcrit aEteEcrit = aEteEcritDAO.read(livre);
         String nomAuteur = aEteEcrit.getAuteurNom();
         
         long stopTime = System.currentTimeMillis();
@@ -197,11 +197,11 @@ public class OracleNoSQL {
     }
        
     public static long updateAuteur(int idAuteur, String newAdresse) {
-        AuteurFactory auteurFactory = new AuteurFactory();
+        AuteurDAO auteurDAO = new AuteurDAO();
         
         long startTime = System.currentTimeMillis();
              
-        auteurFactory.update(idAuteur, null, null, newAdresse, null);
+        auteurDAO.update(idAuteur, null, null, newAdresse, null);
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
@@ -210,15 +210,15 @@ public class OracleNoSQL {
     }
     
     public static long updateAuteur(String nomAuteur, String newAdresse) {
-        AuteurFactory auteurFactory = new AuteurFactory();
+        AuteurDAO auteurDAO = new AuteurDAO();
         
         long startTime = System.currentTimeMillis();
              
-        Auteur auteur = auteurFactory.read(nomAuteur);
+        Auteur auteur = auteurDAO.read(nomAuteur);
         int idAuteur = auteur.getAuteurId();
         
-        //Mise à jour de l'auteur
-        auteurFactory.update(idAuteur, null, null, newAdresse, null);
+        //Mise Ã  jour de l'auteur
+        auteurDAO.update(idAuteur, null, null, newAdresse, null);
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
@@ -227,41 +227,41 @@ public class OracleNoSQL {
     }
     
     public static long deleteAuteur(int idAuteur) {
-        AuteurFactory auteurFactory = new AuteurFactory();
+        AuteurDAO auteurDAO = new AuteurDAO();
         
-        Auteur auteur = auteurFactory.read(idAuteur);
+        Auteur auteur = auteurDAO.read(idAuteur);
         
         long startTime = System.currentTimeMillis();
         
         //Suppression de l'auteur        
-        auteurFactory.delete(idAuteur);
+        auteurDAO.delete(idAuteur);
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
         
-        //rajout de l'auteur supprimé pour les tests suivants
-        auteurFactory.create(auteur);
+        //rajout de l'auteur supprimÃ© pour les tests suivants
+        auteurDAO.create(auteur);
         
         return elapsedTime;
     }
     
     public static long deleteAuteur(String nomAuteur) {
-        AuteurFactory auteurFactory = new AuteurFactory();
+        AuteurDAO auteurDAO = new AuteurDAO();
         
         long startTime = System.currentTimeMillis();
         
-        //Recherche de l'id de l'auteur à partir de son nom       
-        Auteur auteur = auteurFactory.read(nomAuteur);
+        //Recherche de l'id de l'auteur Ã  partir de son nom       
+        Auteur auteur = auteurDAO.read(nomAuteur);
         int idAuteur = auteur.getAuteurId();
         
         //Suppression de l'auteur
-        auteurFactory.delete(idAuteur);
+        auteurDAO.delete(idAuteur);
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
         
-        //rajout de l'auteur supprimé pour les tests suivants
-        auteurFactory.create(auteur);
+        //rajout de l'auteur supprimÃ© pour les tests suivants
+        auteurDAO.create(auteur);
         
         return elapsedTime;
     }
