@@ -177,9 +177,13 @@ public class LivrePanel extends javax.swing.JPanel {
                                 .addComponent(jTextFieldID)))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jButton2)
+<<<<<<< HEAD:Oracle NoSQL/src/oracle/nosql/ui/LivrePanel.java
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jButton3)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+=======
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+>>>>>>> ad21df4ae916388adc980b3f8764761d86c8b59e:Oracle NoSQL/src/ui/LivrePanel.java
                             .addComponent(jButton1))))
                 .addContainerGap(94, Short.MAX_VALUE))
         );

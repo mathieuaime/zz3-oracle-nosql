@@ -99,9 +99,13 @@
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+<<<<<<< HEAD:Oracle NoSQL/src/oracle/nosql/ui/LivrePanel.form
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
+=======
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+>>>>>>> ad21df4ae916388adc980b3f8764761d86c8b59e:Oracle NoSQL/src/ui/LivrePanel.form
                               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
