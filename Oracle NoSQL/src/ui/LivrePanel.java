@@ -151,7 +151,7 @@ public class LivrePanel extends javax.swing.JPanel {
                                 .addComponent(jTextFieldID)))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jButton2)
-                            .addGap(18, 18, 18)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(jButton1))))
                 .addContainerGap(94, Short.MAX_VALUE))
         );

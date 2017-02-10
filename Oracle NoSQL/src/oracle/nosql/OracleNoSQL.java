@@ -25,8 +25,8 @@ public class OracleNoSQL {
     public static void main(String[] args) {
         
         //supprimerTest(100000);
-        //genererTest(100000);
-        //runTest(20);        
+        genererTest(100000);
+        runTest(20);        
     }    
     
     public static void genererTest(int n) {
