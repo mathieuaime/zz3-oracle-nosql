@@ -36,10 +36,14 @@ public class AEcrit {
     public AEcrit(byte[] bytes) {
         String titre = new String(bytes);
         
-        String[] elt = titre.split(";");
+        String[] elt = titre.split("/");
         this.auteurNom = elt[0];
         this.rang = Integer.parseInt(elt[1]);
         this.idLivre = Integer.parseInt(elt[2]);
+    }
+    
+    public AEcrit() {
+        this("",-1,-1);
     }
 
     public String getAuteurNom() {

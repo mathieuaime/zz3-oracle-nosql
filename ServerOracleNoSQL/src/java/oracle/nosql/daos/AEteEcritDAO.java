@@ -17,6 +17,7 @@ import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Value;
 import oracle.kv.ValueVersion;
+import oracle.kv.Version;
 import oracle.nosql.entities.AEteEcrit;
 
 /**
@@ -59,45 +60,76 @@ public class AEteEcritDAO {
         
         return a;        
     }
+    
+    //TODO renvoyer String ok/not ok
 
-    public AEteEcrit create(AEteEcrit a) {     
+    public String create(AEteEcrit a) {     
         return create(a, "info");
     }    
 
-    public AEteEcrit create(AEteEcrit a, String minorKey) {     
-        store.putIfAbsent(a.getStoreKey(minorKey), a.getStoreValue());
-        return a;
+    public String create(AEteEcrit a, String minorKey) {     
+        Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorKey), a.getStoreValue());
+        
+        return "{\"status\":\""+(putIfAbsent != null ? "ok" : "not ok")+"\"}";
     }    
     
-    public AEteEcrit create(String livreTitre, int idAuteur) {     
+    public String create(String livreTitre, int idAuteur) {     
         return create(livreTitre, idAuteur, "info");
     } 
     
-    public AEteEcrit create(String livreTitre, int idAuteur, String minorKey) {     
+    public String create(String livreTitre, int idAuteur, String minorKey) {     
         AEteEcrit aEcrit = new AEteEcrit(livreTitre, idAuteur);
+        
         return create(aEcrit, minorKey);
     } 
     
-    public void update(String livreTitre, int idAuteur, int newIdAuteur) {
-        update(livreTitre, idAuteur, newIdAuteur, "info");
+    public String update(String livreTitre, int idAuteur, int newIdAuteur) {
+        return update(livreTitre, idAuteur, newIdAuteur, "info");
     }    
     
-    public void update(String livreTitre, int idAuteur, int newIdAuteur, String minorKey) {
-        for(AEteEcrit a : read(livreTitre)) {
+    public String update(String livreTitre, int idAuteur, int newIdAuteur, String minorKey) {
+        String result = "not ok";
+        
+        for(AEteEcrit a : read(livreTitre, minorKey)) {
             if(a.getIdAuteur() == idAuteur) {
                 a.setIdAuteur(newIdAuteur);
                 store.delete(a.getStoreKey(minorKey));
                 store.putIfAbsent(a.getStoreKey(minorKey), a.getStoreValue()); 
+                result = "ok";
             }
         }
+        
+        return "{\"status\":\""+result+"\"}";
     }    
     
-    public void delete(String livreTitre) {
-        delete(livreTitre, "info");
+    public String delete(String livreTitre) {
+        return delete(livreTitre, "info");
     }
     
-    public void delete(String livreTitre, String minorKey) {
-        for(AEteEcrit a : read(livreTitre)) store.delete(a.getStoreKey(minorKey));
+    public String delete(String livreTitre, String minorKey) {
+        String result = "not ok";
+        for(AEteEcrit a : read(livreTitre, minorKey))  {
+            store.delete(a.getStoreKey(minorKey));
+            result = "ok";
+        }
+        
+        return "{\"status\":\""+result+"\"}";
+    }
+    
+    public String delete(String livreTitre, int auteurId) {
+        return delete(livreTitre, auteurId, "info");
+    }
+    
+    public String delete(String livreTitre, int auteurId, String minorKey) {
+        String result = "not ok";
+        for(AEteEcrit a : read(livreTitre, minorKey)) {
+            if(a.getIdAuteur() == auteurId) {
+                store.delete(a.getStoreKey(minorKey));
+                result = "ok";
+            }
+        }
+        
+        return "{\"status\":\""+result+"\"}";
     }
     
     public void genererTest(int n) {       

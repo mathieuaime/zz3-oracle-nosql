@@ -43,6 +43,10 @@ public class AEteEcrit {
         this.livreTitre = elt[0];
         this.idAuteur = Integer.parseInt(elt[1]);
     }
+    
+    public AEteEcrit() {
+        this(null,-1);
+    }
 
     public int getIdAuteur() {
         return idAuteur;

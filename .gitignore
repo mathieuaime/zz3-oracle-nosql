@@ -2,3 +2,10 @@
 /kv-4.2.10/
 /Oracle NoSQL/build/
 /Oracle NoSQL/dist/
+/OracleNoSQLServer/nbproject/private/
+/OracleNoSQLServer/build/
+/OracleNoSQLServer/dist/
+/ServerOracleNoSQL/nbproject/private/
+/ServerOracleNoSQL/build/
+/ServerOracleNoSQL/dist/
+/ClientWebOracleNoSQL/target/
