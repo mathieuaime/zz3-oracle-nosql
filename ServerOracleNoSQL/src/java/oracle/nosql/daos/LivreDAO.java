@@ -97,7 +97,7 @@ public class LivreDAO {
     public String create(Livre livre) {
         Version putIfAbsent = store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
         
-        return "{\"status\":\""+(putIfAbsent != null ? "ok" : "not ok")+"\"}";
+        return (putIfAbsent != null ? "200" : "301");
     }
 
     public String create(int livreId, String titre, String resume, float prix) {
@@ -115,7 +115,7 @@ public class LivreDAO {
             store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());
         }
         
-        return "{\"status\":\""+(l != null ? "ok" : "not ok")+"\"}";
+        return (l != null ? "200" : "401");
     }  
     
     public String update(int idLivre, Livre livre) {
@@ -125,7 +125,7 @@ public class LivreDAO {
     public String delete(int livreId) {
         Livre l = read(livreId);
         if (l != null) store.delete(l.getStoreKey("info"));
-        return "{\"status\":\""+(l != null ? "ok" : "not ok")+"\"}";
+        return (l != null ? "200" : "401");
     }
     
     public void genererTest(int n) {       

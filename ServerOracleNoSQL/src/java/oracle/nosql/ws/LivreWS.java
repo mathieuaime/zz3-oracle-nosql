@@ -1,5 +1,4 @@
 package oracle.nosql.ws;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -30,97 +29,158 @@ public class LivreWS {
     }
     
     @GET
-    public List<Livre> getAll() {       
-        return ldao.read();
+    public RestResponse<Livre> getAll() {       
+        List<Livre> livres = ldao.read();
+        
+        RestResponse<Livre> resp = new RestResponse<>("200", livres);
+        return resp;
     }
   
     @Path("{id}")
     @GET
-    public Livre getLivre(@PathParam("id") int id) {       
-        return ldao.read(id);
+    public RestResponse<Livre> getLivre(@PathParam("id") int id) {       
+        Livre livre = ldao.read(id);
+        String status = (livre != null ? "200" : "401");
+        
+        RestResponse<Livre> resp = new RestResponse<>(status);
+        resp.addObjectList(livre);
+        return resp;
     }
 
     @POST
-    public String addLivre(Livre livre) {       
-      return ldao.create(livre);
+    public RestResponse<Livre> addLivre(Livre livre) {       
+        String status = ldao.create(livre);
+      
+        RestResponse<Livre> resp = new RestResponse<>(status);
+        return resp;
     }
 
     @Path("{id}")
     @PUT
-    public String updateLivre(@PathParam("id") int id, Livre livre) {
-        return ldao.update(id, livre);
+    public RestResponse<Livre> updateLivre(@PathParam("id") int id, Livre livre) {
+        String status = ldao.update(id, livre);
+        
+        RestResponse<Livre> resp = new RestResponse<>(status);
+        return resp;
     }
 
     @Path("{id}")
     @DELETE
-    public String deleteLivre(@PathParam("id") int id) {
-        return ldao.delete(id);  
+    public RestResponse<Livre> deleteLivre(@PathParam("id") int id) {
+        String status = ldao.delete(id);  
+        
+        RestResponse<Livre> resp = new RestResponse<>(status);
+        return resp;
     }
     
     @Path("{id}/auteur")
     @GET
-    public List<Auteur> listAuteur(@PathParam("titre") int idLivre) {
-        return listAuteur(ldao.read(idLivre).getTitre());
+    public RestResponse<Auteur> listAuteur(@PathParam("titre") int idLivre) {
+        Livre l = ldao.read(idLivre);
+        RestResponse<Auteur> resp = new RestResponse<>("401");
+        
+        if(l != null) resp = listAuteur(ldao.read(idLivre).getTitre());
+        
+        return resp;
     }  
     
     @Path("{titre}/auteurFromTitle")
     @GET
-    public List<Auteur> listAuteur(@PathParam("titre") String titreLivre) {
-        ArrayList<Auteur> a = new ArrayList<>();
+    public RestResponse<Auteur> listAuteur(@PathParam("titre") String titreLivre) {
+        
+        String status = "200";
+        
+        RestResponse<Auteur> resp = new RestResponse<>(status);
         
         for(AEteEcrit aee : aedao.read(titreLivre)) {
-            a.add(adao.read(aee.getIdAuteur()));
+            Auteur auteur = adao.read(aee.getIdAuteur());
+            status = (!status.equals("400") && auteur != null ? "200" : "400");
+            if (auteur != null) resp.addObjectList(auteur);
+            resp.setStatus(status);
+            resp.setMessage(RestResponse.getMessageError(status));
         }
         
-        return a;
+        return resp;
     }  
     
     @Path("{id}/auteur")
     @POST
-    public String addAuteur(@PathParam("id") int idLivre, AEteEcrit aEteEcrit) {
-        return addAuteur(ldao.read(idLivre).getTitre(), aEteEcrit);
+    public RestResponse<AEteEcrit> addAuteur(@PathParam("id") int idLivre, AEteEcrit aEteEcrit) {
+        Livre l = ldao.read(idLivre);
+        RestResponse<AEteEcrit> resp = new RestResponse<>("401");
+        
+        if(l != null) resp = addAuteur(ldao.read(idLivre).getTitre(), aEteEcrit);
+        
+        return resp;
     }
     
     @Path("{titre}/auteurFromTitle")
     @POST
-    public String addAuteur(@PathParam("titre") String titreLivre, AEteEcrit aEteEcrit) {
+    public RestResponse<AEteEcrit> addAuteur(@PathParam("titre") String titreLivre, AEteEcrit aEteEcrit) {
         aEteEcrit.setLivreTitre(titreLivre);
-        return aedao.create(aEteEcrit);
+        String status = aedao.create(aEteEcrit);
+        
+        RestResponse<AEteEcrit> resp = new RestResponse<>(status);
+        return resp;
     }
     
     @Path("{id}/auteur/{idAuteur}")
     @PUT
-    public String updateAuteur(@PathParam("id") int idLivre, @PathParam("idAuteur") int idAuteur, AEteEcrit newAEteEcrit) {
-        return updateAuteur(ldao.read(idLivre).getTitre(), idAuteur, newAEteEcrit);
+    public RestResponse<AEteEcrit> updateAuteur(@PathParam("id") int idLivre, @PathParam("idAuteur") int idAuteur, AEteEcrit newAEteEcrit) {
+        Livre l = ldao.read(idLivre);
+        RestResponse<AEteEcrit> resp = new RestResponse<>("401");
+        
+        if(l != null) resp = updateAuteur(ldao.read(idLivre).getTitre(), idAuteur, newAEteEcrit);
+        
+        return resp;
     }
     
     @Path("{titre}/auteurFromTitle/{idAuteur}")
     @PUT
-    public String updateAuteur(@PathParam("titre") String titreLivre, @PathParam("idAuteur") int idAuteur, AEteEcrit newAEteEcrit) {
-        return aedao.update(titreLivre, idAuteur, newAEteEcrit.getIdAuteur());
+    public RestResponse<AEteEcrit> updateAuteur(@PathParam("titre") String titreLivre, @PathParam("idAuteur") int idAuteur, AEteEcrit newAEteEcrit) {
+        String status = aedao.update(titreLivre, idAuteur, newAEteEcrit.getIdAuteur());
+        
+        RestResponse<AEteEcrit> resp = new RestResponse<>(status);
+        return resp;
     }
     
     @Path("{id}/auteur")
     @DELETE
-    public String deleteAllAuteur(@PathParam("id") int idLivre) {
-        return deleteAllAuteur(ldao.read(idLivre).getTitre());
+    public RestResponse<AEteEcrit> deleteAllAuteur(@PathParam("id") int idLivre) {
+        Livre l = ldao.read(idLivre);
+        RestResponse<AEteEcrit> resp = new RestResponse<>("401");
+        
+        if(l != null) resp = deleteAllAuteur(ldao.read(idLivre).getTitre());
+        
+        return resp;
     }
     
     @Path("{titre}/auteurFromTitle")
     @DELETE
-    public String deleteAllAuteur(@PathParam("titre") String titreLivre) {
-        return aedao.delete(titreLivre);
+    public RestResponse<AEteEcrit> deleteAllAuteur(@PathParam("titre") String titreLivre) {
+        String status = aedao.delete(titreLivre);
+        
+        RestResponse<AEteEcrit> resp = new RestResponse<>(status);
+        return resp;
     }
     
     @Path("{id}/auteur/{idAuteur}")
     @DELETE
-    public String deleteAuteur(@PathParam("id") int idLivre, @PathParam("idAuteur") int idAuteur) {
-        return deleteAuteur(ldao.read(idLivre).getTitre(), idAuteur);
+    public RestResponse<AEteEcrit> deleteAuteur(@PathParam("id") int idLivre, @PathParam("idAuteur") int idAuteur) {
+        Livre l = ldao.read(idLivre);
+        RestResponse<AEteEcrit> resp = new RestResponse<>("401");
+        
+        if(l != null) resp = deleteAuteur(ldao.read(idLivre).getTitre(), idAuteur);
+        
+        return resp;
     }
     
     @Path("{titre}/auteurFromTitle/{idAuteur}")
     @DELETE
-    public String deleteAuteur(@PathParam("titre") String titreLivre, @PathParam("idAuteur") int idAuteur) {
-        return aedao.delete(titreLivre, idAuteur);
+    public RestResponse<AEteEcrit> deleteAuteur(@PathParam("titre") String titreLivre, @PathParam("idAuteur") int idAuteur) {
+        String status = aedao.delete(titreLivre, idAuteur);
+        
+        RestResponse<AEteEcrit> resp = new RestResponse<>(status);
+        return resp;
     }
 }

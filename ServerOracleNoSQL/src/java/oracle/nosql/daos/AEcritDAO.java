@@ -140,8 +140,9 @@ public class AEcritDAO {
         if (a.getRang() < 0) a.setRang(1 + getLastRang(a.getAuteurNom(), minorPath));
         
         Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
+        //TODO tester si le livre existe sinon erreur 401
         
-        return "{\"status\":\""+(putIfAbsent != null ? "ok" : "not ok")+"\"}";
+        return (putIfAbsent != null ? "200" : "302");
     }    
     
     public String create(String auteurNom, int idLivre) {
@@ -168,11 +169,12 @@ public class AEcritDAO {
         AEcrit a = read(auteurNom, getRang(auteurNom, idLivre, minorPath), minorPath);
         if (a != null) {
             a.setIdLivre(newIdLivre);
+            //TODO tester si le nouveau livre existe sinon erreur 401
             store.delete(a.getStoreKey(minorPath));
             store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());  
         }
         
-        return "{\"status\":\""+(a != null ? "ok" : "not ok")+"\"}";
+        return (a != null ? "200" : "402");
     }    
     
     public String delete(String auteurNom, int rang) {
@@ -183,20 +185,20 @@ public class AEcritDAO {
         AEcrit a = read(auteurNom, rang, minorPath);
         if (a != null) store.delete(a.getStoreKey(minorPath));
         
-        return "{\"status\":\""+(a != null ? "ok" : "not ok")+"\"}";
+        return (a != null ? "200" : "402");
     }
     
     public String delete(String auteurNom) {
         return delete(auteurNom, "info");
     }
     public String delete(String auteurNom, String minorPath) {
-        String result = "not ok";
+        String result = "402";
         for(AEcrit a : read(auteurNom, minorPath)) {
             store.delete(a.getStoreKey(minorPath));
-            result = "ok";
+            result = "200";
         }
         
-        return "{\"status\":\""+result+"\"}";
+        return result;
     }
     
     public void genererTest(int n) {       

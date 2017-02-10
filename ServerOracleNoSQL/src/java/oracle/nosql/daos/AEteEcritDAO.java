@@ -69,8 +69,8 @@ public class AEteEcritDAO {
 
     public String create(AEteEcrit a, String minorKey) {     
         Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorKey), a.getStoreValue());
-        
-        return "{\"status\":\""+(putIfAbsent != null ? "ok" : "not ok")+"\"}";
+        //TODO tester si l'auteur existe sinon erreur 400
+        return (putIfAbsent != null ? "200" : "403");
     }    
     
     public String create(String livreTitre, int idAuteur) {     
@@ -88,18 +88,19 @@ public class AEteEcritDAO {
     }    
     
     public String update(String livreTitre, int idAuteur, int newIdAuteur, String minorKey) {
-        String result = "not ok";
+        String result = "403";
         
         for(AEteEcrit a : read(livreTitre, minorKey)) {
             if(a.getIdAuteur() == idAuteur) {
                 a.setIdAuteur(newIdAuteur);
+                //TODO tester si le nouveau auteur existe sinon erreur 400
                 store.delete(a.getStoreKey(minorKey));
                 store.putIfAbsent(a.getStoreKey(minorKey), a.getStoreValue()); 
-                result = "ok";
+                result = "200";
             }
         }
         
-        return "{\"status\":\""+result+"\"}";
+        return result;
     }    
     
     public String delete(String livreTitre) {
@@ -107,13 +108,13 @@ public class AEteEcritDAO {
     }
     
     public String delete(String livreTitre, String minorKey) {
-        String result = "not ok";
+        String result = "403";
         for(AEteEcrit a : read(livreTitre, minorKey))  {
             store.delete(a.getStoreKey(minorKey));
-            result = "ok";
+            result = "200";
         }
         
-        return "{\"status\":\""+result+"\"}";
+        return result;
     }
     
     public String delete(String livreTitre, int auteurId) {
@@ -121,15 +122,15 @@ public class AEteEcritDAO {
     }
     
     public String delete(String livreTitre, int auteurId, String minorKey) {
-        String result = "not ok";
+        String result = "403";
         for(AEteEcrit a : read(livreTitre, minorKey)) {
             if(a.getIdAuteur() == auteurId) {
                 store.delete(a.getStoreKey(minorKey));
-                result = "ok";
+                result = "200";
             }
         }
         
-        return "{\"status\":\""+result+"\"}";
+        return result;
     }
     
     public void genererTest(int n) {       

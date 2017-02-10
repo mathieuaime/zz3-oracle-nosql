@@ -117,7 +117,7 @@ public class AuteurDAO {
     public String create(Auteur auteur) {     
         Version putIfAbsent = store.putIfAbsent(auteur.getStoreKey("info"), auteur.getStoreValue());
         
-        return "{\"status\":\""+(putIfAbsent != null ? "ok" : "not ok")+"\"}";    
+        return (putIfAbsent != null ? "200" : "300");    
     }
 
     public String create(int auteurId, String nom, String prenom, String adresse, String phone) {     
@@ -136,7 +136,7 @@ public class AuteurDAO {
             store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue()); 
         }
         
-        return "{\"status\":\""+(a != null ? "ok" : "not ok")+"\"}";
+        return (a != null ? "200" : "400");
     }    
     
     public String update(int auteurId, Auteur auteur) {
@@ -150,7 +150,7 @@ public class AuteurDAO {
             delete = store.delete(a.getStoreKey("info"));
         }
         
-        return "{\"status\":\""+(delete ? "ok" : "not ok")+"\"}";
+        return (delete ? "200" : "400");
     }
     
     public void genererTest(int n) {       
