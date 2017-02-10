@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ui;
+package oracle.nosql.ui;
 
-import java.awt.CardLayout;
 import java.awt.Component;
-import java.awt.LayoutManager;
-import java.util.List;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import oracle.nosql.daos.AEcritDAO;
+import oracle.nosql.daos.AEteEcritDAO;
 import oracle.nosql.daos.LivreDAO;
+import oracle.nosql.entities.AEteEcrit;
 import oracle.nosql.entities.Livre;
 
 /**
@@ -27,32 +27,47 @@ public class LivrePanel extends javax.swing.JPanel {
      * Creates new form LivrePanel
      */
     private LivreDAO ldao;
+    private AEteEcritDAO aeedao;
+    private AEcritDAO aedao;
+    private String auteur;
+    private Livre livre;
         
     public LivrePanel() {
         initComponents();
         
+        jButton3.setVisible(false);
+        
         ldao = new LivreDAO();
+        aeedao = new AEteEcritDAO();
+        aedao = new AEcritDAO();
         
         jList1.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (renderer instanceof JLabel && value instanceof Livre) {
-                    // Here value will be of the Type 'CD'
                     ((JLabel) renderer).setText(((Livre) value).getTitre());
                 }
                 return renderer;
             }
         });
-        
         jList1.addListSelectionListener((ListSelectionEvent event) -> {
             if (!event.getValueIsAdjusting()){
                 JList source = (JList)event.getSource();
-                Livre livreSelected = (Livre) source.getSelectedValue();
-                jTextFieldID.setText(String.valueOf(livreSelected.getLivreId()));
-                jTextFieldPrix.setText(String.valueOf(livreSelected.getPrix()));
-                jTextFieldTitre.setText(livreSelected.getTitre());
-                jTextAreaResume.setText(livreSelected.getResume());
+                livre = (Livre) source.getSelectedValue();;
+                if (livre != null) {
+                    AEteEcrit aee = aeedao.read(livre.getTitre());
+                    jTextFieldID.setText(String.valueOf(livre.getLivreId()));
+                    jTextFieldPrix.setText(String.valueOf(livre.getPrix()));
+                    jTextFieldTitre.setText(livre.getTitre());
+                    jTextAreaResume.setText(livre.getResume());
+                    if (aee != null) {
+                        auteur = aee.getAuteurNom();
+                        jTextFieldAuteur.setText(auteur);
+                    }
+                }
+                jButton1.setText("Modifier");
+                jButton3.setVisible(true);
             }
         });
         
@@ -60,8 +75,11 @@ public class LivrePanel extends javax.swing.JPanel {
     }
     
     private void refreshList() {
-        List<Livre> livres = ldao.read();
-        jList1.setListData(livres.toArray());
+        DefaultListModel model = new DefaultListModel();
+        ldao.read().forEach((l) -> {
+            model.addElement(l);
+        }); 
+        jList1.setModel(model);
     }
 
     /**
@@ -91,6 +109,7 @@ public class LivrePanel extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jTextFieldID = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
 
         jScrollPane1.setViewportView(jList1);
 
@@ -126,6 +145,13 @@ public class LivrePanel extends javax.swing.JPanel {
 
         jLabel7.setText("Id");
 
+        jButton3.setText("Supprimer");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -151,7 +177,9 @@ public class LivrePanel extends javax.swing.JPanel {
                                 .addComponent(jTextFieldID)))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jButton2)
-                            .addGap(18, 18, 18)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jButton1))))
                 .addContainerGap(94, Short.MAX_VALUE))
         );
@@ -180,11 +208,11 @@ public class LivrePanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton2)
+                    .addComponent(jButton3)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -217,27 +245,63 @@ public class LivrePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Livre l = ldao.create(Integer.parseInt(jTextFieldID.getText()), jTextFieldTitre.getText(), jTextAreaResume.getText(), Float.parseFloat(jTextFieldPrix.getText()));
+        Livre l;
+        DefaultListModel lm = (DefaultListModel) jList1.getModel();
+        if (ldao.read(Integer.parseInt(jTextFieldID.getText())) != null) {
+            l = ldao.update(Integer.parseInt(jTextFieldID.getText()), jTextFieldTitre.getText(), jTextAreaResume.getText(), Float.parseFloat(jTextFieldPrix.getText()));
+            if (!livre.getTitre().equals(jTextFieldTitre.getText()) || auteur == null) {
+                if(auteur != null) aeedao.delete(livre.getTitre());
+                aeedao.create(jTextFieldAuteur.getText(), jTextFieldTitre.getText());
+            } else {
+                aeedao.update(jTextFieldTitre.getText(), jTextFieldAuteur.getText());
+            }
+            lm.remove(jList1.getSelectedIndex());
+        } else { 
+            l = ldao.create(Integer.parseInt(jTextFieldID.getText()), jTextFieldTitre.getText(), jTextAreaResume.getText(), Float.parseFloat(jTextFieldPrix.getText()));
+            aeedao.create(jTextFieldAuteur.getText(), jTextFieldTitre.getText());
+        }
+        
+        lm.addElement(l);
+        jList1.setModel(lm); 
         clear();
-        refreshList();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         clear();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        DefaultListModel lm = (DefaultListModel) jList1.getModel();
+        lm.remove(jList1.getSelectedIndex());
+        jList1.setModel(lm);
+        
+        //supression du livre
+        ldao.delete(Integer.parseInt(jTextFieldID.getText()));
+        //supression de la relation AEteEcrit
+        aeedao.delete(jTextFieldTitre.getText());
+        
+        //supression de la relation AEcrit
+        int rang = aedao.getRang(jTextFieldAuteur.getText(), jTextFieldTitre.getText());
+        if (rang != -1) aedao.delete(jTextFieldAuteur.getText(), rang);
+        
+        clear();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     private void clear() {
+        jList1.clearSelection();
         jTextAreaResume.setText("");
         jTextFieldTitre.setText("");
         jTextFieldPrix.setText("");
         jTextFieldAuteur.setText("");
         jTextFieldID.setText("");
-        System.out.println("clear");
+        jButton1.setText("Ajouter");
+        jButton3.setVisible(false);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -255,4 +319,5 @@ public class LivrePanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldPrix;
     private javax.swing.JTextField jTextFieldTitre;
     // End of variables declaration//GEN-END:variables
+
 }

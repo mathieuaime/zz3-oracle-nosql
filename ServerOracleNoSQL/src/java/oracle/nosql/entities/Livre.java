@@ -8,6 +8,7 @@ package oracle.nosql.entities;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -16,12 +17,12 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class Livre {
+public class Livre implements Serializable {
     /*
-     * The livreId is a unique identifier and is used to construct
+     * The id is a unique identifier and is used to construct
      * the Key's major path.
      */
-    private int livreId;
+    private int id;
 
     /*
      * The MAJOR_KEY is used to construct
@@ -33,32 +34,32 @@ public class Livre {
     private String resume;
     private float prix;
     
-    public Livre(int livreId, String titre, String resume, float prix) {
-        this.titre = titre.trim();
-        this.resume = resume.trim();
+    public Livre(int id, String titre, String resume, float prix) {
+        this.titre = titre;
+        this.resume = resume;
         this.prix = prix;
-        this.livreId = livreId;
+        this.id = id;
     }
     
-    public Livre(int livreId, byte[] bytes) {
+    public Livre(int id, byte[] bytes) {
         String auteur = new String(bytes);
         String[] elt = auteur.split(";");
-        this.livreId = livreId;
+        this.id = id;
         titre = elt[0].trim();
         resume = elt[1].trim();        
         prix = Float.parseFloat(elt[2].trim());   
     }
     
     public Livre() {
-        this(-1,"","",-1);
+        this(-1,null,null,-1);
     }
 
-    public int getLivreId() {
-        return livreId;
+    public int getId() {
+        return id;
     }
 
-    public void setLivreId(int livreId) {
-        this.livreId = livreId;
+    public void setId(int id) {
+        this.id = id;
     }
     
     public String getTitre() {
@@ -86,7 +87,7 @@ public class Livre {
     }
     
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(livreId)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(id)), minorKey);
     }
 
     public Value getStoreValue() {
@@ -111,7 +112,7 @@ public class Livre {
     
     @Override
     public String toString() {
-        return livreId + "/" + titre + "/" + resume + "/" + prix;
+        return id + "/" + titre + "/" + resume + "/" + prix;
     }
     
 }

@@ -8,6 +8,7 @@ package oracle.nosql.entities;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -16,12 +17,12 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class Auteur {
+public class Auteur implements Serializable {
     /*
      * The auteurId is a unique identifier and is used to construct
      * the Key's major path.
      */
-    private int auteurId;
+    private int id;
 
     /*
      * The MAJOR_KEY is used to construct
@@ -34,16 +35,16 @@ public class Auteur {
     private String adresse;
     private String phone;
     
-    public Auteur(int auteurId, String nom, String prenom, String adresse, String phone) {
+    public Auteur(int id, String nom, String prenom, String adresse, String phone) {
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
         this.phone = phone;
-        this.auteurId = auteurId;
+        this.id = id;
     }
     
-    public Auteur(int auteurId, byte[] bytes) {
-        this.auteurId = auteurId;
+    public Auteur(int id, byte[] bytes) {
+        this.id = id;
         String auteur = new String(bytes);
         String[] elt = auteur.split(";");
         nom = elt[0].trim();
@@ -53,15 +54,15 @@ public class Auteur {
     }
     
     public Auteur() {
-        this(-1,"","","","");
+        this(-1,null,null,null,null);
     }
 
-    public int getAuteurId() {
-        return auteurId;
+    public int getId() {
+        return id;
     }
     
-    public void setAuteurId(int auteurId) {
-        this.auteurId = auteurId;
+    public void setId(int id) {
+        this.id = id;
     }
     
     public String getNom() {
@@ -97,7 +98,7 @@ public class Auteur {
     }
 
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(auteurId)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(id)), minorKey);
     }
 
     public Value getStoreValue() {
@@ -122,7 +123,7 @@ public class Auteur {
     
     @Override
     public String toString() {
-        return auteurId + "/" + nom + "/" + prenom + "/" + adresse + "/" + phone;
+        return id + "/" + nom + "/" + prenom + "/" + adresse + "/" + phone;
     }
     
 }

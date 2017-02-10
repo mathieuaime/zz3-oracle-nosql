@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import oracle.kv.Depth;
 import oracle.kv.Direction;
 import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
@@ -18,6 +17,7 @@ import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Value;
 import oracle.kv.ValueVersion;
+import oracle.kv.Version;
 import oracle.nosql.entities.Livre;
 
 /**
@@ -59,13 +59,17 @@ public class LivreDAO {
     }
     
     public Livre read(int livreId) {
+        Livre l = null;
+        
         Key key = Key.createKey(Arrays.asList(Livre.MAJOR_KEY,String.valueOf(livreId)),"info");
             
         ValueVersion vv2 = store.get(key);
 
-        Value value2 = vv2.getValue();
-        byte[] bytes2 = value2.getValue();
-        Livre l = new Livre(livreId, bytes2);
+        if (vv2 != null) {
+            Value value2 = vv2.getValue();
+            byte[] bytes2 = value2.getValue();
+            l = new Livre(livreId, bytes2);
+        }
         
         return l;        
     }
@@ -90,28 +94,38 @@ public class LivreDAO {
         return livres;
     }
     
-    public Livre create(Livre livre) {
-        store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
-        return livre;
+    public String create(Livre livre) {
+        Version putIfAbsent = store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
+        
+        return "{\"status\":\""+(putIfAbsent != null ? "ok" : "not ok")+"\"}";
     }
 
-    public Livre create(int livreId, String titre, String resume, float prix) {
+    public String create(int livreId, String titre, String resume, float prix) {
         Livre livre = new Livre(livreId, titre, resume, prix);
         return create(livre);
     }    
     
-    public void update(int livreId, String titre, String resume, float prix) {
+    public String update(int livreId, String titre, String resume, float prix) {
         Livre l = read(livreId);
-        if (titre != null) l.setTitre(titre);
-        if (resume != null) l.setResume(resume);
-        if (prix >= 0) l.setPrix(prix);
-        store.delete(l.getStoreKey("info"));
-        store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());        
-    }    
+        if (l != null) {
+            if (titre != null) l.setTitre(titre);
+            if (resume != null) l.setResume(resume);
+            if (prix >= 0) l.setPrix(prix);
+            store.delete(l.getStoreKey("info"));
+            store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());
+        }
+        
+        return "{\"status\":\""+(l != null ? "ok" : "not ok")+"\"}";
+    }  
     
-    public void delete(int livreId) {
+    public String update(int idLivre, Livre livre) {
+        return update(idLivre, livre.getTitre(), livre.getResume(), livre.getPrix());
+    }
+    
+    public String delete(int livreId) {
         Livre l = read(livreId);
-        store.delete(l.getStoreKey("info"));
+        if (l != null) store.delete(l.getStoreKey("info"));
+        return "{\"status\":\""+(l != null ? "ok" : "not ok")+"\"}";
     }
     
     public void genererTest(int n) {       

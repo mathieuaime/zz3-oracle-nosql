@@ -20,21 +20,26 @@ public class AEcrit {
      */
     public static final String MAJOR_KEY = "a_ecrit";
 
+    //key
     private String auteurNom;
-    private String livreTitre;
     private int rang;
+    
+    //value
+    private int idLivre;
 
-    public AEcrit(String auteurNom, String livreTitre, int rang) {
+    public AEcrit(String auteurNom, int rang, int idLivre) {
         this.auteurNom = auteurNom;
-        this.livreTitre = livreTitre;
+        this.idLivre = idLivre;
         this.rang = rang;
     }
     
-    public AEcrit(String auteurNom, int rang, byte[] bytes) {
-        this.auteurNom = auteurNom;
-        this.rang = rang;
+    public AEcrit(byte[] bytes) {
         String titre = new String(bytes);
-        this.livreTitre = titre;
+        
+        String[] elt = titre.split(";");
+        this.auteurNom = elt[0];
+        this.rang = Integer.parseInt(elt[1]);
+        this.idLivre = Integer.parseInt(elt[2]);
     }
 
     public String getAuteurNom() {
@@ -45,12 +50,12 @@ public class AEcrit {
         this.auteurNom = auteurNom;
     }
 
-    public String getLivreTitre() {
-        return livreTitre;
+    public int getIdLivre() {
+        return idLivre;
     }
 
-    public void setLivreTitre(String livreTitre) {
-        this.livreTitre = livreTitre;
+    public void setIdLivre(int idLivre) {
+        this.idLivre = idLivre;
     }    
 
     public int getRang() {
@@ -66,12 +71,12 @@ public class AEcrit {
     }
 
     public Value getStoreValue() {
-        return Value.createValue(livreTitre.getBytes());
+        return Value.createValue(toString().getBytes());
     }
     
     @Override
     public String toString() {
-        return auteurNom + " / " + livreTitre;
+        return auteurNom + "/" + rang + "/" + idLivre;
     }
     
 }

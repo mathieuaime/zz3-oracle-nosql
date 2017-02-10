@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ui;
+package oracle.nosql.ui;
 
 import javax.swing.JTabbedPane;
 
@@ -14,6 +14,7 @@ import javax.swing.JTabbedPane;
 public class MainFrame extends javax.swing.JFrame {
     
     private static LivrePanel panelLivre;
+    private static AuteurPanel panelAuteur;
 
     /**
      * Creates new form MainFrame
@@ -21,7 +22,9 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         panelLivre = new LivrePanel();
+        panelAuteur = new AuteurPanel();
         jTabbedPane1.addTab("Livres", panelLivre);
+        jTabbedPane1.addTab("Auteurs", panelAuteur);
     }
 
     /**

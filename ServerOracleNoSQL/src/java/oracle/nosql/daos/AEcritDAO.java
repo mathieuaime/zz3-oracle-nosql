@@ -34,7 +34,7 @@ public class AEcritDAO {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
     
-    public ArrayList<AEcrit> read(String auteurNom) {
+    public List<AEcrit> read(String auteurNom) {
         Key key = Key.createKey(Arrays.asList(AEcrit.MAJOR_KEY,auteurNom),"info");
         
         Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED, 0, key, null, null);
@@ -51,7 +51,7 @@ public class AEcritDAO {
 
             Value value2 = vv2.getValue();
             byte[] bytes2 = value2.getValue();
-            AEcrit a = new AEcrit(auteurNom, Integer.parseInt(rang), bytes2);
+            AEcrit a = new AEcrit(bytes2);
             ecrits.add(a);
         }
         
@@ -65,23 +65,51 @@ public class AEcritDAO {
 
         Value value2 = vv2.getValue();
         byte[] bytes2 = value2.getValue();
-        AEcrit a = new AEcrit(auteurNom, rang, bytes2);
+        AEcrit a = new AEcrit(bytes2);
         
         return a;        
+    }
+    
+    public int getRang(String auteurNom, int idLivre) {
+        Key key = Key.createKey(Arrays.asList(AEcrit.MAJOR_KEY,auteurNom),"info");
+        
+        Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED, 0, key, null, null);
+        
+        int rg = -1;
+        
+        while(it.hasNext()) {
+            Key k = it.next().getKey();
+            
+            List<String> majorPath = k.getMajorPath();
+            String rang  = majorPath.get(2);
+            
+            ValueVersion vv2 = store.get(k);
+
+            Value value2 = vv2.getValue();
+            byte[] bytes2 = value2.getValue();
+            AEcrit a = new AEcrit(bytes2);
+            
+            if (a.getIdLivre() == idLivre) {
+                rg = Integer.parseInt(rang);
+                break;
+            }
+        }
+        
+        return rg;
     }
 
     public void create(AEcrit a) {     
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
     }    
     
-    public void create(String auteurNom, String livreTitre, int rang) {     
-        AEcrit aEcrit = new AEcrit(auteurNom, livreTitre, rang);
+    public void create(String auteurNom, int idLivre, int rang) {     
+        AEcrit aEcrit = new AEcrit(auteurNom, idLivre, rang);
         create(aEcrit);
     }    
     
-    public void update(String auteurNom, int rang, String newLivreTitre) {
+    public void update(String auteurNom, int rang, int newIdLivre) {
         AEcrit a = read(auteurNom, rang);
-        a.setLivreTitre(newLivreTitre);
+        a.setIdLivre(newIdLivre);
         store.delete(a.getStoreKey("info"));
         store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
     }    
@@ -91,11 +119,16 @@ public class AEcritDAO {
         store.delete(a.getStoreKey("info"));
     }
     
+    public void delete(String auteurNom) {
+        for(AEcrit a : read(auteurNom))
+        store.delete(a.getStoreKey("info"));
+    }
+    
     public void genererTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
-            create("AimÃ©"+i,"Le bateau"+(2*i),1);
-            create("AimÃ©"+i,"Le bateau"+(1+2*i),2);
+            create("AimÃ©"+i,(2*i),1);
+            create("AimÃ©"+i,(1+2*i),2);
         } 
     }
     
