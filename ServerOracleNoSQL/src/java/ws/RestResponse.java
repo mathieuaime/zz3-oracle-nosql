@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.ws;
+package ws;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -71,11 +71,19 @@ public class RestResponse<T> implements Serializable {
             case "301": message = "Livre déjà créé";break;
             case "302": message = "Relation AEcrit déjà créée";break;
             case "303": message = "Relation AEteEcrit déjà créée";break;
+            case "304": message = "Laboratoire déjà créé";break;
+            case "305": message = "Université déjà créé";break;
+            case "306": message = "Relation rattache déjà créée";break;
+            case "307": message = "Keyword déjà créé";break;
             
             case "400": message = "Auteur inconnu";break;
             case "401": message = "Livre inconnu";break;
             case "402": message = "Relation AEcrit inconnue";break;
             case "403": message = "Relation AEteEcrit inconnue";break;
+            case "404": message = "Laboratoire inconnu";break;
+            case "405": message = "Université inconnu";break;
+            case "406": message = "Relation rattache inconnue";break;
+            case "407": message = "Keyword inconnu";break;
             
             default: message = "Unknown error";
         }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.daos;
+package daos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import oracle.kv.Value;
 import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Version;
-import oracle.nosql.entities.AEcrit;
+import entities.AEcrit;
 
 /**
  *
@@ -81,11 +81,11 @@ public class AEcritDAO {
         return a;        
     }
     
-    public int getRang(String auteurNom, int idLivre) {
-        return getRang(auteurNom, idLivre, "info");
+    public int getRang(String auteurNom, int idArticle) {
+        return getRang(auteurNom, idArticle, "info");
     }
     
-    public int getRang(String auteurNom, int idLivre, String minorPath) {
+    public int getRang(String auteurNom, int idArticle, String minorPath) {
         Key key = Key.createKey(Arrays.asList(AEcrit.MAJOR_KEY,auteurNom));
         
         Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED, 0, key, null, null);
@@ -106,7 +106,7 @@ public class AEcritDAO {
                 byte[] bytes2 = value2.getValue();
                 AEcrit a = new AEcrit(bytes2);
 
-                if (a.getIdLivre() == idLivre) {
+                if (a.getIdArticle() == idArticle) {
                     rg = Integer.parseInt(rang);
                     break;
                 }
@@ -145,30 +145,30 @@ public class AEcritDAO {
         return (putIfAbsent != null ? "200" : "302");
     }    
     
-    public String create(String auteurNom, int idLivre) {
-        return create(auteurNom, idLivre, "info");
+    public String create(String auteurNom, int idArticle) {
+        return create(auteurNom, idArticle, "info");
     }
     
-    public String create(String auteurNom, int idLivre, String minorPath) {
-        return create(auteurNom, idLivre, 1 + getLastRang(auteurNom, minorPath), minorPath);
+    public String create(String auteurNom, int idArticle, String minorPath) {
+        return create(auteurNom, idArticle, 1 + getLastRang(auteurNom, minorPath), minorPath);
     }   
     
-    public String create(String auteurNom, int idLivre, int rang) {     
-        return create(auteurNom, idLivre, rang, "info");
+    public String create(String auteurNom, int idArticle, int rang) {     
+        return create(auteurNom, idArticle, rang, "info");
     }
     
-    public String create(String auteurNom, int idLivre, int rang, String minorPath) {     
-        AEcrit aEcrit = new AEcrit(auteurNom, idLivre, rang);
+    public String create(String auteurNom, int idArticle, int rang, String minorPath) {     
+        AEcrit aEcrit = new AEcrit(auteurNom, idArticle, rang);
         return create(aEcrit, minorPath);
     }    
     
-    public String update(String auteurNom, int idLivre, int newIdLivre) {
-        return update(auteurNom, idLivre, newIdLivre, "info");
+    public String update(String auteurNom, int idArticle, int newIdArticle) {
+        return update(auteurNom, idArticle, newIdArticle, "info");
     }
-    public String update(String auteurNom, int idLivre, int newIdLivre, String minorPath) {
-        AEcrit a = read(auteurNom, getRang(auteurNom, idLivre, minorPath), minorPath);
+    public String update(String auteurNom, int idArticle, int newIdArticle, String minorPath) {
+        AEcrit a = read(auteurNom, getRang(auteurNom, idArticle, minorPath), minorPath);
         if (a != null) {
-            a.setIdLivre(newIdLivre);
+            a.setIdArticle(newIdArticle);
             //TODO tester si le nouveau livre existe sinon erreur 401
             store.delete(a.getStoreKey(minorPath));
             store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());  

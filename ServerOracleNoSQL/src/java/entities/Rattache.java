@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.entities;
+package entities;
 
 import java.util.Arrays;
 import oracle.kv.Key;
@@ -20,29 +20,30 @@ public class Rattache {
      */
     public static final String MAJOR_KEY = "rattache";
 
-    private String universiteNom;
+    //key
     private String laboratoireNom;
-    private int idAuteur;
+    private String universiteNom;
     private int rang;
+    
+    //value
+    private int idAuteur;
 
-    public Rattache(String universiteNom, String laboratoireNom, int rang, int idAuteur) {
-        this.universiteNom = universiteNom;
+    public Rattache(String laboratoireNom, String universiteNom, int rang, int idAuteur) {
         this.laboratoireNom = laboratoireNom;
-        this.idAuteur = idAuteur;
+        this.universiteNom = universiteNom;
         this.rang = rang;
+        this.idAuteur = idAuteur;
     }
     
-    public Rattache(String laboratoireNom,String universiteNom, int rang, byte[] bytes) {
-        
-        this.laboratoireNom = laboratoireNom;
-        this.universiteNom = universiteNom;
-        this.rang = rang;
-        String auteur = new String(bytes);
-
-        this.idAuteur = (int) Float.parseFloat(auteur.trim());
-        
+    public Rattache(byte[] bytes) {
+        String rattache = new String(bytes);
+        String[] elt = rattache.split("/");
+        laboratoireNom = elt[0];
+        universiteNom = elt[1];        
+        rang = Integer.parseInt(elt[2]);        
+        idAuteur = Integer.parseInt(elt[3]);        
     }
-    public void setIdAuteur(int IdAuteur){
+    public void setIdAuteur(int idAuteur){
         this.idAuteur = idAuteur;
        
     }
@@ -79,12 +80,12 @@ public class Rattache {
     }
 
     public Value getStoreValue() {
-        return Value.createValue(laboratoireNom.getBytes());
+        return Value.createValue(toString().getBytes());
     }
     
     @Override
     public String toString() {
-        return universiteNom + " / " + laboratoireNom + "/"+ idAuteur;
+        return laboratoireNom + "/" + universiteNom + "/" + rang + "/" + idAuteur;
     }
     
 }

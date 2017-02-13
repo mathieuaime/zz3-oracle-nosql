@@ -1,5 +1,4 @@
-package oracle.nosql.daos;
-
+package daos;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -11,7 +10,10 @@ import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Value;
 import oracle.kv.ValueVersion;
-import oracle.nosql.entities.Universite;
+import entities.Universite;
+import java.util.ArrayList;
+import java.util.List;
+import oracle.kv.Version;
 
 public class UniversiteDAO {
     
@@ -37,7 +39,7 @@ public class UniversiteDAO {
            ValueVersion valueVersionrecherche = store.get(k); 
            Value v = valueVersionrecherche.getValue();
            byte[] bytes2 = v.getValue();
-           Universite a = new Universite(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
+           Universite a = new Universite(bytes2);
            String t = a.getNom();
            
            if (t.equals(nom)) {universite = a; break; }      
@@ -48,38 +50,71 @@ public class UniversiteDAO {
     }
     
     public Universite read(int universiteId) {
+        Universite l = null;
         Key key = Key.createKey(Arrays.asList(Universite.MAJOR_KEY,String.valueOf(universiteId)),"info");
             
         ValueVersion vv2 = store.get(key);
 
-        Value value2 = vv2.getValue();
-        byte[] bytes2 = value2.getValue();
-        Universite a = new Universite(universiteId, bytes2);
+        if(vv2 != null) {
+            Value value2 = vv2.getValue();
+            byte[] bytes2 = value2.getValue();
+            l = new Universite(bytes2);
+        }
         
-        return a;        
+        return l;        
+    }
+    
+    public List<Universite> read(){
+        Key myKey2 = Key.createKey(Universite.MAJOR_KEY);
+        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
+        
+        List<Universite> universites = new ArrayList<>();
+        
+        while (i.hasNext()) 
+          {
+           Key k = i.next().getKey();
+
+           ValueVersion valueVersionrecherche = store.get(k); 
+           Value v = valueVersionrecherche.getValue();
+           byte[] bytes2 = v.getValue();
+           Universite l = new Universite(bytes2);
+           universites.add(l);
+        }
+        
+        return universites;
     }
       
-    public Universite create(Universite universite) {     
-        store.putIfAbsent(universite.getStoreKey("info"), universite.getStoreValue());
-        return universite;    
+    public String create(Universite universite) {     
+        Version putIfAbsent = store.putIfAbsent(universite.getStoreKey("info"), universite.getStoreValue());
+        return (putIfAbsent != null ? "200" : "305");    
     }
 
-    public Universite create(int universiteId, String nom, String adresse) {     
+    public String create(int universiteId, String nom, String adresse) {     
         Universite universite = new Universite(universiteId, nom,adresse);
         return create(universite);
     }    
     
-    public void update(int universiteId, String nom, String adresse) {
-        Universite a = read(universiteId);
-        if (nom != null) a.setNom(nom);      
-        if (adresse != null) a.setAdresse(adresse);
-        store.delete(a.getStoreKey("info"));
-        store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
+    public String update(int universiteId, String nom, String adresse) {
+        Universite l = read(universiteId);
+        if(l != null) {
+            if (nom != null) l.setNom(nom);      
+            if (adresse != null) l.setAdresse(adresse);
+            store.delete(l.getStoreKey("info"));
+            store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());        
+        }
+        return (l != null ? "200" : "405");
     }    
     
-    public void delete(int universiteId) {
+    public String update(int universiteId, Universite universite) {
+        return update(universiteId, universite.getNom(), universite.getAdresse());
+    }
+    
+    public String delete(int universiteId) {
         Universite a = read(universiteId);
-        store.delete(a.getStoreKey("info"));
+        boolean delete = false;
+        if (a!= null) delete = store.delete(a.getStoreKey("info"));
+        
+        return (delete ? "200" : "405");
     }
     
     public void genererTest(int n) {       

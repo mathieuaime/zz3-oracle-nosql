@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.daos;
+package daos;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -18,28 +19,28 @@ import oracle.kv.KeyValueVersion;
 import oracle.kv.Value;
 import oracle.kv.ValueVersion;
 import oracle.kv.Version;
-import oracle.nosql.entities.Livre;
+import entities.Article;
 
 /**
  *
  * @author mathieu
  */
-public class LivreDAO {
+public class ArticleDAO {
     
     private final String storeName = "kvstore";
     private final String hostName = "localhost";
     private final String hostPort = "5000";
     private static KVStore store;
 
-    public LivreDAO() {
+    public ArticleDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
     
-    public Livre read(String titre) {    
-        Key myKey2 = Key.createKey(Livre.MAJOR_KEY);
+    public Article read(String titre) throws ParseException {    
+        Key myKey2 = Key.createKey(Article.MAJOR_KEY);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
         
-        Livre livre = new Livre();
+        Article livre = new Article();
         
         while (i.hasNext()) 
           {
@@ -48,7 +49,7 @@ public class LivreDAO {
            ValueVersion valueVersionrecherche = store.get(k); 
            Value v = valueVersionrecherche.getValue();
            byte[] bytes2 = v.getValue();
-           Livre l = new Livre(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
+           Article l = new Article(bytes2);
            String t = l.getTitre();
            
            if (t.equals(titre)) {livre = l;  break; }    
@@ -58,27 +59,27 @@ public class LivreDAO {
         
     }
     
-    public Livre read(int livreId) {
-        Livre l = null;
+    public Article read(int livreId) throws ParseException {
+        Article l = null;
         
-        Key key = Key.createKey(Arrays.asList(Livre.MAJOR_KEY,String.valueOf(livreId)),"info");
+        Key key = Key.createKey(Arrays.asList(Article.MAJOR_KEY,String.valueOf(livreId)),"info");
             
         ValueVersion vv2 = store.get(key);
 
         if (vv2 != null) {
             Value value2 = vv2.getValue();
             byte[] bytes2 = value2.getValue();
-            l = new Livre(livreId, bytes2);
+            l = new Article(bytes2);
         }
         
         return l;        
     }
     
-    public List<Livre> read() {
-        Key myKey2 = Key.createKey(Livre.MAJOR_KEY);
+    public List<Article> read() throws ParseException {
+        Key myKey2 = Key.createKey(Article.MAJOR_KEY);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
         
-        List<Livre> livres = new ArrayList<>();
+        List<Article> livres = new ArrayList<>();
         
         while (i.hasNext()) 
           {
@@ -87,26 +88,26 @@ public class LivreDAO {
            ValueVersion valueVersionrecherche = store.get(k); 
            Value v = valueVersionrecherche.getValue();
            byte[] bytes2 = v.getValue();
-           Livre l = new Livre(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
+           Article l = new Article(bytes2);
            livres.add(l);
         }
         
         return livres;
     }
     
-    public String create(Livre livre) {
+    public String create(Article livre) {
         Version putIfAbsent = store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
         
         return (putIfAbsent != null ? "200" : "301");
     }
 
     public String create(int livreId, String titre, String resume, float prix) {
-        Livre livre = new Livre(livreId, titre, resume, prix);
+        Article livre = new Article(livreId, titre, resume, prix);
         return create(livre);
     }    
     
-    public String update(int livreId, String titre, String resume, float prix) {
-        Livre l = read(livreId);
+    public String update(int livreId, String titre, String resume, float prix) throws ParseException {
+        Article l = read(livreId);
         if (l != null) {
             if (titre != null) l.setTitre(titre);
             if (resume != null) l.setResume(resume);
@@ -118,12 +119,12 @@ public class LivreDAO {
         return (l != null ? "200" : "401");
     }  
     
-    public String update(int idLivre, Livre livre) {
+    public String update(int idLivre, Article livre) throws ParseException {
         return update(idLivre, livre.getTitre(), livre.getResume(), livre.getPrix());
     }
     
-    public String delete(int livreId) {
-        Livre l = read(livreId);
+    public String delete(int livreId) throws ParseException {
+        Article l = read(livreId);
         if (l != null) store.delete(l.getStoreKey("info"));
         return (l != null ? "200" : "401");
     }
@@ -135,15 +136,15 @@ public class LivreDAO {
         } 
     }
     
-    public void afficherTest(int n) {       
+    public void afficherTest(int n) throws ParseException {       
         
         for (int i = 0; i < n; i++) {
-            Livre l = read(i);
+            Article l = read(i);
             System.out.println(l);
         } 
     }
     
-    public void supprimerTest(int n) {       
+    public void supprimerTest(int n) throws ParseException {       
         
         for (int i = 0; i < n; i++) {
             delete(i);

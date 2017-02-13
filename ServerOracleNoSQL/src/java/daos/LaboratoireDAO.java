@@ -1,4 +1,4 @@
-package oracle.nosql.daos;
+package daos;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -10,7 +10,10 @@ import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Value;
 import oracle.kv.ValueVersion;
-import oracle.nosql.entities.Laboratoire;
+import entities.Laboratoire;
+import java.util.ArrayList;
+import java.util.List;
+import oracle.kv.Version;
 
 public class LaboratoireDAO {
     
@@ -36,7 +39,7 @@ public class LaboratoireDAO {
            ValueVersion valueVersionrecherche = store.get(k); 
            Value v = valueVersionrecherche.getValue();
            byte[] bytes2 = v.getValue();
-           Laboratoire a = new Laboratoire(Integer.parseInt(k.getMajorPath().get(1)), bytes2);
+           Laboratoire a = new Laboratoire(bytes2);
            String t = a.getNom();
            
            if (t.equals(nom)) {laboratoire = a; break; }      
@@ -47,38 +50,71 @@ public class LaboratoireDAO {
     }
     
     public Laboratoire read(int laboratoireId) {
+        Laboratoire l = null;
         Key key = Key.createKey(Arrays.asList(Laboratoire.MAJOR_KEY,String.valueOf(laboratoireId)),"info");
             
         ValueVersion vv2 = store.get(key);
 
-        Value value2 = vv2.getValue();
-        byte[] bytes2 = value2.getValue();
-        Laboratoire a = new Laboratoire(laboratoireId, bytes2);
+        if(vv2 != null) {
+            Value value2 = vv2.getValue();
+            byte[] bytes2 = value2.getValue();
+            l = new Laboratoire(bytes2);
+        }
         
-        return a;        
+        return l;        
+    }
+    
+    public List<Laboratoire> read(){
+        Key myKey2 = Key.createKey(Laboratoire.MAJOR_KEY);
+        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
+        
+        List<Laboratoire> laboratoires = new ArrayList<>();
+        
+        while (i.hasNext()) 
+          {
+           Key k = i.next().getKey();
+
+           ValueVersion valueVersionrecherche = store.get(k); 
+           Value v = valueVersionrecherche.getValue();
+           byte[] bytes2 = v.getValue();
+           Laboratoire l = new Laboratoire(bytes2);
+           laboratoires.add(l);
+        }
+        
+        return laboratoires;
     }
       
-    public Laboratoire create(Laboratoire laboratoire) {     
-        store.putIfAbsent(laboratoire.getStoreKey("info"), laboratoire.getStoreValue());
-        return laboratoire;    
+    public String create(Laboratoire laboratoire) {     
+        Version putIfAbsent = store.putIfAbsent(laboratoire.getStoreKey("info"), laboratoire.getStoreValue());
+        return (putIfAbsent != null ? "200" : "304");    
     }
 
-    public Laboratoire create(int laboratoireId, String nom, String adresse) {     
+    public String create(int laboratoireId, String nom, String adresse) {     
         Laboratoire laboratoire = new Laboratoire(laboratoireId, nom,adresse);
         return create(laboratoire);
     }    
     
-    public void update(int laboratoireId, String nom, String adresse) {
-        Laboratoire a = read(laboratoireId);
-        if (nom != null) a.setNom(nom);      
-        if (adresse != null) a.setAdresse(adresse);
-        store.delete(a.getStoreKey("info"));
-        store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
+    public String update(int laboratoireId, String nom, String adresse) {
+        Laboratoire l = read(laboratoireId);
+        if(l != null) {
+            if (nom != null) l.setNom(nom);      
+            if (adresse != null) l.setAdresse(adresse);
+            store.delete(l.getStoreKey("info"));
+            store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());        
+        }
+        return (l != null ? "200" : "404");
     }    
     
-    public void delete(int laboratoireId) {
+    public String update(int laboratoireId, Laboratoire laboratoire) {
+        return update(laboratoireId, laboratoire.getNom(), laboratoire.getAdresse());
+    }
+    
+    public String delete(int laboratoireId) {
         Laboratoire a = read(laboratoireId);
-        store.delete(a.getStoreKey("info"));
+        boolean delete = false;
+        if (a!= null) delete = store.delete(a.getStoreKey("info"));
+        
+        return (delete ? "200" : "404");
     }
     
     public void genererTest(int n) {       

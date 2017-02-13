@@ -1,4 +1,4 @@
-package oracle.nosql.ws;
+package ws;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -12,8 +12,8 @@ public class ApplicationConfig extends Application {
   public Set<Class<?>> getClasses() {
     Set<Class<?>> service = new HashSet<>();
 
-    service.add(AuteurWS.class);
-    service.add(LivreWS.class);
+    service.add(AutorWS.class);
+    service.add(ArticleWS.class);
 
     return service;
   }     

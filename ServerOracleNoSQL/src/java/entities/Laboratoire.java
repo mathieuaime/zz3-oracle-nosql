@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.entities;
+package entities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -20,7 +20,7 @@ import oracle.kv.Value;
 public class Laboratoire {
      private int laboratoireId;
 
-    public static String MAJOR_KEY = "laboratoire";
+    public static String MAJOR_KEY = "laboratory";
 
     private String nom;
     private String adresse;
@@ -32,12 +32,12 @@ public class Laboratoire {
         this.laboratoireId = laboratoireId;
     }
     
-    public Laboratoire(int laboratoireId, byte[] bytes) {
+    public Laboratoire(byte[] bytes) {
         String laboratoire = new String(bytes);
-        String[] elt = laboratoire.split(";");
-        this.laboratoireId = laboratoireId;
-        nom = elt[0].trim();
-        adresse = elt[1].trim();        
+        String[] elt = laboratoire.split("/");
+        this.laboratoireId = Integer.parseInt(elt[0]);
+        nom = elt[1];
+        adresse = elt[2];        
     
     }
     
@@ -91,20 +91,7 @@ public class Laboratoire {
     }
 
     public Value getStoreValue() {
-
-        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        final DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
-
-        try {
-            dataOutputStream.writeUTF(nom);            
-            dataOutputStream.writeUTF(";");
-            dataOutputStream.writeUTF(adresse);
-           
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Value.createValue(byteArrayOutputStream.toByteArray());
+        return Value.createValue(toString().getBytes());
     }
     
     @Override

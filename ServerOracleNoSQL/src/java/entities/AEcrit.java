@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.entities;
+package entities;
 
 import java.util.Arrays;
 import oracle.kv.Key;
@@ -25,11 +25,11 @@ public class AEcrit {
     private int rang;
     
     //value
-    private int idLivre;
+    private int idArticle;
 
-    public AEcrit(String auteurNom, int rang, int idLivre) {
+    public AEcrit(String auteurNom, int rang, int idArticle) {
         this.auteurNom = auteurNom;
-        this.idLivre = idLivre;
+        this.idArticle = idArticle;
         this.rang = rang;
     }
     
@@ -39,7 +39,7 @@ public class AEcrit {
         String[] elt = titre.split("/");
         this.auteurNom = elt[0];
         this.rang = Integer.parseInt(elt[1]);
-        this.idLivre = Integer.parseInt(elt[2]);
+        this.idArticle = Integer.parseInt(elt[2]);
     }
     
     public AEcrit() {
@@ -54,12 +54,12 @@ public class AEcrit {
         this.auteurNom = auteurNom;
     }
 
-    public int getIdLivre() {
-        return idLivre;
+    public int getIdArticle() {
+        return idArticle;
     }
 
-    public void setIdLivre(int idLivre) {
-        this.idLivre = idLivre;
+    public void setIdArticle(int idArticle) {
+        this.idArticle = idArticle;
     }    
 
     public int getRang() {
@@ -80,7 +80,6 @@ public class AEcrit {
     
     @Override
     public String toString() {
-        return auteurNom + "/" + rang + "/" + idLivre;
-    }
-    
+        return auteurNom + "/" + rang + "/" + idArticle;
+    }   
 }

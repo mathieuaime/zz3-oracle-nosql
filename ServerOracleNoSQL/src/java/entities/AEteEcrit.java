@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.entities;
+package entities;
 
 import java.util.Arrays;
 import oracle.kv.Key;
@@ -21,7 +21,7 @@ public class AEteEcrit {
     public static final String MAJOR_KEY = "a_ete_ecrit";
 
     //key
-    private String livreTitre;
+    private String articleTitre;
     
     //value
     private int idAuteur;
@@ -29,18 +29,18 @@ public class AEteEcrit {
     /**
      *
      * @param idAuteur value
-     * @param livreTitre key
+     * @param articleTitre key
      */
-    public AEteEcrit(String livreTitre, int idAuteur) {
+    public AEteEcrit(String articleTitre, int idAuteur) {
         this.idAuteur = idAuteur;
-        this.livreTitre = livreTitre;
+        this.articleTitre = articleTitre;
     }
     
     public AEteEcrit(byte[] bytes) {        
         String auteur = new String(bytes);
         String[] elt = auteur.split("/");
         
-        this.livreTitre = elt[0];
+        this.articleTitre = elt[0];
         this.idAuteur = Integer.parseInt(elt[1]);
     }
     
@@ -56,16 +56,16 @@ public class AEteEcrit {
         this.idAuteur = idAuteur;
     }
 
-    public String getLivreTitre() {
-        return livreTitre;
+    public String getArticleTitre() {
+        return articleTitre;
     }
 
-    public void setLivreTitre(String livreTitre) {
-        this.livreTitre = livreTitre;
+    public void setArticleTitre(String articleTitre) {
+        this.articleTitre = articleTitre;
     }    
     
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,livreTitre), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY, articleTitre), minorKey);
     }
 
     public Value getStoreValue() {
@@ -74,7 +74,7 @@ public class AEteEcrit {
     
     @Override
     public String toString() {
-        return livreTitre + "/" + idAuteur;
+        return articleTitre + "/" + idAuteur;
     }
     
 }

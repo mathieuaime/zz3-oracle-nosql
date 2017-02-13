@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package oracle.nosql.daos;
+package daos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,8 @@ import oracle.kv.ValueVersion;
 import oracle.kv.Value;
 import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
-import oracle.nosql.entities.Rattache;
+import entities.Rattache;
+import oracle.kv.Version;
 
 /**
  *
@@ -44,14 +45,11 @@ public class RattacheDAO {
         while(it.hasNext()) {
             Key k = it.next().getKey();
             
-            List<String> majorPath = k.getMajorPath();
-            String rang  = majorPath.get(2);
-            
             ValueVersion vv2 = store.get(k);
 
             Value value2 = vv2.getValue();
             byte[] bytes2 = value2.getValue();
-            Rattache a = new Rattache(laboratoireNom,universiteNom, Integer.parseInt(rang), bytes2);
+            Rattache a = new Rattache(bytes2);
             rattaches.add(a);
         }
         
@@ -59,43 +57,56 @@ public class RattacheDAO {
     }
     
     public Rattache read(String laboratoireNom, String universiteNom,int rang) {
+        Rattache r = null;
         Key key = Key.createKey(Arrays.asList(Rattache.MAJOR_KEY,laboratoireNom,universiteNom, String.valueOf(rang)),"info");
             
         ValueVersion vv2 = store.get(key);
-
-        Value value2 = vv2.getValue();
-        byte[] bytes2 = value2.getValue();
-        Rattache a = new Rattache(laboratoireNom, universiteNom, rang, bytes2);
         
-        return a;        
+        if(vv2 != null) {
+            Value value2 = vv2.getValue();
+            byte[] bytes2 = value2.getValue();
+            r = new Rattache(bytes2);
+        }
+        
+        return r;        
     }
 
-    public void create(Rattache a) {     
-        store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
+    public String create(Rattache a) {     
+        Version putIfAbsent = store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
+        return (putIfAbsent != null ? "200" : "306");
     }    
     
-    public void create(String laboratoireNom,String universiteNom,  int idAuteur, int rang) {     
+    public String create(String laboratoireNom,String universiteNom,  int idAuteur, int rang) {     
         Rattache rattache = new Rattache(laboratoireNom,universiteNom,rang, idAuteur);
-        create(rattache);
-    }    
+        return create(rattache);
+    }
     
-    public void update(String laboratoireNom,String universiteNom, int rang, int idAuteur) {
+    public String update(String laboratoireNom,String universiteNom, int rang, int idAuteur) {
         Rattache a = read(laboratoireNom,universiteNom, rang);
-        a.setIdAuteur(idAuteur);
-        store.delete(a.getStoreKey("info"));
-        store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());        
+        if(a != null) {
+            if(idAuteur > 0) a.setIdAuteur(idAuteur);
+            store.delete(a.getStoreKey("info"));
+            store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
+        }
+        
+        return (a != null ? "200" : "406");
     }    
     
-    public void delete(String laboratoireNom, String universiteNom,int rang) {
+    public String update(String laboratoireNom, String universiteNom, int rang, Rattache r) {
+        return update(laboratoireNom, universiteNom, rang, r.getIdAuteur());
+    }
+    
+    public String delete(String laboratoireNom, String universiteNom,int rang) {
         Rattache a = read(laboratoireNom, universiteNom,rang);
-        store.delete(a.getStoreKey("info"));
+        boolean delete = false;
+        if (a != null) delete = store.delete(a.getStoreKey("info"));
+        return (delete ? "200" : "406");
     }
     
     public void genererTest(int n) {       
         
         for (int i = 0; i < n; i+=2) {
             create("Laboratoire"+i,"Universite"+i,i,1);
-            
         } 
     }
     
