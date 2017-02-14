@@ -8,42 +8,42 @@ import oracle.kv.Value;
  *
  * @author Mathieu
  */
-public class KeywordFromAutor {
+public class KeywordFromAuthor {
     
     //key
-    private String autor;
+    private String author;
     private int rank;
     
     //value
     private String keyword;
     
-    public static final String MAJOR_KEY = "keyword_from_autor";
+    public static final String MAJOR_KEY = "keyword_from_author";
     
-    public KeywordFromAutor(String autor, int rank, String keyword) {
-        this.autor = autor;
+    public KeywordFromAuthor(String author, int rank, String keyword) {
+        this.author = author;
         this.rank = rank;
         this.keyword = keyword;
     }
     
-    public KeywordFromAutor(byte[] bytes) {        
+    public KeywordFromAuthor(byte[] bytes) {        
         String keyw = new String(bytes);
         String[] elt = keyw.split("/");
         
-        this.autor = elt[0];
+        this.author = elt[0];
         this.rank = Integer.parseInt(elt[1]);
         this.keyword = elt[1];
     }
     
-    public KeywordFromAutor() {
+    public KeywordFromAuthor() {
         this(null, -1, null);
     }
 
-    public String getAutor() {
-        return autor;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setAutor(String autor) {
-        this.autor = autor;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public int getRank() {
@@ -63,7 +63,7 @@ public class KeywordFromAutor {
     }
     
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,autor,String.valueOf(rank)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY,author,String.valueOf(rank)), minorKey);
     }
 
     public Value getStoreValue() {
@@ -72,6 +72,6 @@ public class KeywordFromAutor {
     
     @Override
     public String toString() {
-        return autor + "/" + rank + "/" + keyword;
+        return author + "/" + rank + "/" + keyword;
     }
 }

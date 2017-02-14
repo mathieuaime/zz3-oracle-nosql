@@ -12,7 +12,7 @@ public class ApplicationConfig extends Application {
   public Set<Class<?>> getClasses() {
     Set<Class<?>> service = new HashSet<>();
 
-    service.add(AutorWS.class);
+    service.add(AuthorWS.class);
     service.add(ArticleWS.class);
 
     return service;

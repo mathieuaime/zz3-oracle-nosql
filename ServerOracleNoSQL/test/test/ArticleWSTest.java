@@ -6,10 +6,10 @@
 package test;
 
 import daos.AEteEcritDAO;
-import daos.AutorDAO;
+import daos.AuthorDAO;
 import entities.AEteEcrit;
 import entities.Article;
-import entities.Autor;
+import entities.Author;
 import java.text.ParseException;
 import java.util.List;
 import junit.framework.TestCase;
@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import ws.ArticleWS;
-import ws.AutorWS;
+import ws.AuthorWS;
 import ws.RestResponse;
 
 /**
@@ -29,13 +29,13 @@ import ws.RestResponse;
 public class ArticleWSTest extends TestCase {
     
     ArticleWS ws = new ArticleWS();
-    AutorWS wsAutor = new AutorWS();
-    Article articleA = new Article(1, "Titre", "resume", 12);;
-    Article articleB = new Article(1, "Titre2", "resume2", 10);;
+    AuthorWS wsAuthor = new AuthorWS();
+    Article articleA = new Article(1, "Titre", "resume", 12);
+    Article articleB = new Article(1, "Titre2", "resume2", 10);
     
-    Autor auteurA = new Autor(1, "aimé", "mathieu", "cannes", "4444", "4422", "mathieu@isima.fr");
-    Autor auteurB = new Autor(1, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
-    Autor auteurC = new Autor(2, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
+    Author auteurA = new Author(1, "aimé", "mathieu", "cannes", "4444", "4422", "mathieu@isima.fr");
+    Author auteurB = new Author(1, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
+    Author auteurC = new Author(2, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -48,7 +48,7 @@ public class ArticleWSTest extends TestCase {
     @Before
     @Override
     public void setUp() throws Exception {
-        AutorDAO adao = new AutorDAO();
+        AuthorDAO adao = new AuthorDAO();
         adao.deleteAll();
     }
 
@@ -118,7 +118,7 @@ public class ArticleWSTest extends TestCase {
     //CRUD auteur
     
     @Test
-    public void testAddAutor() throws ParseException {
+    public void testAddAuthor() throws ParseException {
         AEteEcrit ae = new AEteEcrit(articleA.getTitre(), auteurA.getId());
         RestResponse<AEteEcrit> response = ws.addAuteur(articleA.getId(), ae);
         
@@ -131,7 +131,7 @@ public class ArticleWSTest extends TestCase {
         //auteur inexistant
         assertEquals(response.getStatus(), "400");
         
-        wsAutor.addAuteur(auteurA);
+        wsAuthor.addAuteur(auteurA);
         response = ws.addAuteur(articleA.getId(), ae);
         
         //ajout
@@ -144,15 +144,15 @@ public class ArticleWSTest extends TestCase {
     }
     
     @Test
-    public void testGetAutor() throws ParseException {
+    public void testGetAuthor() throws ParseException {
         
-        RestResponse<Autor> response = ws.listAuteur(articleA.getId());
+        RestResponse<Author> response = ws.listAuteur(articleA.getId());
         
         //livre inexistant
         assertEquals(response.getStatus(), "401");
         
         ws.addArticle(articleA);
-        wsAutor.addAuteur(auteurA);
+        wsAuthor.addAuteur(auteurA);
         
         AEteEcrit aEteEcrit = new AEteEcrit(articleA.getTitre(), auteurA.getId());
         
@@ -166,7 +166,7 @@ public class ArticleWSTest extends TestCase {
     }
     
     @Test
-    public void testUpdateAutor() throws ParseException {
+    public void testUpdateAuthor() throws ParseException {
         AEteEcrit aEteEcrit1 = new AEteEcrit(articleA.getTitre(), auteurA.getId());
         AEteEcrit aEteEcrit2 = new AEteEcrit(articleA.getTitre(), auteurC.getId());
         
@@ -176,7 +176,7 @@ public class ArticleWSTest extends TestCase {
         assertEquals(responseUpdate.getStatus(), "401");
         
         ws.addArticle(articleA);
-        wsAutor.addAuteur(auteurA);
+        wsAuthor.addAuteur(auteurA);
         
         responseUpdate = ws.updateAuteur(articleA.getId(), auteurA.getId(), aEteEcrit2);
         
@@ -190,32 +190,32 @@ public class ArticleWSTest extends TestCase {
         //nouvel auteur inexistant
         assertEquals(responseUpdate.getStatus(), "400");
         
-        wsAutor.addAuteur(auteurC);
+        wsAuthor.addAuteur(auteurC);
         
         responseUpdate = ws.updateAuteur(articleA.getId(), auteurA.getId(), aEteEcrit2);
         
-        RestResponse<Autor> response = ws.listAuteur(articleA.getId());
+        RestResponse<Author> response = ws.listAuteur(articleA.getId());
         
         assertEquals(responseUpdate.getStatus(), "200");
         assertEquals(response.getObjectList().get(0), auteurC);
     }
     
     @Test
-    public void testDeleteAutor() throws ParseException {
+    public void testDeleteAuthor() throws ParseException {
         RestResponse<AEteEcrit> response = ws.deleteAuteur(articleA.getId(), auteurA.getId());
         
         //article inexistant
         assertEquals(response.getStatus(), "401");
         
         ws.addArticle(articleA);
-        wsAutor.addAuteur(auteurA);
+        wsAuthor.addAuteur(auteurA);
         
         response = ws.deleteAuteur(articleA.getId(), auteurA.getId());
         
         //relation AEteEcrit inconnue
         assertEquals(response.getStatus(), "403");
         
-        wsAutor.addAuteur(auteurC);
+        wsAuthor.addAuteur(auteurC);
         
         AEteEcrit aEteEcrit1 = new AEteEcrit(articleA.getTitre(), auteurA.getId());
         

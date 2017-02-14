@@ -11,73 +11,73 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 import daos.AEcritDAO;
-import daos.AutorDAO;
+import daos.AuthorDAO;
 import daos.ArticleDAO;
 import entities.AEcrit;
-import entities.Autor;
+import entities.Author;
 import entities.Article;
 import entities.Universite;
 
 @Path("auteur")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class AutorWS {
+public class AuthorWS {
     
-  private AutorDAO adao = new AutorDAO();
+  private AuthorDAO adao = new AuthorDAO();
   private ArticleDAO ldao = new ArticleDAO();
   private AEcritDAO aedao = new AEcritDAO();
 
-    public AutorWS() {
+    public AuthorWS() {
     }
     
     @GET
-    public RestResponse<Autor> getAll() {       
-        List<Autor> auteurs = adao.read();
-        RestResponse<Autor> resp = new RestResponse<>("200", auteurs);
+    public RestResponse<Author> getAll() {       
+        List<Author> auteurs = adao.read();
+        RestResponse<Author> resp = new RestResponse<>("200", auteurs);
         return resp;
     }
   
     @Path("{id}")
     @GET
-    public RestResponse<Autor> getAuteur(@PathParam("id") int id) {       
-        Autor auteur = adao.read(id);
+    public RestResponse<Author> getAuteur(@PathParam("id") int id) {       
+        Author auteur = adao.read(id);
         String status = (auteur != null ? "200" : "400");
         
-        RestResponse<Autor> resp = new RestResponse<>(status);
+        RestResponse<Author> resp = new RestResponse<>(status);
         resp.addObjectList(auteur);
         return resp;
     }
 
     @POST
-    public RestResponse<Autor> addAuteur(Autor auteur) {
+    public RestResponse<Author> addAuteur(Author auteur) {
         String status = adao.create(auteur);
         
-        RestResponse<Autor> resp = new RestResponse<>(status);
+        RestResponse<Author> resp = new RestResponse<>(status);
         return resp;
     }
 
     @Path("{id}")
     @PUT
-    public RestResponse<Autor> updateAuteur(@PathParam("id") int id, Autor auteur) {
+    public RestResponse<Author> updateAuteur(@PathParam("id") int id, Author auteur) {
         String status = adao.update(id, auteur);
         
-        RestResponse<Autor> resp = new RestResponse<>(status);
+        RestResponse<Author> resp = new RestResponse<>(status);
         return resp;
     }
 
     @Path("{id}")
     @DELETE
-    public RestResponse<Autor> deleteAuteur(@PathParam("id") int id) {
+    public RestResponse<Author> deleteAuteur(@PathParam("id") int id) {
         String status = adao.delete(id);  
         
-        RestResponse<Autor> resp = new RestResponse<>(status);
+        RestResponse<Author> resp = new RestResponse<>(status);
         return resp;
     }
     
     @Path("{id}/article")
     @GET
     public RestResponse<Article> listArticle(@PathParam("id") int idAuteur) throws ParseException {
-        Autor a = adao.read(idAuteur);
+        Author a = adao.read(idAuteur);
         RestResponse<Article> resp = new RestResponse<>("400");
         
         if(a != null) resp = listArticle(adao.read(idAuteur).getNom());
@@ -106,8 +106,8 @@ public class AutorWS {
     
     @Path("{id}/article")
     @POST
-    public RestResponse<AEcrit> addArticle(@PathParam("id") int idAuteur, AEcrit aEcrit) {
-        Autor a = adao.read(idAuteur);
+    public RestResponse<AEcrit> addArticle(@PathParam("id") int idAuteur, AEcrit aEcrit) throws ParseException {
+        Author a = adao.read(idAuteur);
         RestResponse<AEcrit> resp = new RestResponse<>("400");
         
         if(a != null) resp = addArticle(adao.read(idAuteur).getNom(), aEcrit);
@@ -117,7 +117,7 @@ public class AutorWS {
     
     @Path("{nom}/articleFromName")
     @POST
-    public RestResponse<AEcrit> addArticle(@PathParam("nom") String nomAuteur, AEcrit aEcrit) {
+    public RestResponse<AEcrit> addArticle(@PathParam("nom") String nomAuteur, AEcrit aEcrit) throws ParseException {
         aEcrit.setAuteurNom(nomAuteur);
         String status = aedao.create(aEcrit);
         
@@ -127,8 +127,8 @@ public class AutorWS {
     
     @Path("{id}/article/{idArticle}")
     @PUT
-    public RestResponse<AEcrit> updateArticle(@PathParam("id") int idAuteur, @PathParam("idArticle") int idArticle, AEcrit newAEcrit) {
-        Autor a = adao.read(idAuteur);
+    public RestResponse<AEcrit> updateArticle(@PathParam("id") int idAuteur, @PathParam("idArticle") int idArticle, AEcrit newAEcrit) throws ParseException {
+        Author a = adao.read(idAuteur);
         RestResponse<AEcrit> resp = new RestResponse<>("400");
         
         if(a != null) resp = updateArticle(a.getNom(), idArticle, newAEcrit);
@@ -139,7 +139,7 @@ public class AutorWS {
     
     @Path("{nom}/articleFromName/{idArticle}/{rang}")
     @PUT
-    public RestResponse<AEcrit> updateArticle(@PathParam("nom") String nomAuteur, @PathParam("idArticle") int idArticle, AEcrit newAEcrit) {
+    public RestResponse<AEcrit> updateArticle(@PathParam("nom") String nomAuteur, @PathParam("idArticle") int idArticle, AEcrit newAEcrit) throws ParseException {
         String status = aedao.update(nomAuteur, idArticle, newAEcrit.getIdArticle());
         
         RestResponse<AEcrit> resp = new RestResponse<>(status);
@@ -149,7 +149,7 @@ public class AutorWS {
     @Path("{id}/article")
     @DELETE
     public RestResponse<AEcrit> deleteAllArticle(@PathParam("id") int idAuteur) {
-        Autor a = adao.read(idAuteur);
+        Author a = adao.read(idAuteur);
         RestResponse<AEcrit> resp = new RestResponse<>("400");
         
         if(a != null) resp = deleteAllArticle(adao.read(idAuteur).getNom());
@@ -169,7 +169,7 @@ public class AutorWS {
     @Path("{id}/article/{idArticle}")
     @DELETE
     public RestResponse<AEcrit> deleteArticle(@PathParam("id") int idAuteur, @PathParam("idArticle") int idArticle) {
-        Autor a = adao.read(idAuteur);
+        Author a = adao.read(idAuteur);
         RestResponse<AEcrit> resp = new RestResponse<>("400");
         
         if(a != null) resp = deleteArticle(adao.read(idAuteur).getNom(), idArticle);

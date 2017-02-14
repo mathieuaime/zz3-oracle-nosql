@@ -18,28 +18,28 @@ import oracle.kv.Value;
 import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Version;
-import entities.Autor;
+import entities.Author;
 
 /**
  *
  * @author mathieu
  */
-public class AutorDAO {
+public class AuthorDAO {
     
     private final String storeName = "kvstore";
     private final String hostName = "localhost";
     private final String hostPort = "5000";
     private static KVStore store;
 
-    public AutorDAO() {
+    public AuthorDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
     
-    public Autor read(String nom) {    
-        Key myKey2 = Key.createKey(Autor.MAJOR_KEY);
+    public Author read(String nom) {    
+        Key myKey2 = Key.createKey(Author.MAJOR_KEY);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
         
-        Autor auteur = new Autor();
+        Author auteur = new Author();
         
         while (i.hasNext()) 
           {
@@ -48,7 +48,7 @@ public class AutorDAO {
            ValueVersion valueVersionrecherche = store.get(k); 
            Value v = valueVersionrecherche.getValue();
            byte[] bytes2 = v.getValue();
-           Autor a = new Autor(bytes2);
+           Author a = new Author(bytes2);
            String t = a.getNom();
            
            if (t.equals(nom)) {auteur = a; break; }      
@@ -58,26 +58,26 @@ public class AutorDAO {
         
     }
     
-    public Autor read(int auteurId) {
-        Autor a = null;
-        Key key = Key.createKey(Arrays.asList(Autor.MAJOR_KEY,String.valueOf(auteurId)),"info");
+    public Author read(int auteurId) {
+        Author a = null;
+        Key key = Key.createKey(Arrays.asList(Author.MAJOR_KEY,String.valueOf(auteurId)),"info");
             
         ValueVersion vv2 = store.get(key);
         
         if (vv2 != null) {
             Value value2 = vv2.getValue();
             byte[] bytes2 = value2.getValue();
-            a = new Autor(bytes2);
+            a = new Author(bytes2);
         }
         
         return a;        
     }
     
-    public List<Autor> read(){
-        Key myKey2 = Key.createKey(Autor.MAJOR_KEY);
+    public List<Author> read(){
+        Key myKey2 = Key.createKey(Author.MAJOR_KEY);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
         
-        List<Autor> auteurs = new ArrayList<>();
+        List<Author> auteurs = new ArrayList<>();
         
         while (i.hasNext()) 
           {
@@ -86,19 +86,19 @@ public class AutorDAO {
            ValueVersion valueVersionrecherche = store.get(k); 
            Value v = valueVersionrecherche.getValue();
            byte[] bytes2 = v.getValue();
-           Autor a = new Autor(bytes2);
+           Author a = new Author(bytes2);
            auteurs.add(a);
         }
         
         return auteurs;
     }
     
-    public List<Autor> getLast(int n){
-        Key myKey2 = Key.createKey(Autor.MAJOR_KEY);
+    public List<Author> getLast(int n){
+        Key myKey2 = Key.createKey(Author.MAJOR_KEY);
         //Iterator<KeyValueVersion> i = store.multiGetIterator(Direction.REVERSE, 0, myKey2, null, null);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
         
-        List<Autor> auteurs = new ArrayList<>();
+        List<Author> auteurs = new ArrayList<>();
         
         while (i.hasNext()) 
           {
@@ -107,26 +107,26 @@ public class AutorDAO {
            ValueVersion valueVersionrecherche = store.get(k); 
            Value v = valueVersionrecherche.getValue();
            byte[] bytes2 = v.getValue();
-           Autor a = new Autor(bytes2);
+           Author a = new Author(bytes2);
            auteurs.add(a);
         }
         
         return auteurs;
     }
     
-    public String create(Autor auteur) {     
+    public String create(Author auteur) {     
         Version putIfAbsent = store.putIfAbsent(auteur.getStoreKey("info"), auteur.getStoreValue());
         
         return (putIfAbsent != null ? "200" : "300");    
     }
 
     public String create(int auteurId, String nom, String prenom, String adresse, String phone, String fax, String mail) {     
-        Autor auteur = new Autor(auteurId, nom, prenom, adresse, phone, fax, mail);
+        Author auteur = new Author(auteurId, nom, prenom, adresse, phone, fax, mail);
         return create(auteur);
     }    
     
     public String update(int auteurId, String nom, String prenom, String adresse, String phone, String fax, String mail) {
-        Autor a = read(auteurId);
+        Author a = read(auteurId);
         if (a != null) {
             if (nom != null) a.setNom(nom);
             if (prenom != null) a.setPrenom(prenom);
@@ -141,12 +141,12 @@ public class AutorDAO {
         return (a != null ? "200" : "400");
     }    
     
-    public String update(int auteurId, Autor auteur) {
+    public String update(int auteurId, Author auteur) {
         return update(auteurId, auteur.getNom(), auteur.getPrenom(), auteur.getAdresse(), auteur.getPhone(), auteur.getFax(), auteur.getMail());
     }
     
     public String delete(int auteurId) {
-        Autor a = read(auteurId);
+        Author a = read(auteurId);
         boolean delete = false;
         if (a != null) {
             delete = store.delete(a.getStoreKey("info"));
@@ -165,7 +165,7 @@ public class AutorDAO {
     public void afficherTest(int n) {       
 
         for (int i = 0; i < n; i++) {
-            Autor a = read(i);
+            Author a = read(i);
             System.out.println(a);
         } 
     }

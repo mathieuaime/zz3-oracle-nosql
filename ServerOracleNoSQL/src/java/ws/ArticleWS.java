@@ -12,11 +12,11 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 import daos.AEteEcritDAO;
 import daos.ArticleDAO;
-import daos.AutorDAO;
+import daos.AuthorDAO;
 import daos.HasKeywordDAO;
 import daos.KeywordDAO;
 import entities.AEteEcrit;
-import entities.Autor;
+import entities.Author;
 import entities.Article;
 import entities.HasKeyword;
 import entities.Keyword;
@@ -27,7 +27,7 @@ import entities.Keyword;
 public class ArticleWS {
     
   private ArticleDAO ldao = new ArticleDAO();
-  private AutorDAO adao = new AutorDAO();
+  private AuthorDAO adao = new AuthorDAO();
   private AEteEcritDAO aedao = new AEteEcritDAO();
   private HasKeywordDAO hkdao = new HasKeywordDAO();
   private KeywordDAO kdao = new KeywordDAO();
@@ -82,9 +82,9 @@ public class ArticleWS {
     
     @Path("{id}/auteur")
     @GET
-    public RestResponse<Autor> listAuteur(@PathParam("titre") int idArticle) throws ParseException {
+    public RestResponse<Author> listAuteur(@PathParam("titre") int idArticle) throws ParseException {
         Article l = ldao.read(idArticle);
-        RestResponse<Autor> resp = new RestResponse<>("401");
+        RestResponse<Author> resp = new RestResponse<>("401");
         
         if(l != null) resp = listAuteur(ldao.read(idArticle).getTitre());
         
@@ -93,14 +93,14 @@ public class ArticleWS {
     
     @Path("{titre}/auteurFromTitle")
     @GET
-    public RestResponse<Autor> listAuteur(@PathParam("titre") String titreArticle) {
+    public RestResponse<Author> listAuteur(@PathParam("titre") String titreArticle) {
         
         String status = "200";
         
-        RestResponse<Autor> resp = new RestResponse<>(status);
+        RestResponse<Author> resp = new RestResponse<>(status);
         
         for(AEteEcrit aee : aedao.read(titreArticle)) {
-            Autor auteur = adao.read(aee.getIdAuteur());
+            Author auteur = adao.read(aee.getIdAuteur());
             status = (!status.equals("400") && auteur != null ? "200" : "400");
             if (auteur != null) resp.addObjectList(auteur);
             resp.setStatus(status);

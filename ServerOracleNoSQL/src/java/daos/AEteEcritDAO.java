@@ -19,7 +19,7 @@ import oracle.kv.Value;
 import oracle.kv.ValueVersion;
 import oracle.kv.Version;
 import entities.AEteEcrit;
-import entities.Autor;
+import entities.Author;
 
 /**
  *
@@ -92,14 +92,13 @@ public class AEteEcritDAO {
     }    
 
     public String create(AEteEcrit a, String minorKey) {
-        AutorDAO adao = new AutorDAO();
-        Autor read = adao.read(a.getIdAuteur());
+        AuthorDAO adao = new AuthorDAO();
+        Author read = adao.read(a.getIdAuteur());
         if (read != null) {
             Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorKey), a.getStoreValue());
             return (putIfAbsent != null ? "200" : "303");
-        } else {
+        } else
             return "400";
-        }
     }    
     
     public String create(String articleTitre, int idAuteur) {     
@@ -121,8 +120,8 @@ public class AEteEcritDAO {
         
         for(AEteEcrit a : read(articleTitre, minorKey)) {
             if(a.getIdAuteur() == idAuteur) {
-                AutorDAO adao = new AutorDAO();
-                Autor read = adao.read(newIdAuteur);
+                AuthorDAO adao = new AuthorDAO();
+                Author read = adao.read(newIdAuteur);
                 if (read != null) {
                     a.setIdAuteur(newIdAuteur);
                     store.delete(a.getStoreKey(minorKey));

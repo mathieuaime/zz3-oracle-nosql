@@ -15,7 +15,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class Autor implements Serializable {
+public class Author implements Serializable {
     /*
      * The auteurId is a unique identifier and is used to construct
      * the Key's major path.
@@ -26,7 +26,7 @@ public class Autor implements Serializable {
      * The MAJOR_KEY is used to construct
      * the Key's major path component.
      */
-    public static final String MAJOR_KEY = "autor";
+    public static final String MAJOR_KEY = "author";
 
     private String nom;
     private String prenom;
@@ -35,7 +35,7 @@ public class Autor implements Serializable {
     private String fax;
     private String mail;
     
-    public Autor(int id, String nom, String prenom, String adresse, String phone, String fax, String mail) {
+    public Author(int id, String nom, String prenom, String adresse, String phone, String fax, String mail) {
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
@@ -45,7 +45,7 @@ public class Autor implements Serializable {
         this.id = id;
     }
     
-    public Autor(byte[] bytes) {
+    public Author(byte[] bytes) {
         String auteur = new String(bytes);
         String[] elt = auteur.split("/");
         id = Integer.parseInt(elt[0]);
@@ -57,7 +57,7 @@ public class Autor implements Serializable {
         mail = elt[6];     
     }
     
-    public Autor() {
+    public Author() {
         this(-1,null,null,null,null,null,null);
     }
 
@@ -160,7 +160,7 @@ public class Autor implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Autor other = (Autor) obj;
+        final Author other = (Author) obj;
         if (this.id != other.id) {
             return false;
         }

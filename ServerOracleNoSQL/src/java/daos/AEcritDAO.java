@@ -19,6 +19,8 @@ import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Version;
 import entities.AEcrit;
+import entities.Article;
+import java.text.ParseException;
 
 /**
  *
@@ -133,45 +135,50 @@ public class AEcritDAO {
         return rang; 
     }
 
-    public String create(AEcrit a) {     
+    public String create(AEcrit a) throws ParseException {     
         return create(a, "info");
     }
-    public String create(AEcrit a, String minorPath) { 
+    public String create(AEcrit a, String minorPath) throws ParseException { 
         if (a.getRang() < 0) a.setRang(1 + getLastRang(a.getAuteurNom(), minorPath));
         
-        Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
-        //TODO tester si le livre existe sinon erreur 401
-        
-        return (putIfAbsent != null ? "200" : "302");
+        ArticleDAO adao = new ArticleDAO();
+        Article read = adao.read(a.getIdArticle());
+        if (read != null) {        
+            Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
+            return (putIfAbsent != null ? "200" : "302");
+        } else return "401";
     }    
     
-    public String create(String auteurNom, int idArticle) {
+    public String create(String auteurNom, int idArticle) throws ParseException {
         return create(auteurNom, idArticle, "info");
     }
     
-    public String create(String auteurNom, int idArticle, String minorPath) {
+    public String create(String auteurNom, int idArticle, String minorPath) throws ParseException {
         return create(auteurNom, idArticle, 1 + getLastRang(auteurNom, minorPath), minorPath);
     }   
     
-    public String create(String auteurNom, int idArticle, int rang) {     
+    public String create(String auteurNom, int idArticle, int rang) throws ParseException {     
         return create(auteurNom, idArticle, rang, "info");
     }
     
-    public String create(String auteurNom, int idArticle, int rang, String minorPath) {     
+    public String create(String auteurNom, int idArticle, int rang, String minorPath) throws ParseException {     
         AEcrit aEcrit = new AEcrit(auteurNom, idArticle, rang);
         return create(aEcrit, minorPath);
     }    
     
-    public String update(String auteurNom, int idArticle, int newIdArticle) {
+    public String update(String auteurNom, int idArticle, int newIdArticle) throws ParseException {
         return update(auteurNom, idArticle, newIdArticle, "info");
     }
-    public String update(String auteurNom, int idArticle, int newIdArticle, String minorPath) {
+    public String update(String auteurNom, int idArticle, int newIdArticle, String minorPath) throws ParseException {
         AEcrit a = read(auteurNom, getRang(auteurNom, idArticle, minorPath), minorPath);
         if (a != null) {
-            a.setIdArticle(newIdArticle);
-            //TODO tester si le nouveau livre existe sinon erreur 401
-            store.delete(a.getStoreKey(minorPath));
-            store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());  
+            ArticleDAO adao = new ArticleDAO();
+            Article read = adao.read(newIdArticle);
+            if (read != null) {
+                a.setIdArticle(newIdArticle);
+                store.delete(a.getStoreKey(minorPath));
+                store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());  
+            } else return "401";
         }
         
         return (a != null ? "200" : "402");
@@ -201,7 +208,7 @@ public class AEcritDAO {
         return result;
     }
     
-    public void genererTest(int n) {       
+    public void genererTest(int n) throws ParseException {       
         
         for (int i = 0; i < n; i+=2) {
             create("AimÃ©"+i,(2*i),1,"demo");
