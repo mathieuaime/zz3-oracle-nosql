@@ -1,0 +1,93 @@
+@CHARSET "UTF-8";
+
+.table-wrapper {
+	overflow-x: scroll;
+	overflow-y: visible;
+}
+
+@media ( min-width : 750px) {
+	.table-wrapper {
+
+		margin-left: 175px;
+	}
+	@media ( max-width : 750px) {
+		.table-wrapper {
+
+			margin-left: 175px;
+		}
+	}
+}
+
+.coloriable {
+	cursor: url(../img/curseur.png), copy;
+}
+
+.supprimer {
+	cursor: url(../img/supprimer.png), copy;
+}
+
+.table-wrapper td, th {
+	padding: 5px 10px;
+	width: 175px;
+	height: 30px;
+	vertical-align: center;
+}
+
+.table-wrapper td {
+	padding: 0px;
+}
+
+.table-wrapper th {
+	cursor: default;
+}
+
+@media ( min-width : 750px) {
+	.table-wrapper th:first-child {
+		position: absolute;
+		left: 5px;
+		cursor: default;
+	}
+	.DateChoice {
+		margin-left: 175px;
+	}
+}
+
+@media ( max-width : 750px) {
+	.table-wrapper th:first-child {
+
+		cursor: default;
+	}
+}
+
+.colorBlock {
+	width: 15px;
+	height: 15px;
+}
+
+.calendar td {
+	border: solid #DDDDDD 1px;
+}
+
+.delete {
+	margin: 5px;
+	cursor: pointer;
+}
+
+#in-td {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+}
+
+#intervenantSelection {
+	
+}
+
+.ferie {
+	background-color: lightgrey;
+	cursor: default;
+}
+
+.table-wrapper .jours {
+	text-align: center;
+}

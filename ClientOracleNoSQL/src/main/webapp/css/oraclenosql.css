@@ -1,0 +1,144 @@
+@CHARSET "UTF-8";
+
+@font-face {
+    font-family: titillium;
+    src: url(../fonts/Titillium-Regular.otf);
+}
+
+body {
+	background-color: #fff;
+	font-family: titillium;
+}
+
+#artificial-background {
+	/* fond invisible sous les colonnes n'occupant pas toute la hauteur (navigation) */
+	background-color: #f0f7f7;
+	margin: 0px;
+}
+
+header, nav, section, footer {
+	background-color: #f0f7f7;
+}
+
+footer {
+	background-image:linear-gradient(#f0f7f7, #fff);
+	font-size: x-small;
+	color: gray;
+	padding-top: 50px;
+	padding-bottom: 10px;
+}
+
+#logo {
+	width: 64px;
+	margin: 5px 20px;
+	/* background-color: #FFE; */
+	/* background-image:linear-gradient(#E9E9E9, #E9E9F9); */
+}
+
+.black-border {
+	border-color: black;
+}
+
+.inline-block-container {
+	display: inline-block;
+}
+
+/* menu */
+
+#menu h1 {
+	margin-bottom: 30px;
+}
+
+#menu img {
+	width: 36px;
+	height: 36px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#menu a {
+	width: 64px;
+	height: 58px;
+	border-radius: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	white-space: nowrap;
+}
+
+@media (min-width: 750px){
+	#menu img {
+		width: 64px;
+		height: 64px;
+	}
+	#menu li a {
+		width: 104px;
+		height: 100px;
+	}
+}
+
+@media (max-width: 750px){
+#menuMobile img{
+	width: 30px;
+	height: 30px;
+	margin : 10px;
+	vertical-align:middle;
+}
+}
+
+/* Affichage de l'un ou l'autre des menus */
+@media (max-width: 750px){
+	.navPc
+	{
+		display: none;
+	}
+}
+@media (min-width: 750px){
+	.navMobile
+	{
+		display: none;
+	}
+}
+
+
+
+/* identification */
+#identification {
+	padding-top: 20px;
+}
+
+/* todo-list */
+.todo-ok {
+	text-decoration: line-through;
+	color: gray;
+}
+
+/* draft wplan - sélecteurs d'onglets */
+#draftOracleTabs>li.active>a {
+	background-color: #d9edf7;
+}
+
+/* tables de premier niveau : couleur de survol des lignes */
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+	background-color: #d9edf7;
+}
+
+/* tables de premier niveau : couleur de survol des lignes : exception sur les lignes de détail */
+.table-hover tbody tr[id|=detail]:hover td, .table-hover tbody tr[id|=detail]:hover th {
+	background-color: #f0f7f7;
+}
+
+/* tables de premier niveau : lignes de détail encadrées */
+tr[id|=detail] {
+	border: 2px solid #aaa;
+}
+
+/* tables de second niveau : couleur = couleur de fond de l'écran (sinon blanc) */
+.table .table {
+	background-color: #f0f7f7;
+	margin-bottom: 0px;
+}
+
+/* tables de second niveau : couleur de survol des lignes */
+.table .table-hover tbody tr:hover td, .table .table-hover tbody tr:hover th {
+	background-color: #d9edf7;
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<div>
+
+<h2> Articles scientifiques</h2>
+
+<p>
+		<strong class="text-danger">{{draftOracleControllerError}}</strong>
+	</p>
+
+<ul id="draftOracleTabs" class="nav nav-tabs" >
+	<li data-ng-class="{active:currentTab === 'tabVoirArticles'}"><a
+		role="button" id="tabVoirArticlesBtn"
+		data-ng-click="currentTab='tabVoirArticles'">Voir les articles</a></li>
+                
+	<li data-ng-class="{active:currentTab === 'tabRechercheArticles'}"><a
+		role="button" id="tabRechercheArticlesBtn"
+		data-ng-click="currentTab='tabRechercheArticles'">Recherche des articles</a></li>
+</ul>
+
+
+
+<div id="tabVoirArticles" data-ng-show="currentTab === 'tabVoirArticles'">
+    <h3> Liste des articles </h3>
+   
+    <p>
+			Filtrer :&emsp;<input type="text" size="30"
+				data-ng-model="articlesFilter">
+    </p>
+
+
+    <table class="table">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>titre</th>
+					<th>resume</th>
+					<th>prix</th>
+                                        <th> </th>
+					
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="article in articles">
+					<td>{{article.id}}</td>
+                                        <td>{{article.titre}}</td>
+					<td>{{article.resume}}</td>
+                                        <td>{{article.prix}}</td>
+                                        <td width="60px"><a role="button"
+						data-ng-click="editArticle(article)"><img
+							alt="modifier" src="img/modify.png" data-toggle="modal"
+							data-target="#modifyArticleModal"></a> <a
+						data-toggle="modal" data-target="#confirmation" role="button"
+						data-ng-click="setRemovableArticle(article)"><img
+							alt="supprimer" src="img/delete.png"></a></td>
+				</tr>
+			</tbody>
+		</table>
+
+<p><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createArticleModal"
+           data-ng-click="initializeArticle()">Ajouter un article</button></p>    
+
+<div id="createArticleModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<form data-ng-submit="">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Ajouter un article</h4>
+						</div>
+						<div class="modal-body form-group">
+                                                    <label for="createArticleId"> Id </label>
+                                                    <input type="text" class="form-control" data-ng-model="formData.createArticleId" size="30" placeholder="Id">
+                                                    <br>
+							<label for="createArticleTitre">Titre</label>
+							<input type="text" class="form-control" data-ng-model="formData.createArticleTitre" size="30" placeholder="Titre">
+							<br>
+							<label for="createArticleResume">Résumé</label>
+							<input type="text" class="form-control" data-ng-model="formData.createArticleResume" size="60" placeholder="Résumé">
+							<br>
+							<label for="createArticlePrix">Prix</label>
+							<input type="text" data-ng-model="formData.createArticlePrix" size="30" placeholder="Prix">
+                                                        <br>
+						</div>
+                                            <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                                            
+						<div class="modal-footer form-group">
+							<button class="btn btn-primary" type="submit"
+                                                                data-ng-click="createArticle()">Ajouter</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+          <p>
+		
+	</p>
+</div>
+
+<div id="tabRechercheArticles" data-ng-if="currentTab === 'tabRechercheArticles'">
+    
+  <h3>Recherche des articles</h3>  
+</div>
+</div>

@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html>
+
+<div>
+
+	<h2>Universites</h2>
+
+
+	<p>
+		<strong class="text-danger">{{draftOracleControllerError}}</strong>
+	</p>
+
+	<ul id="draftOracleTabs" class="nav nav-tabs"
+		>
+		<li data-ng-class="{active:currentTab == 'tabVoirUniversites'}"><a
+			role="button" id="tabVoirUniversitesBtn"
+			data-ng-click="currentTab='tabVoirUniversites'">Voir les
+				universites</a></li>
+		<li data-ng-class="{active:currentTab == 'tabGestionUniversites'}"><a
+			role="button" id="tabGestionUniversitesBtn"
+			
+			data-ng-click="currentTab='tabGestionUniversites'">Recherche des 
+                    universites</a></li>
+	</ul>
+
+
+
+
+	<div id="tabVoirUniversites"
+		data-ng-show="currentTab == 'tabVoirUniversites'">
+
+
+<h3>Liste des universites </h3>
+
+		
+		<p>
+			Filtrer :&emsp;<input type="text" size="30"
+				data-ng-model="universitesFilter">
+		</p>
+
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Nom</th>
+					<th>Adresse</th>
+					
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr
+					data-ng-repeat="universite in universites">
+					<td>{{universite.id}}</td>
+					<td>{{universite.nom}}</td>
+                                        <td> {{universite.adresse}}</td>
+                                       
+					<td width="60px"><a role="button"
+						data-ng-click="editUniversite(universite)"><img
+							alt="modifier" src="img/modify.png" data-toggle="modal"
+							data-target="#modifyUniversiteModal"></a> <a
+						data-toggle="modal" data-target="#confirmation" role="button"
+						data-ng-click="setRemovableUniversite(universite)"><img
+							alt="supprimer" src="img/delete.png"></a></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p>
+			<button type="button" class="btn btn-primary" data-toggle="modal"
+				data-target="#createUniversiteModal"
+				>Ajouter une
+				universite</button>
+		</p>
+
+	
+
+
+
+	<div id="createUniversiteModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form data-ng-submit="">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Ajouter un universite</h4>
+					</div>
+					<div class="modal-body form-group">
+						<label for="createUniversiteId">Id</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createUniversiteId" size="30"
+							placeholder="Id"> <br />
+                                                <label
+							for="createUniversiteNom">Nom</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createUniversiteNomPrenom" size="30"
+							placeholder="Nom"> <br /> 
+                                                 <label
+							for="createUniversiteAdresse">Adresse</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createUniversiteAdresse" size="30"
+							placeholder="Adresse"> <br /> 
+                                                 
+						
+                                                 
+                                                 
+							
+					</div>
+					<div class="modal-footer form-group">
+						<button class="btn btn-primary" type="submit"
+							data-ng-click="controlNewUniversite()">Ajouter</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header alert alert-danger">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Confirmation</h4>
+				</div>
+				<div class="modal-body">
+					<p>Etes-vous sur de vouloir supprimer cet l'universite {{
+						universite_confirm.id }} {{ universite_confirm.nom }}?</p>
+				</div>
+				<div class="modal-footer">
+					<!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal"
+						data-ng-click="removeUniversite(universite_confirm)">Oui</button>-->
+					<button class="btn btn-primary"
+						data-ng-click="removeUniversite(universite_confirm)">Continuer</button>
+					<button class="btn btn-default" data-dismiss="modal">Annuler</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+
+        </div>
+	
+
+
+
+    <div id="tabGestionUniversites"
+		data-ng-if="currentTab == 'tabGestionUniversites'">
+
+            <h2> Recherche des universites </h2>
+
+        </div>
+
+        
+</div>
