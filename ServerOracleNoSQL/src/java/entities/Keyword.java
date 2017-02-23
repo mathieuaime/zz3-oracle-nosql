@@ -6,6 +6,7 @@
 package entities;
 
 import java.util.Arrays;
+import java.util.Objects;
 import oracle.kv.Key;
 import oracle.kv.Value;
 
@@ -79,4 +80,38 @@ public class Keyword {
     public String toString() {
         return keyword + "/" + rank + "/" + idArticle;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode(this.keyword);
+        hash = 67 * hash + this.rank;
+        hash = 67 * hash + this.idArticle;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Keyword other = (Keyword) obj;
+        if (this.rank != other.rank) {
+            return false;
+        }
+        if (this.idArticle != other.idArticle) {
+            return false;
+        }
+        if (!Objects.equals(this.keyword, other.keyword)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

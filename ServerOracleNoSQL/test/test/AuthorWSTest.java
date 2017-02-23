@@ -5,15 +5,15 @@
  */
 package test;
 
-import daos.AEteEcritDAO;
 import daos.AuthorDAO;
 import entities.AEcrit;
-import entities.AEteEcrit;
 import entities.Article;
 import entities.Author;
-import entities.Author;
+import entities.EstRattache;
+import entities.Laboratoire;
+import entities.Rattache;
+import entities.Universite;
 import java.text.ParseException;
-import java.util.List;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,8 +22,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import ws.ArticleWS;
 import ws.AuthorWS;
-import ws.AuthorWS;
+import ws.LaboratoryWS;
 import ws.RestResponse;
+import ws.UniversityWS;
 
 /**
  *
@@ -33,12 +34,26 @@ public class AuthorWSTest extends TestCase {
     
     AuthorWS ws = new AuthorWS();
     ArticleWS wsArticle = new ArticleWS();
+    UniversityWS wsUniversite = new UniversityWS();
+    LaboratoryWS wsLaboratoire = new LaboratoryWS();
     Article articleA = new Article(1, "Titre", "resume", 12);
     Article articleB = new Article(1, "Titre2", "resume2", 10);
     Article articleC = new Article(2, "Titre3", "resume3", 11);
     
     Author auteurA = new Author(1, "aimé", "mathieu", "cannes", "4444", "4422", "mathieu@isima.fr");
     Author auteurB = new Author(1, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
+    
+    EstRattache estRattacheA = new EstRattache(auteurA.getNom(), Universite.MAJOR_KEY, 1, 1);
+    EstRattache estRattacheB = new EstRattache(auteurA.getNom(), Universite.MAJOR_KEY, 2, 2);
+    
+    EstRattache estRattacheC = new EstRattache(auteurA.getNom(), Laboratoire.MAJOR_KEY, 1, 1);
+    EstRattache estRattacheD = new EstRattache(auteurA.getNom(), Laboratoire.MAJOR_KEY, 2, 2);
+    
+    Universite universiteA = new Universite(1, "Universite1", "Adresse1");
+    Universite universiteB = new Universite(2, "Universite2", "Adresse2");
+    
+    Laboratoire laboratoireA = new Laboratoire(1, "Laboratoire1", "Adresse1");
+    Laboratoire laboratoireB = new Laboratoire(2, "Laboratoire2", "Adresse2");
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -68,7 +83,6 @@ public class AuthorWSTest extends TestCase {
         
         assertEquals(response.getStatus(), "200");
         
-        ws.addAuteur(auteurA);
         response = ws.addAuteur(auteurA);
         
         //double ajout
@@ -85,6 +99,7 @@ public class AuthorWSTest extends TestCase {
         ws.addAuteur(auteurA);
         response = ws.getAuteur(1);
         assertEquals(response.getStatus(), "200");
+        assertEquals(response.getObjectList().size(), 1);
         assertEquals(response.getObjectList().get(0), auteurA);
     }
     
@@ -103,6 +118,7 @@ public class AuthorWSTest extends TestCase {
         
         response = ws.getAuteur(1);
         
+        assertEquals(response.getObjectList().size(), 1);
         assertEquals(response.getObjectList().get(0), auteurB);
     }
     
@@ -164,6 +180,7 @@ public class AuthorWSTest extends TestCase {
         response = ws.listArticle(auteurA.getNom());
         
         assertEquals(response.getStatus(), "200");
+        assertEquals(response.getObjectList().size(), 1);
         assertEquals(response.getObjectList().get(0), articleA);
         
     }
@@ -200,6 +217,7 @@ public class AuthorWSTest extends TestCase {
         RestResponse<Article> response = ws.listArticle(auteurA.getId());
         
         assertEquals(responseUpdate.getStatus(), "200");
+        assertEquals(response.getObjectList().size(), 1);
         assertEquals(response.getObjectList().get(0), articleC);
     }
     
@@ -224,6 +242,236 @@ public class AuthorWSTest extends TestCase {
         ws.addArticle(auteurA.getNom(), aEcrit1);
         
         response = ws.deleteArticle(auteurA.getId(), articleA.getId());
+        
+        assertEquals(response.getStatus(), "200");
+    }
+    
+    @Test
+    public void testAddUniversite() {
+        RestResponse<Rattache> response = ws.addUniversities(auteurA.getId(), estRattacheA);
+        
+        //auteur inexistant
+        assertEquals(response.getStatus(), "400");
+        
+        ws.addAuteur(auteurA);
+        
+        response = ws.addUniversities(auteurA.getId(), estRattacheA);
+        
+        //universite inconnue
+        assertEquals(response.getStatus(), "405");
+        
+        wsUniversite.addUniversite(universiteA);
+        
+        response = ws.addUniversities(auteurA.getId(), estRattacheA);
+        
+        //ajout
+        assertEquals(response.getStatus(), "200");
+        
+        response = ws.addUniversities(auteurA.getId(), estRattacheA);
+        
+        //double ajout
+        assertEquals(response.getStatus(), "306");
+    }
+    
+    @Test
+    public void testGetUniversite() {
+        RestResponse<Universite> response = ws.listUniversities(auteurA.getId());
+        
+        //auteur inexistant
+        assertEquals(response.getStatus(), "400");
+        
+        ws.addAuteur(auteurA);
+        
+        wsUniversite.addUniversite(universiteA);
+        
+        ws.addUniversities(auteurA.getId(), estRattacheA);
+        
+        response = ws.listUniversities(auteurA.getId());
+        
+        assertEquals(response.getStatus(), "200");
+        assertEquals(response.getObjectList().size(), 1);
+        assertEquals(response.getObjectList().get(0), universiteA);
+    }
+    
+    @Test
+    public void testUpdateUniversite() {
+        
+        AuthorDAO adao = new AuthorDAO();
+        
+        RestResponse<Universite> responseUpdate = ws.updateUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1, estRattacheB);
+        
+        //auteur inexistant
+        assertEquals(responseUpdate.getStatus(), "400");
+        
+        ws.addAuteur(auteurA);
+        
+        responseUpdate = ws.updateUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1, estRattacheB);
+        
+        //ancienne université inconnue
+        assertEquals(responseUpdate.getStatus(), "405");
+        
+        wsUniversite.addUniversite(universiteA);
+        
+        responseUpdate = ws.updateUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1, estRattacheB);
+        
+        //nouvelle université inconnue
+        assertEquals(responseUpdate.getStatus(), "405");
+        
+        wsUniversite.addUniversite(universiteB);
+        
+        responseUpdate = ws.updateUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1, estRattacheB);
+        
+        //relation rattache inconnue
+        assertEquals(responseUpdate.getStatus(), "406");
+        ws.addUniversities(auteurA.getId(), estRattacheA);  
+        
+        responseUpdate = ws.updateUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1, estRattacheB);
+        
+        RestResponse<Universite> response = ws.listUniversities(auteurA.getId());
+        
+        assertEquals(responseUpdate.getStatus(), "200");
+        assertEquals(response.getObjectList().size(), 1);
+        assertEquals(response.getObjectList().get(0), universiteB);
+    }
+    
+    @Test
+    public void testDeleteUniversite() {
+        RestResponse<Universite> response = ws.deleteUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1);
+        
+        //auteur inexistant
+        assertEquals(response.getStatus(), "400");
+        
+        ws.addAuteur(auteurA);
+        
+        response = ws.deleteUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1);
+        
+        //universite inconnue
+        assertEquals(response.getStatus(), "405");
+        
+        wsUniversite.addUniversite(universiteA);
+        
+        response = ws.deleteUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1);
+        
+        //relation rattache inconnue
+        assertEquals(response.getStatus(), "406");
+        
+        ws.addUniversities(auteurA.getId(), estRattacheA);
+        
+        response = ws.deleteUniversities(auteurA.getId(), universiteA.getUniversiteId(), 1);
+        
+        assertEquals(response.getStatus(), "200");
+    }
+    
+    @Test
+    public void testAddLaboratoire() {
+        RestResponse<Rattache> response = ws.addLaboratories(auteurA.getId(), estRattacheC);
+        
+        //auteur inexistant
+        assertEquals(response.getStatus(), "400");
+        
+        ws.addAuteur(auteurA);
+        
+        response = ws.addLaboratories(auteurA.getId(), estRattacheC);
+        
+        //laboratoire inconnue
+        assertEquals(response.getStatus(), "404");
+        
+        wsLaboratoire.addLaboratoire(laboratoireA);
+        
+        response = ws.addLaboratories(auteurA.getId(), estRattacheC);
+        
+        //ajout
+        assertEquals(response.getStatus(), "200");
+        
+        response = ws.addLaboratories(auteurA.getId(), estRattacheC);
+        
+        //double ajout
+        assertEquals(response.getStatus(), "306");
+    }
+    
+    @Test
+    public void testGetLaboratoire() {
+        RestResponse<Laboratoire> response = ws.listLaboratories(auteurA.getId());
+        
+        //auteur inexistant
+        assertEquals(response.getStatus(), "400");
+        
+        ws.addAuteur(auteurA);
+        
+        wsLaboratoire.addLaboratoire(laboratoireA);
+        
+        ws.addLaboratories(auteurA.getId(), estRattacheC);
+        
+        response = ws.listLaboratories(auteurA.getId());
+        
+        assertEquals(response.getStatus(), "200");
+        assertEquals(response.getObjectList().size(), 1);
+        assertEquals(response.getObjectList().get(0), laboratoireA);
+    }
+    
+    @Test
+    public void testUpdateLaboratoire() {
+        
+        RestResponse<Laboratoire> responseUpdate = ws.updateLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1, estRattacheD);
+        
+        //auteur inexistant
+        assertEquals(responseUpdate.getStatus(), "400");
+        
+        ws.addAuteur(auteurA);
+        
+        responseUpdate = ws.updateLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1, estRattacheD);
+        
+        //ancien laboratoire inconnu
+        assertEquals(responseUpdate.getStatus(), "404");
+        
+        wsLaboratoire.addLaboratoire(laboratoireA);
+        
+        responseUpdate = ws.updateLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1, estRattacheD);
+        
+        //nouveau laboratoire inconnu
+        assertEquals(responseUpdate.getStatus(), "404");
+        
+        wsLaboratoire.addLaboratoire(laboratoireB);
+        
+        responseUpdate = ws.updateLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1, estRattacheD);
+        
+        //relation rattache inconnue
+        assertEquals(responseUpdate.getStatus(), "406");
+        ws.addLaboratories(auteurA.getId(), estRattacheC);  
+        
+        responseUpdate = ws.updateLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1, estRattacheD);
+        
+        RestResponse<Laboratoire> response = ws.listLaboratories(auteurA.getId());
+        
+        assertEquals(responseUpdate.getStatus(), "200");
+        assertEquals(response.getObjectList().size(), 1);
+        assertEquals(response.getObjectList().get(0), laboratoireB);
+    }
+    
+    @Test
+    public void testDeleteLaboratoire() {
+        RestResponse<Laboratoire> response = ws.deleteLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1);
+        
+        //auteur inexistant
+        assertEquals(response.getStatus(), "400");
+        
+        ws.addAuteur(auteurA);
+        
+        response = ws.deleteLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1);
+        
+        //laboratoire inconnue
+        assertEquals(response.getStatus(), "404");
+        
+        wsLaboratoire.addLaboratoire(laboratoireA);
+        
+        response = ws.deleteLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1);
+        
+        //relation rattache inconnue
+        assertEquals(response.getStatus(), "406");
+        
+        ws.addLaboratories(auteurA.getId(), estRattacheC);
+        
+        response = ws.deleteLaboratories(auteurA.getId(), laboratoireA.getLaboratoireId(), 1);
         
         assertEquals(response.getStatus(), "200");
     }

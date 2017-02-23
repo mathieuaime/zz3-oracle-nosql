@@ -5,6 +5,7 @@
  */
 package daos;
 
+import entities.Article;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -19,6 +20,7 @@ import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Version;
 import entities.Keyword;
+import java.text.ParseException;
 
 /**
  *
@@ -133,48 +135,58 @@ public class KeywordDAO {
         return rank; 
     }
 
-    public String create(Keyword a) {     
+    public String create(Keyword a) throws ParseException {     
         return create(a, "info");
     }
-    public String create(Keyword a, String minorPath) { 
+    public String create(Keyword a, String minorPath) throws ParseException { 
         if (a.getRank() < 0) a.setRank(1 + getLastRank(a.getKeyword(), minorPath));
         
-        Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
-        //TODO tester si le livre existe sinon erreur 401
-        
-        return (putIfAbsent != null ? "200" : "302");
+        ArticleDAO adao = new ArticleDAO();
+        Article read = adao.read(a.getIdArticle());
+        if (read != null) {
+            Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
+            return (putIfAbsent != null ? "200" : "307");
+        } else {
+            return "401";
+        }
     }    
     
-    public String create(String keyword, int idArticle) {
+    public String create(String keyword, int idArticle) throws ParseException {
         return create(keyword, idArticle, "info");
     }
     
-    public String create(String keyword, int idArticle, String minorPath) {
+    public String create(String keyword, int idArticle, String minorPath) throws ParseException {
         return create(keyword, idArticle, 1 + getLastRank(keyword, minorPath), minorPath);
     }   
     
-    public String create(String keyword, int idArticle, int rank) {     
+    public String create(String keyword, int idArticle, int rank) throws ParseException {     
         return create(keyword, idArticle, rank, "info");
     }
     
-    public String create(String keyword, int idArticle, int rank, String minorPath) {     
+    public String create(String keyword, int idArticle, int rank, String minorPath) throws ParseException {     
         Keyword aEcrit = new Keyword(keyword, idArticle, rank);
         return create(aEcrit, minorPath);
     }    
     
-    public String update(String keyword, int idArticle, int newIdArticle) {
+    public String update(String keyword, int idArticle, int newIdArticle) throws ParseException {
         return update(keyword, idArticle, newIdArticle, "info");
     }
-    public String update(String keyword, int idArticle, int newIdArticle, String minorPath) {
+    public String update(String keyword, int idArticle, int newIdArticle, String minorPath) throws ParseException {
         Keyword a = read(keyword, getRank(keyword, idArticle, minorPath), minorPath);
         if (a != null) {
-            a.setIdArticle(newIdArticle);
-            //TODO tester si le nouveau livre existe sinon erreur 401
-            store.delete(a.getStoreKey(minorPath));
-            store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());  
+            ArticleDAO adao = new ArticleDAO();
+            Article read = adao.read(a.getIdArticle());
+            if (read != null) {
+                a.setIdArticle(newIdArticle);
+                store.delete(a.getStoreKey(minorPath));
+                store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());  
+                return "200";
+            } else {
+                return "401";
+            }
+        } else {
+            return "407";
         }
-        
-        return (a != null ? "200" : "402");
     }    
     
     public String delete(String keyword, int rank) {
@@ -185,14 +197,14 @@ public class KeywordDAO {
         Keyword a = read(keyword, rank, minorPath);
         if (a != null) store.delete(a.getStoreKey(minorPath));
         
-        return (a != null ? "200" : "402");
+        return (a != null ? "200" : "407");
     }
     
     public String delete(String keyword) {
         return delete(keyword, "info");
     }
     public String delete(String keyword, String minorPath) {
-        String result = "402";
+        String result = "407";
         for(Keyword a : read(keyword, minorPath)) {
             store.delete(a.getStoreKey(minorPath));
             result = "200";
@@ -201,7 +213,7 @@ public class KeywordDAO {
         return result;
     }
     
-    public void genererTest(int n) {       
+    public void genererTest(int n) throws ParseException {       
         
         for (int i = 0; i < n; i+=2) {
             create("AimÃ©"+i,(2*i),1,"demo");

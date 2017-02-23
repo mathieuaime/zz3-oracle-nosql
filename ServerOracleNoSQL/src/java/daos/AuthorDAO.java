@@ -179,7 +179,7 @@ public class AuthorDAO {
     
     public void displayAll() {
         Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED,0);
-        System.out.println("In StoreIterator Method: Delete Everything");
+        System.out.println("\nDisplay All");
         while (it.hasNext() )
         {
             KeyValueVersion kvvi = it.next();

@@ -75,15 +75,17 @@ public class RestResponse<T> implements Serializable {
             case "305": message = "Université déjà créé";break;
             case "306": message = "Relation rattache déjà créée";break;
             case "307": message = "Keyword déjà créé";break;
+            case "308": message = "Relation EstRattache déjà créée";break;
             
             case "400": message = "Auteur inconnu";break;
             case "401": message = "Livre inconnu";break;
             case "402": message = "Relation AEcrit inconnue";break;
             case "403": message = "Relation AEteEcrit inconnue";break;
             case "404": message = "Laboratoire inconnu";break;
-            case "405": message = "Université inconnu";break;
+            case "405": message = "Université inconnue";break;
             case "406": message = "Relation rattache inconnue";break;
             case "407": message = "Keyword inconnu";break;
+            case "408": message = "Relation EstRattache inconnue";break;
             
             default: message = "Unknown error";
         }

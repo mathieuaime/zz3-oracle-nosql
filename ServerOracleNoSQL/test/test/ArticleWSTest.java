@@ -10,6 +10,7 @@ import daos.AuthorDAO;
 import entities.AEteEcrit;
 import entities.Article;
 import entities.Author;
+import entities.Keyword;
 import java.text.ParseException;
 import java.util.List;
 import junit.framework.TestCase;
@@ -36,6 +37,12 @@ public class ArticleWSTest extends TestCase {
     Author auteurA = new Author(1, "aimé", "mathieu", "cannes", "4444", "4422", "mathieu@isima.fr");
     Author auteurB = new Author(1, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
     Author auteurC = new Author(2, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
+    
+    AEteEcrit aEteEcrit1 = new AEteEcrit(articleA.getTitre(), auteurA.getId());
+    AEteEcrit aEteEcrit2 = new AEteEcrit(articleA.getTitre(), auteurC.getId());
+    
+    Keyword keywordA = new Keyword("keywordA", 1, 1);
+    Keyword keywordB = new Keyword("keywordB", 1, 1);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -65,7 +72,6 @@ public class ArticleWSTest extends TestCase {
         
         assertEquals(response.getStatus(), "200");
         
-        ws.addArticle(articleA);
         response = ws.addArticle(articleA);
         
         //double ajout
@@ -119,25 +125,24 @@ public class ArticleWSTest extends TestCase {
     
     @Test
     public void testAddAuthor() throws ParseException {
-        AEteEcrit ae = new AEteEcrit(articleA.getTitre(), auteurA.getId());
-        RestResponse<AEteEcrit> response = ws.addAuteur(articleA.getId(), ae);
+        RestResponse<AEteEcrit> response = ws.addAuteur(articleA.getId(), aEteEcrit1);
         
         //livre inexistant
         assertEquals(response.getStatus(), "401");
         
         ws.addArticle(articleA);
-        response = ws.addAuteur(articleA.getTitre(), ae);
+        response = ws.addAuteur(articleA.getTitre(), aEteEcrit1);
         
         //auteur inexistant
         assertEquals(response.getStatus(), "400");
         
         wsAuthor.addAuteur(auteurA);
-        response = ws.addAuteur(articleA.getId(), ae);
+        response = ws.addAuteur(articleA.getId(), aEteEcrit1);
         
         //ajout
         assertEquals(response.getStatus(), "200");
         
-        response = ws.addAuteur(articleA.getTitre(), ae);
+        response = ws.addAuteur(articleA.getTitre(), aEteEcrit1);
         
         //double ajout
         assertEquals(response.getStatus(), "303");
@@ -154,9 +159,7 @@ public class ArticleWSTest extends TestCase {
         ws.addArticle(articleA);
         wsAuthor.addAuteur(auteurA);
         
-        AEteEcrit aEteEcrit = new AEteEcrit(articleA.getTitre(), auteurA.getId());
-        
-        ws.addAuteur(articleA.getId(), aEteEcrit);
+        ws.addAuteur(articleA.getId(), aEteEcrit1);
         
         response = ws.listAuteur(articleA.getTitre());
         
@@ -166,10 +169,7 @@ public class ArticleWSTest extends TestCase {
     }
     
     @Test
-    public void testUpdateAuthor() throws ParseException {
-        AEteEcrit aEteEcrit1 = new AEteEcrit(articleA.getTitre(), auteurA.getId());
-        AEteEcrit aEteEcrit2 = new AEteEcrit(articleA.getTitre(), auteurC.getId());
-        
+    public void testUpdateAuthor() throws ParseException {        
         RestResponse<AEteEcrit> responseUpdate = ws.updateAuteur(articleA.getId(), auteurA.getId(), aEteEcrit2);
         
         //article inexistant
@@ -217,12 +217,92 @@ public class ArticleWSTest extends TestCase {
         
         wsAuthor.addAuteur(auteurC);
         
-        AEteEcrit aEteEcrit1 = new AEteEcrit(articleA.getTitre(), auteurA.getId());
-        
         ws.addAuteur(articleA.getId(), aEteEcrit1);
         
         RestResponse<AEteEcrit> responseUpdate = ws.deleteAuteur(articleA.getId(), auteurA.getId());
         
         assertEquals(responseUpdate.getStatus(), "200");
+    }
+    
+    @Test
+    public void testAddKeyword() throws ParseException {
+        RestResponse<Keyword> response = ws.addKeywords(articleA.getId(), keywordA);
+        
+        //livre inexistant
+        assertEquals(response.getStatus(), "401");
+        
+        ws.addArticle(articleA);
+        
+        response = ws.addKeywords(articleA.getId(), keywordA);
+        
+        //ajout
+        assertEquals(response.getStatus(), "200");
+        
+        response = ws.addKeywords(articleA.getId(), keywordA);
+        
+        //double ajout
+        assertEquals(response.getStatus(), "307");
+    }
+    
+    @Test
+    public void testGetKeyword() throws ParseException {
+        RestResponse<String> response = ws.listKeywords(articleA.getId());
+        
+        //livre inexistant
+        assertEquals(response.getStatus(), "401");
+        
+        ws.addArticle(articleA);
+        
+        ws.addKeywords(articleA.getId(), keywordA);
+        
+        response = ws.listKeywords(articleA.getId());
+        
+        assertEquals(response.getStatus(), "200");
+        assertEquals(response.getObjectList().get(0), keywordA.getKeyword());
+    }
+    
+    @Test
+    public void testUpdateKeyword() throws ParseException {
+        RestResponse<Keyword> responseUpdate = ws.updateKeywords(articleA.getId(), keywordA.getKeyword(), 1, keywordB);
+        
+        //article inexistant
+        assertEquals(responseUpdate.getStatus(), "401");
+        
+        ws.addArticle(articleA);
+        
+        responseUpdate = ws.updateKeywords(articleA.getId(), keywordA.getKeyword(), 1, keywordB);
+        
+        //keyword inconnu
+        assertEquals(responseUpdate.getStatus(), "407");
+        
+        ws.addKeywords(articleA.getId(), keywordA);
+        
+        responseUpdate = ws.updateKeywords(articleA.getId(), keywordA.getKeyword(), 1, keywordB);
+        
+        RestResponse<String> response = ws.listKeywords(articleA.getId());
+        
+        assertEquals(responseUpdate.getStatus(), "200");
+        assertEquals(response.getObjectList().get(0), keywordB.getKeyword());
+    }
+    
+    @Test
+    public void testDeleteKeyword() throws ParseException {
+        RestResponse<Keyword> response = ws.deleteKeywords(articleA.getId(), keywordA.getKeyword(), 1);
+        
+        //article inexistant
+        assertEquals(response.getStatus(), "401");
+        
+        ws.addArticle(articleA);
+        
+        response = ws.deleteKeywords(articleA.getId(), keywordA.getKeyword(), 1);
+        
+        //keyword inconnu
+        assertEquals(response.getStatus(), "407");
+        
+        ws.addKeywords(articleA.getId(), keywordA);
+        
+        response = ws.deleteKeywords(articleA.getId(), keywordA.getKeyword(), 1);
+        
+        assertEquals(response.getStatus(), "200");
     }
 }

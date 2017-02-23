@@ -20,17 +20,16 @@ public class Rattache {
      */
     public static final String MAJOR_KEY = "rattache";
 
-    //key
-    private String laboratoireNom;
-    private String universiteNom;
+    private String type;
+    private String value;
     private int rang;
     
     //value
     private int idAuteur;
 
-    public Rattache(String laboratoireNom, String universiteNom, int rang, int idAuteur) {
-        this.laboratoireNom = laboratoireNom;
-        this.universiteNom = universiteNom;
+    public Rattache(String value, String type, int rang, int idAuteur) {
+        this.value = value;
+        this.type = type;
         this.rang = rang;
         this.idAuteur = idAuteur;
     }
@@ -38,8 +37,8 @@ public class Rattache {
     public Rattache(byte[] bytes) {
         String rattache = new String(bytes);
         String[] elt = rattache.split("/");
-        laboratoireNom = elt[0];
-        universiteNom = elt[1];        
+        type = elt[0];
+        value = elt[1];        
         rang = Integer.parseInt(elt[2]);        
         idAuteur = Integer.parseInt(elt[3]);        
     }
@@ -50,22 +49,22 @@ public class Rattache {
     public int getIdAuteur(){
         return idAuteur;
     }
-    
-    public String getAuteurNom() {
-        return universiteNom;
+
+    public String getValue() {
+        return value;
     }
 
-    public void setAuteurNom(String universiteNom) {
-        this.universiteNom = universiteNom;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public String getLivreTitre() {
-        return laboratoireNom;
+    public String getType() {
+        return type;
     }
 
-    public void setLivreTitre(String laboratoireNom) {
-        this.laboratoireNom = laboratoireNom;
-    }    
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public int getRang() {
         return rang;
@@ -76,7 +75,7 @@ public class Rattache {
     }
     
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,laboratoireNom, universiteNom, String.valueOf(rang)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY,type, value, String.valueOf(rang)), minorKey);
     }
 
     public Value getStoreValue() {
@@ -85,7 +84,7 @@ public class Rattache {
     
     @Override
     public String toString() {
-        return laboratoireNom + "/" + universiteNom + "/" + rang + "/" + idAuteur;
+        return type + "/" + value + "/" + rang + "/" + idAuteur;
     }
     
 }

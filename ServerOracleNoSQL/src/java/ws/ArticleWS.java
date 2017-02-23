@@ -26,11 +26,11 @@ import entities.Keyword;
 @Produces(MediaType.APPLICATION_JSON)
 public class ArticleWS {
     
-  private ArticleDAO ldao = new ArticleDAO();
-  private AuthorDAO adao = new AuthorDAO();
-  private AEteEcritDAO aedao = new AEteEcritDAO();
-  private HasKeywordDAO hkdao = new HasKeywordDAO();
-  private KeywordDAO kdao = new KeywordDAO();
+    private ArticleDAO ldao = new ArticleDAO();
+    private AuthorDAO adao = new AuthorDAO();
+    private AEteEcritDAO aedao = new AEteEcritDAO();
+    private HasKeywordDAO hkdao = new HasKeywordDAO();
+    private KeywordDAO kdao = new KeywordDAO();
 
     public ArticleWS() {
     }
@@ -195,7 +195,7 @@ public class ArticleWS {
     @GET
     public RestResponse<String> listKeywords(@PathParam("id") int idArticle) throws ParseException {
         Article l = ldao.read(idArticle);
-        RestResponse<String> resp = new RestResponse<>("407");
+        RestResponse<String> resp = new RestResponse<>("401");
         
         if(l != null) resp = listKeywords(ldao.read(idArticle).getTitre());
         
@@ -211,10 +211,7 @@ public class ArticleWS {
         
         for(HasKeyword hk : hkdao.read(titreArticle)) {
             String keyword = hk.getKeyword();
-            status = (!status.equals("400") && keyword != null ? "200" : "400");
             if (keyword != null) resp.addObjectList(keyword);
-            resp.setStatus(status);
-            resp.setMessage(RestResponse.getMessageError(status));
         }
         
         return resp;
@@ -224,7 +221,7 @@ public class ArticleWS {
     @POST
     public RestResponse<Keyword> addKeywords(@PathParam("id") int idArticle, Keyword keyword) throws ParseException {
         Article l = ldao.read(idArticle);
-        RestResponse<Keyword> resp = new RestResponse<>("407");
+        RestResponse<Keyword> resp = new RestResponse<>("401");
         
         if(l != null) {
             keyword.setIdArticle(idArticle);
@@ -244,38 +241,42 @@ public class ArticleWS {
     @PUT
     public RestResponse<Keyword> updateKeywords(@PathParam("id") int idArticle, @PathParam("idKeyword") String keyword, @PathParam("rank") int rank, Keyword newKeyword) throws ParseException {
         Article l = ldao.read(idArticle);
-        RestResponse<Keyword> resp = new RestResponse<>("407");
+        String status = "401";
+        
         
         if(l != null) {
             Keyword keyw = kdao.read(keyword, rank);
             if (keyw != null) {
-                String status = kdao.update(keyword, idArticle, newKeyword.getIdArticle());
-                resp = new RestResponse<>(status);
-                status = hkdao.update(l.getTitre(), keyword, newKeyword.getKeyword());
-                resp = new RestResponse<>(status);
+                status = kdao.update(keyword, idArticle, newKeyword.getIdArticle());
+                String update = hkdao.update(l.getTitre(), keyword, newKeyword.getKeyword());
+                if(status.equals("200")) status = update;
+            } else {
+                status = "407";
             }
         }
         
-        return resp;
+        return new RestResponse<>(status);
     }
     
     @Path("{id}/keyword/{keyword}/{rank}")
     @DELETE
     public RestResponse<Keyword> deleteKeywords(@PathParam("id") int idArticle, @PathParam("keyword") String keyword, @PathParam("rank") int rank) throws ParseException {
         Article l = ldao.read(idArticle);
-        RestResponse<Keyword> resp = new RestResponse<>("407");
+        String status = "401";
         
         if(l != null) {
             Keyword keyw = kdao.read(keyword, rank);
             if (keyw != null) {
-                String status = kdao.delete(keyword);
-                resp = new RestResponse<>(status);
+                status = kdao.delete(keyword);
                 for(HasKeyword hk : hkdao.read(l.getTitre())) {
-                    hkdao.delete(hk.getTitreArticle(), hk.getRank());
+                    String delete = hkdao.delete(hk.getTitreArticle(), hk.getRank());
+                    if(status.equals("200")) status = delete;
                 }
+            } else {
+                status = "407";
             }
         }
         
-        return resp;
+        return new RestResponse<>(status);
     }
 }

@@ -5,6 +5,7 @@
  */
 package daos;
 
+import entities.AEteEcrit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -140,7 +141,6 @@ public class HasKeywordDAO {
         if (a.getRank() < 0) a.setRank(1 + getLastRank(a.getTitreArticle(), minorPath));
         
         Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
-        //TODO tester si le livre existe sinon erreur 401
         
         return (putIfAbsent != null ? "200" : "302");
     }    
@@ -185,7 +185,7 @@ public class HasKeywordDAO {
         HasKeyword a = read(titreArticle, rank, minorPath);
         if (a != null) store.delete(a.getStoreKey(minorPath));
         
-        return (a != null ? "200" : "402");
+        return (a != null ? "200" : "407");
     }
     
     public String delete(String titreArticle) {

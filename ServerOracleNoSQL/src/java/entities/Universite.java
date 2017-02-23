@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import oracle.kv.Key;
 import oracle.kv.Value;
 
@@ -97,5 +98,38 @@ public class Universite {
     @Override
     public String toString() {
         return universiteId + "/" + nom + "/" + adresse;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + this.universiteId;
+        hash = 79 * hash + Objects.hashCode(this.nom);
+        hash = 79 * hash + Objects.hashCode(this.adresse);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Universite other = (Universite) obj;
+        if (this.universiteId != other.universiteId) {
+            return false;
+        }
+        if (!Objects.equals(this.nom, other.nom)) {
+            return false;
+        }
+        if (!Objects.equals(this.adresse, other.adresse)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -13,9 +13,16 @@ import javax.ws.rs.core.MediaType;
 import daos.AEcritDAO;
 import daos.AuthorDAO;
 import daos.ArticleDAO;
+import daos.EstRattacheDAO;
+import daos.LaboratoireDAO;
+import daos.RattacheDAO;
+import daos.UniversiteDAO;
 import entities.AEcrit;
 import entities.Author;
 import entities.Article;
+import entities.EstRattache;
+import entities.Laboratoire;
+import entities.Rattache;
 import entities.Universite;
 
 @Path("auteur")
@@ -26,6 +33,10 @@ public class AuthorWS {
   private AuthorDAO adao = new AuthorDAO();
   private ArticleDAO ldao = new ArticleDAO();
   private AEcritDAO aedao = new AEcritDAO();
+  private RattacheDAO rdao = new RattacheDAO();
+  private EstRattacheDAO erdao = new EstRattacheDAO();
+  private UniversiteDAO udao = new UniversiteDAO();
+  private LaboratoireDAO labodao = new LaboratoireDAO();
 
     public AuthorWS() {
     }
@@ -186,27 +197,235 @@ public class AuthorWS {
         return resp;
     }
     
+    @Path("{id}/university")
+    @GET
+    public RestResponse<Universite> listUniversities(@PathParam("id") int idAuteur) {
+        Author a = adao.read(idAuteur);
+      
+        RestResponse<Universite> resp = new RestResponse<>("400");
+        
+        if(a != null) resp = listUniversities(adao.read(idAuteur).getNom());
+        
+        return resp;
+    }
+    
     @Path("{nom}/universityFromName")
     @GET
-    public RestResponse<Universite> getUniversities(@PathParam("nom") String nomAuteur) {
-        return null;//TODO
+    public RestResponse<Universite> listUniversities(@PathParam("nom") String nomAuteur) {
+        String status = "200";
+       
+        RestResponse<Universite> resp = new RestResponse<>(status);
+        
+        for(EstRattache r : erdao.read(nomAuteur, Universite.MAJOR_KEY)) {
+            Universite universite = udao.read(r.getValue());
+            status = (!status.equals("400") && universite != null ? "200" : "400");
+            if (universite != null) resp.addObjectList(universite);
+        }
+        
+        resp.setStatus(status);
+        resp.setMessage(RestResponse.getMessageError(status));
+        
+        return resp;
     }
-    
-    @Path("{nom}/universityFromName")
+    @Path("{id}/university")
     @POST
-    public RestResponse<Universite> addUniversities(@PathParam("nom") String nomAuteur) {
-        return null;//TODO
+    public RestResponse<Rattache> addUniversities(@PathParam("id") int idAuteur, EstRattache estRattache) {
+        Author a = adao.read(idAuteur);
+        String status = "400";
+      
+        RestResponse<Rattache> resp = new RestResponse<>(status);
+        
+        if(a != null) {
+            estRattache.setNomAuteur(a.getNom());
+            
+            Universite univ = udao.read(estRattache.getValue());
+            
+            if(univ != null) {
+                resp = new RestResponse<>("200");
+                
+                status = erdao.create(estRattache);
+                if(!status.equals("200")) resp = new RestResponse<>(status);
+                
+                status = rdao.create(Universite.MAJOR_KEY, univ.getNom(), idAuteur);
+                if(!status.equals("200")) resp = new RestResponse<>(status);
+            } else {
+                resp = new RestResponse<>("405");
+            }
+        }
+        
+        return resp;
     }
     
-    @Path("{nom}/universityFromName/{idUniversity}")
+    @Path("{id}/universityFromName/{idUniversity}/{rank}")
     @PUT
-    public RestResponse<Universite> updateUniversities(@PathParam("nom") String nomAuteur, @PathParam("idUniversity") int idUniversity) {
-        return null;//TODO
+    public RestResponse<Universite> updateUniversities(@PathParam("nom") int idAuteur, @PathParam("idUniversity") int idUniversity, @PathParam("rank") int rank, EstRattache newEstRattache) {
+        Author auteur = adao.read(idAuteur);
+        String status = "400";
+        RestResponse<Universite> resp = new RestResponse<>(status);
+        if(auteur != null) {
+            Universite oldUniv = udao.read(idUniversity);
+            if (oldUniv != null) {
+                status = erdao.update(auteur.getNom(), Universite.MAJOR_KEY, rank, newEstRattache);
+                if(!status.equals("200")) resp = new RestResponse<>(status);
+
+                Universite univ = udao.read(newEstRattache.getValue());
+                if (univ != null) {
+                    status = rdao.delete(Universite.MAJOR_KEY, oldUniv.getNom(), 1);
+                    resp = new RestResponse<>(status);
+                    if (!status.equals("200")) {
+                        status = rdao.update(Universite.MAJOR_KEY, univ.getNom(), idAuteur, 1);
+                        if(!status.equals("200")) resp = new RestResponse<>(status);
+                    }
+                } else {
+                    status = "405";
+                    resp = new RestResponse<>(status);
+                }
+            } else {
+                status = "405";
+                resp = new RestResponse<>(status);
+            }
+        }
+        
+        return resp;
+        
     }
     
-    @Path("{nom}/universityFromName/{idUniversity}")
+    @Path("{id}/universityFromName/{idUniversity}/{rank}")
     @DELETE
-    public RestResponse<Universite> deleteUniversities(@PathParam("nom") String nomAuteur, @PathParam("idUniversity") int idUniversity) {
-        return null;//TODO
+    public RestResponse<Universite> deleteUniversities(@PathParam("nom") int idAuteur, @PathParam("idUniversity") int idUniversity, @PathParam("rank") int rank) {
+        Author auteur = adao.read(idAuteur);
+        String status = "400";
+        RestResponse<Universite> resp = new RestResponse<>(status);
+        if(auteur != null) {
+            Universite univ = udao.read(idUniversity);
+            if (univ != null) {
+                status = erdao.delete(auteur.getNom(), Universite.MAJOR_KEY, rank);
+                resp = new RestResponse<>(status);
+                
+                status = rdao.delete(Universite.MAJOR_KEY, univ.getNom(), 1);
+                if(!status.equals("200")) resp = new RestResponse<>(status);
+            } else {
+                status = "405";
+                resp = new RestResponse<>(status);
+            }
+        }
+        
+        return resp;
+    }
+    
+    @Path("{id}/laboratoire")
+    @GET
+    public RestResponse<Laboratoire> listLaboratories(@PathParam("id") int idAuteur) {
+        Author a = adao.read(idAuteur);
+      
+        RestResponse<Laboratoire> resp = new RestResponse<>("400");
+        
+        if(a != null) resp = listLaboratories(adao.read(idAuteur).getNom());
+        
+        return resp;
+    }
+    
+    @Path("{nom}/laboratoireFromName")
+    @GET
+    public RestResponse<Laboratoire> listLaboratories(@PathParam("nom") String nomAuteur) {
+        String status = "200";
+       
+        RestResponse<Laboratoire> resp = new RestResponse<>(status);
+        
+        for(EstRattache r : erdao.read(nomAuteur, Laboratoire.MAJOR_KEY)) {
+            Laboratoire laboratoire = labodao.read(r.getValue());
+            status = (!status.equals("400") && laboratoire != null ? "200" : "400");
+            if (laboratoire != null) resp.addObjectList(laboratoire);
+        }
+        
+        resp.setStatus(status);
+        resp.setMessage(RestResponse.getMessageError(status));
+        
+        return resp;
+    }
+    @Path("{id}/laboratoire")
+    @POST
+    public RestResponse<Rattache> addLaboratories(@PathParam("id") int idAuteur, EstRattache estRattache) {
+        Author a = adao.read(idAuteur);
+        String status = "400";
+      
+        RestResponse<Rattache> resp = new RestResponse<>(status);
+        
+        if(a != null) {
+            estRattache.setNomAuteur(a.getNom());
+            
+            Laboratoire labo = labodao.read(estRattache.getValue());
+            
+            if(labo != null) {
+                resp = new RestResponse<>("200");
+                
+                status = erdao.create(estRattache);
+                if(!status.equals("200")) resp = new RestResponse<>(status);
+                
+                status = rdao.create(Laboratoire.MAJOR_KEY, labo.getNom(), idAuteur);
+                if(!status.equals("200")) resp = new RestResponse<>(status);
+            } else {
+                resp = new RestResponse<>("404");
+            }
+        }
+        
+        return resp;
+    }
+    
+    @Path("{id}/laboratoireFromName/{idLaboratory}/{rank}")
+    @PUT
+    public RestResponse<Laboratoire> updateLaboratories(@PathParam("nom") int idAuteur, @PathParam("idLaboratory") int idLaboratory, @PathParam("rank") int rank, EstRattache newEstRattache) {
+        Author auteur = adao.read(idAuteur);
+        String status = "400";
+        RestResponse<Laboratoire> resp = new RestResponse<>(status);
+        if(auteur != null) {
+            Laboratoire oldLabo = labodao.read(idLaboratory);
+            if (oldLabo != null) {
+                status = erdao.update(auteur.getNom(), Laboratoire.MAJOR_KEY, rank, newEstRattache);
+                if(!status.equals("200")) resp = new RestResponse<>(status);
+
+                Laboratoire labo = labodao.read(newEstRattache.getValue());
+                if (labo != null) {
+                    status = rdao.delete(Laboratoire.MAJOR_KEY, oldLabo.getNom(), 1);
+                    resp = new RestResponse<>(status);
+                    if (!status.equals("200")) {
+                        status = rdao.update(Laboratoire.MAJOR_KEY, labo.getNom(), idAuteur, 1);
+                        if(!status.equals("200")) resp = new RestResponse<>(status);
+                    }
+                } else {
+                    status = "404";
+                    resp = new RestResponse<>(status);
+                }
+            } else {
+                status = "404";
+                resp = new RestResponse<>(status);
+            }
+        }
+        
+        return resp;
+        
+    }
+    
+    @Path("{id}/laboratoireFromName/{idLaboratory}/{rank}")
+    @DELETE
+    public RestResponse<Laboratoire> deleteLaboratories(@PathParam("nom") int idAuteur, @PathParam("idLaboratory") int idLaboratory, @PathParam("rank") int rank) {
+        Author auteur = adao.read(idAuteur);
+        String status = "400";
+        RestResponse<Laboratoire> resp = new RestResponse<>(status);
+        if(auteur != null) {
+            Laboratoire labo = labodao.read(idLaboratory);
+            if (labo != null) {
+                status = erdao.delete(auteur.getNom(), Laboratoire.MAJOR_KEY, rank);
+                resp = new RestResponse<>(status);
+                
+                status = rdao.delete(Laboratoire.MAJOR_KEY, labo.getNom(), 1);
+                if(!status.equals("200")) resp = new RestResponse<>(status);
+            } else {
+                status = "404";
+                resp = new RestResponse<>(status);
+            }
+        }
+        
+        return resp;
     }
 }

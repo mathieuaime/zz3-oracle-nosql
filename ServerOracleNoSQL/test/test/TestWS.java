@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Mathieu
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({test.ArticleWSTest.class, test.AuthorWSTest.class})
+@Suite.SuiteClasses({test.ArticleWSTest.class, test.AuthorWSTest.class, test.LaboratoryWSTest.class, test.UniversityWSTest.class})
 public class TestWS {
 
     @BeforeClass

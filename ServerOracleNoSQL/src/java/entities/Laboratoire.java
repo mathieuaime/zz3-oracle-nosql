@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import oracle.kv.Key;
 import oracle.kv.Value;
 
@@ -97,6 +98,39 @@ public class Laboratoire {
     @Override
     public String toString() {
         return laboratoireId + "/" + nom + "/" + adresse;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + this.laboratoireId;
+        hash = 47 * hash + Objects.hashCode(this.nom);
+        hash = 47 * hash + Objects.hashCode(this.adresse);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Laboratoire other = (Laboratoire) obj;
+        if (this.laboratoireId != other.laboratoireId) {
+            return false;
+        }
+        if (!Objects.equals(this.nom, other.nom)) {
+            return false;
+        }
+        if (!Objects.equals(this.adresse, other.adresse)) {
+            return false;
+        }
+        return true;
     }
 }
 
