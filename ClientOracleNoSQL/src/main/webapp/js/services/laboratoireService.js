@@ -32,22 +32,16 @@ oraclenosqlServices.factory('laboratoireMainFactory', ['$http', '$q', '$log', fu
 		},
 	
 		// création d'un laboratoire
-		createLaboratoire: function(id,nom,adresse) {
+		createLaboratoire: function(laboratoireId,nom, adresse) {
 			
-			// mise à blanc des paramètres non définis pour éviter les erreurs de signature
-			if (undefined == id) id = '';
-			if (undefined == nom) nom = '';
-			if (undefined == adresse) adresse = '';
-                        
 			
-			$log.debug('laboratoireMainFactory - create laboratoire : ' + id+' ' + nom + ' ' + adresse);
 			
+			
+			
+                        var data = { "laboratoireId":laboratoireId,"nom":nom,"adresse":adresse};
 			var deferred = $q.defer();
-			$http({
-				method: 'POST',
-				url: 'http://localhost:8080/ServerOracleNoSQL/ws/laboratory',
-				params: { id: laboratoireId,nom: nom, adresse: adresse}
-			}).then(function successCallback(response) {
+                        
+			$http.post('http://localhost:8080/ServerOracleNoSQL/ws/laboratory', JSON.stringify(data)).then(function successCallback(response) {
 				$log.debug('... réponse du serveur : OK.');
 				deferred.resolve(response.data);
 			}, function errorCallback(response) {
@@ -55,16 +49,47 @@ oraclenosqlServices.factory('laboratoireMainFactory', ['$http', '$q', '$log', fu
 				$log.debug('***********************************************');
 				$log.debug(response);
 				$log.debug('***********************************************');
-				// deferred.reject('Impossible de créer l\'laboratoire');
+		deferred.reject('Impossible de créer le laboratoire');
 				deferred.reject(response.data);
 			});
 			return deferred.promise;
+		},
+                modifyLaboratoire: function(laboratoireId,nom,adresse) {
+			
+			var data = { "laboratoireId":laboratoireId,"nom":nom,"adresse":adresse };
+			var deferred = $q.defer();
+			$http.put('http://localhost:8080/ServerOracleNoSQL/ws/laboratory/'+laboratoireId, JSON.stringify(data)).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+				deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				$log.debug('... réponse du serveur : erreur.');
+				$log.debug('***********************************************');
+				$log.debug(response);
+				$log.debug('***********************************************');
+                                deferred.reject('Impossible de mettre a jour le laboratoire');
+				deferred.reject(response.data);
+			});
+			return deferred.promise;
+		},
+                removeLaboratoire: function(laboratoireId) {
+                        var deferred = $q.defer();
+			$http.delete('http://localhost:8080/ServerOracleNoSQL/ws/laboratory/'+laboratoireId).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+                                deferred.resolve(response.data);
+			}, function errorCallback(response) {
+			
+                                deferred.reject('Impossible de supprimer le laboratoire');
+                                deferred.reject(response.data);
+			});
 		}
+		
+		
+	
 		
 
 	
 		
 		
-	}
+	};
 	
 }]);

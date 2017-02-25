@@ -52,6 +52,39 @@ oraclenosqlServices.factory('articleMainFactory', ['$http', '$q', '$log', functi
 				deferred.reject(response.data);
 			});
 			return deferred.promise;
+		},
+                
+                modifyArticle: function(id,titre,resume,prix) {
+			
+			var data = {
+                                   "id":id,
+                                 "prix":prix,
+                                 "resume":resume,
+                                 "titre":titre };
+			var deferred = $q.defer();
+			$http.put('http://localhost:8080/ServerOracleNoSQL/ws/article/'+id, JSON.stringify(data)).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+				deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				$log.debug('... réponse du serveur : erreur.');
+				$log.debug('***********************************************');
+				$log.debug(response);
+				$log.debug('***********************************************');
+                                deferred.reject('Impossible de mettre a jour l\'article');
+				deferred.reject(response.data);
+			});
+			return deferred.promise;
+		},
+                removeArticle: function(id) {
+		
+			$http.delete('http://localhost:8080/ServerOracleNoSQL/ws/article/'+id).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+                                deferred.resolve(response.data);
+			}, function errorCallback(response) {
+			
+                                deferred.reject('Impossible de supprimer l\'article');
+                                deferred.reject(response.data);
+			});
 		}
 		
 	

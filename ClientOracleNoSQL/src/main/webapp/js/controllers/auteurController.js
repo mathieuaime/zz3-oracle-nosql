@@ -90,7 +90,80 @@ oraclenosqlControllers.controller('auteurMainController', ['$scope', '$rootScope
                         	$scope.formData.createAuteurFax = "";
                                 	$scope.formData.createAuteurMail = "";
 		
+	},
+        $scope.editAuteur = function (auteur){
+		
+		$scope.formData.auteur = auteur;
+		
+		//Initialisation du formulaire
+		
+               $scope.formData.createAuteurId = auteur.id;
+	$scope.formData.createAuteurNom = auteur.nom;
+	$scope.formData.createAuteurPrenom = auteur.prenom;
+        	$scope.formData.createAuteurAdresse = auteur.adresse;
+                	$scope.formData.createAuteurPhone = auteur.phone;
+                        	$scope.formData.createAuteurFax = auteur.fax;
+                                	$scope.formData.createAuteurMail = auteur.mail;
+		
+		
+		
+	},
+        $scope.modifyAuteur = function()
+	{
+		// contrôle des champs qui doivent être définis
+		if ($scope.formData.createAuteurId && $scope.formData.createAuteurNom) {
+			// appel au service effectuant la requête (une promesse est renvoyée : gestion de l'appel en mode synchrone)
+			auteurMainFactory.modifyAuteur(
+					
+					$scope.formData.createAuteurId, 
+					$scope.formData.createAuteurNom,
+                                        $scope.formData.createAuteurPrenom,
+                                        $scope.formData.createAuteurAdresse,
+                                        $scope.formData.createAuteurPhone,
+                                        $scope.formData.createAuteurFax,
+                                        $scope.formData.createAuteurMail).then(
+					function(result) {
+						$rootScope.draftWplanControllerError = '';
+						$scope.auteurs.splice($scope.auteurs.indexOf($scope.formData.auteur))
+						$scope.auteurs.push(result);
+						
+					}, 
+					function(error) {
+						$rootScope.draftWplanControllerError = error;
+						$log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+					});
+		} else {
+			$rootScope.draftWplanControllerError = 'Vous devez renseigner l\'id et le nom de l\'auteur.';
+		}
+		
+		// remise à blanc des champs de saisie pour la création d'un auteur
+		$scope.formData = {};
+		
+		// fermeture de la fenêtre modale
+		$('#modifyAuteurModal').modal('hide');
+	},
+        $scope.setRemovableAuteur = function(auteur) {
+		
+		$scope.auteur_confirm = auteur;
+	},
+        $scope.removeAuteur = function(auteur) {
+		
+		
+		
+		auteurMainFactory.removeAuteur(auteur.id).then(
+					function(result) {
+						$rootScope.draftWplanControllerError = '';
+						var index = $scope.auteur.indexOf(auteur);
+                                                $scope.auteurs.splice(index, 1);
+						
+					}, 
+					function(error) {
+						$rootScope.draftWplanControllerError = error;
+						
+					});
+                                        $('#confirmation').modal('hide');
 	};
+        
 	
 	
 	

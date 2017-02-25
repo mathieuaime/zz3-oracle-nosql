@@ -53,7 +53,38 @@ oraclenosqlServices.factory('auteurMainFactory', ['$http', '$q', '$log', functio
 				deferred.reject(response.data);
 			});
 			return deferred.promise;
+		},
+                modifyAuteur: function(id,nom,prenom,adresse,phone,fax,mail) {
+			
+			var data = { "id":id,"nom":nom, "prenom":prenom, "adresse":adresse, "phone":phone, "fax":fax, "mail":mail };
+			var deferred = $q.defer();
+			$http.put('http://localhost:8080/ServerOracleNoSQL/ws/auteur/'+id, JSON.stringify(data)).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+				deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				$log.debug('... réponse du serveur : erreur.');
+				$log.debug('***********************************************');
+				$log.debug(response);
+				$log.debug('***********************************************');
+                                deferred.reject('Impossible de mettre a jour l\'auteur');
+				deferred.reject(response.data);
+			});
+			return deferred.promise;
+		},
+                removeAuteur: function(id) {
+		var deferred = $q.defer();
+			$http.delete('http://localhost:8080/ServerOracleNoSQL/ws/auteur/'+id).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+                                deferred.resolve(response.data);
+			}, function errorCallback(response) {
+			
+                                deferred.reject('Impossible de supprimer l\'auteur');
+                                deferred.reject(response.data);
+			});
 		}
+		
+		
+	
 		
 
 	

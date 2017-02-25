@@ -4,11 +4,11 @@
 
 <div>
 
-	<h2>Laboratoires</h2>
+	<h2>Labo</h2>
 
 
 	<p>
-		<strong class="text-danger">{{draftOracleControllerError}}</strong>
+		<strong class="text-danger">{{draftWplanControllerError}}</strong>
 	</p>
 
 	<ul id="draftOracleTabs" class="nav nav-tabs"
@@ -20,9 +20,8 @@
 		<li data-ng-class="{active:currentTab == 'tabGestionLaboratoires'}"><a
 			role="button" id="tabGestionLaboratoiresBtn"
 			
-			data-ng-click="currentTab='tabGestionLaboratoires'">Recherche des 
-                        laboratoires
-				</a></li>
+			data-ng-click="currentTab='tabGestionLaboratoires'">Recherche des laboratoires
+                    </a></li>
 	</ul>
 
 
@@ -43,8 +42,9 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>Id</th>
+                                        <th>Id</th>
 					<th>Nom</th>
+					
 					<th>Adresse</th>
 					
 					<th></th>
@@ -53,9 +53,11 @@
 			<tbody>
 				<tr
 					data-ng-repeat="laboratoire in laboratoires">
-					<td>{{laboratoire.id}}</td>
+                                        <td>{{laboratoire.laboratoireId}}</td>
 					<td>{{laboratoire.nom}}</td>
+					
                                         <td> {{laboratoire.adresse}}</td>
+                                        
                                        
 					<td width="60px"><a role="button"
 						data-ng-click="editLaboratoire(laboratoire)"><img
@@ -70,7 +72,7 @@
 
 		<p>
 			<button type="button" class="btn btn-primary" data-toggle="modal"
-				data-target="#createLaboratoireModal"
+				data-target="#createLaboratoireModal" data-ng-click="initializeLaboratoire()"
 				>Ajouter un
 				laboratoire</button>
 		</p>
@@ -88,29 +90,29 @@
 						<h4 class="modal-title">Ajouter un laboratoire</h4>
 					</div>
 					<div class="modal-body form-group">
-						<label for="createLaboratoireId">Id</label> <input type="text"
+                                            <label for="createLaboratoireId">Id</label> <input type="text"
 							class="form-control"
 							data-ng-model="formData.createLaboratoireId" size="30"
 							placeholder="Id"> <br />
-                                                <label
-							for="createLaboratoireNom">Nom</label> <input type="text"
+						<label for="createLaboratoireNom">Nom</label> <input type="text"
 							class="form-control"
-							data-ng-model="formData.createLaboratoireNomPrenom" size="30"
-							placeholder="Nom"> <br /> 
+							data-ng-model="formData.createLaboratoireNom" size="30"
+							placeholder="Nom"> <br />
+                                               
                                                  <label
 							for="createLaboratoireAdresse">Adresse</label> <input type="text"
 							class="form-control"
 							data-ng-model="formData.createLaboratoireAdresse" size="30"
 							placeholder="Adresse"> <br /> 
+                                                
+                                                
                                                  
 						
-                                                 
-                                                 
-							
 					</div>
+                                    <strong class="text-danger">{{draftWplanControllerError}}</strong>
 					<div class="modal-footer form-group">
 						<button class="btn btn-primary" type="submit"
-							data-ng-click="controlNewLaboratoire()">Ajouter</button>
+							data-ng-click="createLaboratoire()">Ajouter</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
 					</div>
 				</form>
@@ -120,7 +122,49 @@
 
 
 
-	<div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
+                
+                 <div id="modifyLaboratoireModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form data-ng-submit="">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Modification de {{
+							formData.createLaboratoireId }} {{
+							formData.createLaboratoireNom }}</h4>
+					</div>
+					<div class="modal-body form-group">
+						<label for="createLaboratoireId">Id</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createLaboratoireId" size="30"
+							placeholder="Id"> <br />
+						<label for="createLaboratoireNom">Nom</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createLaboratoireNom" size="30"
+							placeholder="Nom"> <br />
+                                               
+                                                 <label
+							for="createLaboratoireAdresse">Adresse</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createLaboratoireAdresse" size="30"
+							placeholder="Adresse"> <br /> 
+                                               
+                                                 
+                                                
+                                                 
+					</div>
+                                    <strong class="text-danger">{{draftWplanControllerError}}</strong>
+					<div class="modal-footer form-group">
+						<button class="btn btn-primary" type="submit"
+							data-ng-click="modifyLaboratoire()">Sauvegarder</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+        <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header alert alert-danger">
@@ -131,13 +175,14 @@
 					<h4 class="modal-title">Confirmation</h4>
 				</div>
 				<div class="modal-body">
-					<p>Etes-vous sur de vouloir supprimer cet l'laboratoire {{
-						laboratoire_confirm.id }} {{ laboratoire_confirm.nom }}?</p>
+					<p>Etes-vous sur de vouloir supprimer cet laboratoire ?</p>
+                                         <strong class="text-danger">{{draftWplanControllerError}} {{laboratoire_confirm.laboratoireId}}</strong>
 				</div>
 				<div class="modal-footer">
 					<!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal"
 						data-ng-click="removeLaboratoire(laboratoire_confirm)">Oui</button>-->
+                                      
 					<button class="btn btn-primary"
 						data-ng-click="removeLaboratoire(laboratoire_confirm)">Continuer</button>
 					<button class="btn btn-default" data-dismiss="modal">Annuler</button>
@@ -148,7 +193,7 @@
 		<!-- /.modal-dialog -->
 	</div>
 	<!-- /.modal -->
-
+           
 
         </div>
 	

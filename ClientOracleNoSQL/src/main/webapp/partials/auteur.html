@@ -8,7 +8,7 @@
 
 
 	<p>
-		<strong class="text-danger">{{draftOracleControllerError}}</strong>
+		<strong class="text-danger">{{draftWplanControllerError}}</strong>
 	</p>
 
 	<ul id="draftOracleTabs" class="nav nav-tabs"
@@ -144,6 +144,96 @@
 
 
 
+                
+                 <div id="modifyAuteurModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form data-ng-submit="">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Modification de {{
+							formData.createAuteurId }} {{
+							formData.createAuteurNom }}</h4>
+					</div>
+					<div class="modal-body form-group">
+						<label for="createAuteurId">Id</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createAuteurId" size="30"
+							placeholder="Id"> <br />
+						<label for="createAuteurNom">Nom</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createAuteurNom" size="30"
+							placeholder="Nom"> <br />
+                                                <label
+							for="createAuteurPrenom">Prénom</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createAuteurPrenom" size="30"
+							placeholder="Prénom"> <br /> 
+                                                 <label
+							for="createAuteurAdresse">Adresse</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createAuteurAdresse" size="30"
+							placeholder="Adresse"> <br /> 
+                                                 <label
+							for="createAuteurPrenom">Phone</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createAuteurPhone" size="30"
+							placeholder="Phone"> <br /> 
+                                                 <label
+							for="createAuteurFax">Fax</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createAuteurFax" size="30"
+							placeholder="Fax"> <br /> 
+                                                 <label
+							for="createAuteurMail">Mail</label> <input type="text"
+							class="form-control"
+							data-ng-model="formData.createAuteurMail" size="30"
+							placeholder="Mail"> <br /> 
+                                                 
+                                                
+                                                 
+					</div>
+                                    <strong class="text-danger">{{draftWplanControllerError}}</strong>
+					<div class="modal-footer form-group">
+						<button class="btn btn-primary" type="submit"
+							data-ng-click="modifyAuteur()">Sauvegarder</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+        <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header alert alert-danger">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Confirmation</h4>
+				</div>
+				<div class="modal-body">
+					<p>Etes-vous sur de vouloir supprimer cet auteur ?</p>
+                                         <strong class="text-danger">{{draftWplanControllerError}} {{auteur_confirm.id}}</strong>
+				</div>
+				<div class="modal-footer">
+					<!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal"
+						data-ng-click="removeAuteur(auteur_confirm)">Oui</button>-->
+                                      
+					<button class="btn btn-primary"
+						data-ng-click="removeAuteur(auteur_confirm)">Continuer</button>
+					<button class="btn btn-default" data-dismiss="modal">Annuler</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+           
 
         </div>
 	

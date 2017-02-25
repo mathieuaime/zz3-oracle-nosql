@@ -9,6 +9,7 @@ oraclenosqlControllers.controller('articleMainController',['$scope','$rootScope'
 							readArticles();
 							$scope.currentTab = 'tabVoirArticles';
 							$scope.formData = {};
+                                                        $scope.article_confirm="";
 
         function readArticles() { // fonction privée (pas ajoutée au $scope)
 		
@@ -36,11 +37,7 @@ oraclenosqlControllers.controller('articleMainController',['$scope','$rootScope'
 					$scope.formData.createArticlePrix).then(
 					function(result) {
 						$rootScope.draftWplanControllerError = '';
-                                                       $scope.articles.push( {
-                                   "id":$scope.formData.createArticleId,
-                                 "prix":$scope.formData.createArticlePrix,
-                                 "resume":$scope.formData.createArticleResume,
-                                 "titre":$scope.formData.createArticleTitre });
+                                                       $scope.articles.push(result);
 					}, 
 					function(error) {
 						$rootScope.draftWplanControllerError = error;
@@ -54,7 +51,7 @@ oraclenosqlControllers.controller('articleMainController',['$scope','$rootScope'
 		$scope.formData = {};
 		
 		// fermeture de la fenêtre modale
-		$('#createAuteurModal').modal('hide');
+		$('#createArticleModal').modal('hide');
 	},
         
         
@@ -68,6 +65,72 @@ oraclenosqlControllers.controller('articleMainController',['$scope','$rootScope'
 		
 		
 		
+	},
+        $scope.editArticle = function (article){
+		
+		$scope.formData.article = article;
+		
+		//Initialisation du formulaire
+		
+                    $scope.formData.createArticleId = article.id;
+		$scope.formData.createArticleTitre = article.titre;
+		$scope.formData.createArticleResume = article.resume;
+		$scope.formData.createArticlePrix = article.prix;
+		
+		
+		
+	},
+        $scope.modifyArticle = function()
+	{
+		// contrôle des champs qui doivent être définis
+		if ($scope.formData.createArticleId && $scope.formData.createArticleTitre) {
+			// appel au service effectuant la requête (une promesse est renvoyée : gestion de l'appel en mode synchrone)
+			articleMainFactory.modifyArticle(
+					
+					$scope.formData.createArticleId, 
+					$scope.formData.createArticleTitre, 
+					$scope.formData.createArticleResume,
+					$scope.formData.createArticlePrix).then(
+					function(result) {
+						$rootScope.draftWplanControllerError = '';
+						$scope.articles.splice($scope.articles.indexOf($scope.formData.article))
+						$scope.articles.push(result);
+						
+					}, 
+					function(error) {
+						$rootScope.draftWplanControllerError = error;
+						$log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+					});
+		} else {
+			$rootScope.draftWplanControllerError = 'Vous devez renseigner l\'id et le titre de l\'article.';
+		}
+		
+		// remise à blanc des champs de saisie pour la création d'un article
+		$scope.formData = {};
+		
+		// fermeture de la fenêtre modale
+		$('#modifyArticleModal').modal('hide');
+	},
+        $scope.setRemovableArticle = function(article) {
+		
+		$scope.article_confirm = article;
+	},
+        $scope.removeArticle = function(article) {
+		
+		
+		
+		articleMainFactory.removeArticle(article.id).then(
+					function(result) {
+						$rootScope.draftWplanControllerError = '';
+						var index = $scope.article.indexOf(article);
+                                                $scope.articles.splice(index, 1);
+						
+					}, 
+					function(error) {
+						$rootScope.draftWplanControllerError = error;
+						
+					});
+                                        $('#confirmation').modal('hide');
 	};
         
         
