@@ -1,4 +1,14 @@
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
+
+/**
+ * Services de la gestion des projets.
+ * Principalement utilisés pour communiquer avec l'API REST exposée par le back-end (l'application Java gérant le métier et la persistance).
+ */
 
 oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', function($http, $q, $log) {
 	
@@ -22,22 +32,12 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
 		},
 	
 		// création d'un universite
-		createUniversite: function(id,nom,adresse) {
+		createUniversite: function(universiteId,nom, adresse) {
 			
-			// mise à blanc des paramètres non définis pour éviter les erreurs de signature
-			if (undefined == id) id = '';
-			if (undefined == nom) nom = '';
-			if (undefined == adresse) adresse = '';
-                        
-			
-			$log.debug('universiteMainFactory - create universite : ' + id+' ' + nom + ' ' + adresse);
-			
+                        var data = { "universiteId":universiteId,"nom":nom,"adresse":adresse};
 			var deferred = $q.defer();
-			$http({
-				method: 'POST',
-				url: 'http://localhost:8080/ServerOracleNoSQL/ws/university',
-				params: { id: universiteId,nom: nom, adresse: adresse}
-			}).then(function successCallback(response) {
+                        
+			$http.post('http://localhost:8080/ServerOracleNoSQL/ws/university', JSON.stringify(data)).then(function successCallback(response) {
 				$log.debug('... réponse du serveur : OK.');
 				deferred.resolve(response.data);
 			}, function errorCallback(response) {
@@ -45,7 +45,7 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
 				$log.debug('***********************************************');
 				$log.debug(response);
 				$log.debug('***********************************************');
-				// deferred.reject('Impossible de créer l\'universite');
+		deferred.reject('Impossible de créer le universite');
 				deferred.reject(response.data);
 			});
 			return deferred.promise;
@@ -62,7 +62,7 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
 				$log.debug('***********************************************');
 				$log.debug(response);
 				$log.debug('***********************************************');
-                                deferred.reject('Impossible de mettre a jour l\'université');
+                                deferred.reject('Impossible de mettre a jour le universite');
 				deferred.reject(response.data);
 			});
 			return deferred.promise;
@@ -74,15 +74,10 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
                                 deferred.resolve(response.data);
 			}, function errorCallback(response) {
 			
-                                deferred.reject('Impossible de supprimer l\'université');
+                                deferred.reject('Impossible de supprimer le universite');
                                 deferred.reject(response.data);
 			});
 		}
-		
-
-	
-		
-		
-	}
+	};
 	
 }]);
