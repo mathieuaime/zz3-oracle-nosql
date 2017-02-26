@@ -34,10 +34,6 @@ oraclenosqlServices.factory('laboratoireMainFactory', ['$http', '$q', '$log', fu
 		// création d'un laboratoire
 		createLaboratoire: function(laboratoireId,nom, adresse) {
 			
-			
-			
-			
-			
                         var data = { "laboratoireId":laboratoireId,"nom":nom,"adresse":adresse};
 			var deferred = $q.defer();
                         
@@ -82,14 +78,6 @@ oraclenosqlServices.factory('laboratoireMainFactory', ['$http', '$q', '$log', fu
                                 deferred.reject(response.data);
 			});
 		}
-		
-		
-	
-		
-
-	
-		
-		
 	};
 	
 }]);

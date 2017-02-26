@@ -4,208 +4,210 @@
 
 <div>
 
-	<h2>Labo</h2>
+    <h2>Labo</h2>
 
 
-	<p>
-		<strong class="text-danger">{{draftWplanControllerError}}</strong>
-	</p>
+    <p>
+        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+    </p>
 
-	<ul id="draftOracleTabs" class="nav nav-tabs"
-		>
-		<li data-ng-class="{active:currentTab == 'tabVoirLaboratoires'}"><a
-			role="button" id="tabVoirLaboratoiresBtn"
-			data-ng-click="currentTab='tabVoirLaboratoires'">Voir les
-				laboratoires</a></li>
-		<li data-ng-class="{active:currentTab == 'tabGestionLaboratoires'}"><a
-			role="button" id="tabGestionLaboratoiresBtn"
-			
-			data-ng-click="currentTab='tabGestionLaboratoires'">Recherche des laboratoires
-                    </a></li>
-	</ul>
+    <ul id="draftOracleTabs" class="nav nav-tabs"
+        >
+        <li data-ng-class="{active:currentTab == 'tabVoirLaboratoires'}"><a
+                role="button" id="tabVoirLaboratoiresBtn"
+                data-ng-click="currentTab = 'tabVoirLaboratoires'">Voir les
+                laboratoires</a></li>
+        <li data-ng-class="{active:currentTab == 'tabGestionLaboratoires'}"><a
+                role="button" id="tabGestionLaboratoiresBtn"
 
-
-
-
-	<div id="tabVoirLaboratoires"
-		data-ng-show="currentTab == 'tabVoirLaboratoires'">
-
-
-<h3>Liste des laboratoires</h3>
-
-		
-		<p>
-			Filtrer :&emsp;<input type="text" size="30"
-				data-ng-model="laboratoiresFilter">
-		</p>
-
-		<table class="table table-hover">
-			<thead>
-				<tr>
-                                        <th>Id</th>
-					<th>Nom</th>
-					
-					<th>Adresse</th>
-					
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr
-					data-ng-repeat="laboratoire in laboratoires">
-                                        <td>{{laboratoire.laboratoireId}}</td>
-					<td>{{laboratoire.nom}}</td>
-					
-                                        <td> {{laboratoire.adresse}}</td>
-                                        
-                                       
-					<td width="60px"><a role="button"
-						data-ng-click="editLaboratoire(laboratoire)"><img
-							alt="modifier" src="img/modify.png" data-toggle="modal"
-							data-target="#modifyLaboratoireModal"></a> <a
-						data-toggle="modal" data-target="#confirmation" role="button"
-						data-ng-click="setRemovableLaboratoire(laboratoire)"><img
-							alt="supprimer" src="img/delete.png"></a></td>
-				</tr>
-			</tbody>
-		</table>
-
-		<p>
-			<button type="button" class="btn btn-primary" data-toggle="modal"
-				data-target="#createLaboratoireModal" data-ng-click="initializeLaboratoire()"
-				>Ajouter un
-				laboratoire</button>
-		</p>
-
-	
+                data-ng-click="currentTab = 'tabGestionLaboratoires'">Recherche des laboratoires
+            </a></li>
+    </ul>
 
 
 
-	<div id="createLaboratoireModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form data-ng-submit="">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Ajouter un laboratoire</h4>
-					</div>
-					<div class="modal-body form-group">
-                                            <label for="createLaboratoireId">Id</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createLaboratoireId" size="30"
-							placeholder="Id"> <br />
-						<label for="createLaboratoireNom">Nom</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createLaboratoireNom" size="30"
-							placeholder="Nom"> <br />
-                                               
-                                                 <label
-							for="createLaboratoireAdresse">Adresse</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createLaboratoireAdresse" size="30"
-							placeholder="Adresse"> <br /> 
-                                                
-                                                
-                                                 
-						
-					</div>
-                                    <strong class="text-danger">{{draftWplanControllerError}}</strong>
-					<div class="modal-footer form-group">
-						<button class="btn btn-primary" type="submit"
-							data-ng-click="createLaboratoire()">Ajouter</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+
+    <div id="tabVoirLaboratoires"
+         data-ng-show="currentTab == 'tabVoirLaboratoires'">
+
+
+        <h3>Liste des laboratoires</h3>
+
+
+        <p>
+            Filtrer :&emsp;<input type="text" size="30"
+                                  data-ng-model="laboratoiresFilter">
+        </p>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+
+                    <th>Adresse</th>
+
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    data-ng-repeat="laboratoire in laboratoires">
+                    <td>{{laboratoire.laboratoireId}}</td>
+                    <td>{{laboratoire.nom}}</td>
+
+                    <td> {{laboratoire.adresse}}</td>
+
+
+                    <td width="60px">
+                        <a role="button" data-ng-click="editLaboratoire(laboratoire)">
+                            <img alt="modifier" src="img/modify.png" data-toggle="modal"
+                                 data-target="#modifyLaboratoireModal">
+                        </a> 
+                        <a data-toggle="modal" data-target="#confirmation" role="button"
+                           data-ng-click="setRemovableLaboratoire(laboratoire)">
+                            <img alt="supprimer" src="img/delete.png">
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+                    data-target="#createLaboratoireModal" data-ng-click="initializeLaboratoire()"
+                    >Ajouter un
+                laboratoire</button>
+        </p>
+
+        <div id="createLaboratoireModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form data-ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Ajouter un laboratoire</h4>
+                        </div>
+                        <div class="modal-body form-group">
+                            <label for="createLaboratoireId">Id</label> 
+                            <input type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createLaboratoireId" size="30"
+                                   placeholder="Id"> 
+                            <br/>
+
+                            <label for="createLaboratoireNom">Nom</label> 
+                            <input type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createLaboratoireNom" size="30"
+                                   placeholder="Nom"> 
+                            <br/>
+
+                            <label
+                                for="createLaboratoireAdresse">Adresse</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createLaboratoireAdresse" size="30"
+                                placeholder="Adresse"> <br /> 
+                        </div>
+                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                        <div class="modal-footer form-group">
+                            <button class="btn btn-primary" type="submit"
+                                    data-ng-click="createLaboratoire()">Ajouter</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 
 
-                
-                 <div id="modifyLaboratoireModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form data-ng-submit="">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Modification de {{
-							formData.createLaboratoireId }} {{
-							formData.createLaboratoireNom }}</h4>
-					</div>
-					<div class="modal-body form-group">
-						<label for="createLaboratoireId">Id</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createLaboratoireId" size="30"
-							placeholder="Id"> <br />
-						<label for="createLaboratoireNom">Nom</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createLaboratoireNom" size="30"
-							placeholder="Nom"> <br />
-                                               
-                                                 <label
-							for="createLaboratoireAdresse">Adresse</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createLaboratoireAdresse" size="30"
-							placeholder="Adresse"> <br /> 
-                                               
-                                                 
-                                                
-                                                 
-					</div>
-                                    <strong class="text-danger">{{draftWplanControllerError}}</strong>
-					<div class="modal-footer form-group">
-						<button class="btn btn-primary" type="submit"
-							data-ng-click="modifyLaboratoire()">Sauvegarder</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+
+        <div id="modifyLaboratoireModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form data-ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Modification de {{
+                                        formData.createLaboratoireId}} {{
+                                                    formData.createLaboratoireNom}}</h4>
+                        </div>
+                        <div class="modal-body form-group">
+                            <label for="createLaboratoireId">Id</label> 
+                            <input type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createLaboratoireId" size="30"
+                                   placeholder="Id"> 
+                            <br />
+                            
+                            <label for="createLaboratoireNom">Nom</label> 
+                            <input type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createLaboratoireNom" size="30"
+                                   placeholder="Nom"> 
+                            <br />
+
+                            <label for="createLaboratoireAdresse">Adresse</label> 
+                            <input type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createLaboratoireAdresse" size="30"
+                                   placeholder="Adresse"> 
+                            <br /> 
+                        </div>
+                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                        <div class="modal-footer form-group">
+                            <button class="btn btn-primary" type="submit"
+                                    data-ng-click="modifyLaboratoire()">Sauvegarder</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header alert alert-danger">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<h4 class="modal-title">Confirmation</h4>
-				</div>
-				<div class="modal-body">
-					<p>Etes-vous sur de vouloir supprimer cet laboratoire ?</p>
-                                         <strong class="text-danger">{{draftWplanControllerError}} {{laboratoire_confirm.laboratoireId}}</strong>
-				</div>
-				<div class="modal-footer">
-					<!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal"
-						data-ng-click="removeLaboratoire(laboratoire_confirm)">Oui</button>-->
-                                      
-					<button class="btn btn-primary"
-						data-ng-click="removeLaboratoire(laboratoire_confirm)">Continuer</button>
-					<button class="btn btn-default" data-dismiss="modal">Annuler</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	<!-- /.modal -->
-           
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header alert alert-danger">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Confirmation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Etes-vous sur de vouloir supprimer cet laboratoire ?</p>
+                        <strong class="text-danger">{{draftWplanControllerError}} {{laboratoire_confirm.laboratoireId}}</strong>
+                    </div>
+                    <div class="modal-footer">
+                        <!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                                data-ng-click="removeLaboratoire(laboratoire_confirm)">Oui</button>-->
 
+                        <button class="btn btn-primary"
+                                data-ng-click="removeLaboratoire(laboratoire_confirm)">Continuer</button>
+                        <button class="btn btn-default" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
-	
+        <!-- /.modal -->
+
+
+    </div>
+
 
 
 
     <div id="tabGestionLaboratoires"
-		data-ng-if="currentTab == 'tabGestionLaboratoires'">
+         data-ng-if="currentTab == 'tabGestionLaboratoires'">
 
-            <h2> Recherche des laboratoires </h2>
+        <h2> Recherche des laboratoires </h2>
 
-        </div>
+    </div>
 
-        
+
 </div>
