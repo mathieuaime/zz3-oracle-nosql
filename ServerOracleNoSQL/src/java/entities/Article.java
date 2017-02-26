@@ -9,10 +9,8 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -22,6 +20,7 @@ import oracle.kv.Value;
  * @author mathieu
  */
 public class Article implements Serializable {
+
     /*
      * The id is a unique identifier and is used to construct
      * the Key's major path.
@@ -33,7 +32,7 @@ public class Article implements Serializable {
      * the Key's major path component.
      */
     public static final String MAJOR_KEY = "article";
-    
+
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MMMM/yyyy");
 
     private String titre;
@@ -42,11 +41,11 @@ public class Article implements Serializable {
     private Date receptionDate;
     private Date acceptationDate;
     private Date publicationDate;
-    
+
     public Article(int id, String titre, String resume, float prix) {
         this(id, titre, resume, prix, null, null, null);
     }
-    
+
     public Article(int id, String titre, String resume, float prix, Date receptionDate, Date acceptationDate, Date publicationDate) {
         this.titre = titre;
         this.resume = resume;
@@ -56,22 +55,28 @@ public class Article implements Serializable {
         this.acceptationDate = acceptationDate;
         this.publicationDate = publicationDate;
     }
-    
+
     public Article(byte[] bytes) throws ParseException {
-        
+
         String auteur = new String(bytes);
         String[] elt = auteur.split("/");
         this.id = Integer.parseInt(elt[0]);
         titre = elt[1];
-        resume = elt[2];        
+        resume = elt[2];
         prix = Float.parseFloat(elt[3]);
-        if (elt.length > 5 && elt[4] != null) receptionDate = DATE_FORMAT.parse(elt[4]);
-        if (elt.length > 6 && elt[5] != null) acceptationDate = DATE_FORMAT.parse(elt[5]);
-        if (elt.length > 7 && elt[6] != null) publicationDate = DATE_FORMAT.parse(elt[6]);
+        if (elt.length > 5 && elt[4] != null) {
+            receptionDate = DATE_FORMAT.parse(elt[4]);
+        }
+        if (elt.length > 6 && elt[5] != null) {
+            acceptationDate = DATE_FORMAT.parse(elt[5]);
+        }
+        if (elt.length > 7 && elt[6] != null) {
+            publicationDate = DATE_FORMAT.parse(elt[6]);
+        }
     }
-    
+
     public Article() {
-        this(-1,null,null,-1, null, null, null);
+        this(-1, null, null, -1, null, null, null);
     }
 
     public int getId() {
@@ -81,7 +86,7 @@ public class Article implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public String getTitre() {
         return titre;
     }
@@ -129,24 +134,24 @@ public class Article implements Serializable {
     public void setPublicationDate(Date publicationDate) {
         this.publicationDate = publicationDate;
     }
-    
+
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(id)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY, String.valueOf(id)), minorKey);
     }
 
     public Value getStoreValue() {
         return Value.createValue(toString().getBytes());
     }
-    
+
     @Override
     public String toString() {
-        return  id + "/" + 
-                titre + "/" + 
-                resume + "/" + 
-                prix + "/" + 
-                (receptionDate != null ? DATE_FORMAT.format(receptionDate) : "") + "/" + 
-                (acceptationDate != null ? DATE_FORMAT.format(acceptationDate) : "") + "/" + 
-                (publicationDate != null ? DATE_FORMAT.format(publicationDate) : "");
+        return id + "/"
+                + titre + "/"
+                + resume + "/"
+                + prix + "/"
+                + (receptionDate != null ? DATE_FORMAT.format(receptionDate) : "") + "/"
+                + (acceptationDate != null ? DATE_FORMAT.format(acceptationDate) : "") + "/"
+                + (publicationDate != null ? DATE_FORMAT.format(publicationDate) : "");
     }
 
     @Override
@@ -197,5 +202,4 @@ public class Article implements Serializable {
         }
         return true;
     }
-    
 }

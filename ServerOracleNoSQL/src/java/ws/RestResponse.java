@@ -14,32 +14,53 @@ import java.util.List;
  * @author Mathieu
  */
 public class RestResponse<T> implements Serializable {
-    private String status;
+
+    private String responseCode;
     private String message;
+    private int code;
     private List<T> objectList;
 
     public RestResponse() {
-        objectList = new ArrayList<>();
+        this(200);
     }
-    
-    public RestResponse(String status) {
-        this.status = status;
-        this.message = getMessageError(status);
-        this.objectList = new ArrayList<>();
+
+    public RestResponse(int code) {
+        this(code, new ArrayList<>());
     }
-    
-    public RestResponse(String status, List<T> objectList) {
-        this.status = status;
-        this.message = getMessageError(status);
+
+    public RestResponse(int code, String responseCode) {
+        this(code, responseCode, new ArrayList<>());
+    }
+
+    public RestResponse(int code, List<T> objectList) {
+        this(code, getStatus(code), getMessage(code), objectList);
+    }
+
+    public RestResponse(int code, String responseCode, List<T> objectList) {
+        this(code, responseCode, getMessage(code), objectList);
+    }
+
+    public RestResponse(int code, String responseCode, String message, List<T> objectList) {
+        this.responseCode = responseCode;
+        this.code = code;
+        this.message = message;
         this.objectList = objectList;
     }
 
-    public String getStatus() {
-        return status;
+    public String getResponseCode() {
+        return responseCode;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getMessage() {
@@ -59,37 +80,125 @@ public class RestResponse<T> implements Serializable {
     }
 
     public void addObjectList(T object) {
-        this.objectList.add(object);
+        this.objectList.add(object);//gérer doublon
     }
 
-    public static String getMessageError(String error) {
-        String message;
-        switch(error) {
-            case "200": message = "ok";break;
-            
-            case "300": message = "Auteur déjà créé";break;
-            case "301": message = "Livre déjà créé";break;
-            case "302": message = "Relation AEcrit déjà créée";break;
-            case "303": message = "Relation AEteEcrit déjà créée";break;
-            case "304": message = "Laboratoire déjà créé";break;
-            case "305": message = "Université déjà créé";break;
-            case "306": message = "Relation rattache déjà créée";break;
-            case "307": message = "Keyword déjà créé";break;
-            case "308": message = "Relation EstRattache déjà créée";break;
-            
-            case "400": message = "Auteur inconnu";break;
-            case "401": message = "Livre inconnu";break;
-            case "402": message = "Relation AEcrit inconnue";break;
-            case "403": message = "Relation AEteEcrit inconnue";break;
-            case "404": message = "Laboratoire inconnu";break;
-            case "405": message = "Université inconnue";break;
-            case "406": message = "Relation rattache inconnue";break;
-            case "407": message = "Keyword inconnu";break;
-            case "408": message = "Relation EstRattache inconnue";break;
-            
-            default: message = "Unknown error";
+    public static String getStatus(int code) {
+        String status;
+        switch (code) {
+            case 0:
+                status = "200";
+                break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+                status = "201";
+                break;
+
+            case 100:
+            case 101:
+            case 102:
+            case 103:
+            case 104:
+            case 105:
+            case 106:
+            case 107:
+            case 108:
+                status = "409";
+                break;
+
+            case 150:
+            case 151:
+            case 152:
+            case 153:
+            case 154:
+            case 155:
+            case 156:
+            case 157:
+            case 158:
+                status = "404";
+                break;
+
+            default:
+                status = "500";
+                break;
         }
-        
+
+        return status;
+    }
+
+    public static String getMessage(int code) {
+        String message;
+        switch (code) {
+            case 0:
+                message = "ok";
+                break;
+
+            case 100:
+                message = "Auteur déjà créé";
+                break;
+            case 101:
+                message = "Livre déjà créé";
+                break;
+            case 102:
+                message = "Relation AEcrit déjà créée";
+                break;
+            case 103:
+                message = "Relation AEteEcrit déjà créée";
+                break;
+            case 104:
+                message = "Laboratoire déjà créé";
+                break;
+            case 105:
+                message = "Université déjà créé";
+                break;
+            case 106:
+                message = "Relation rattache déjà créée";
+                break;
+            case 107:
+                message = "Keyword déjà créé";
+                break;
+            case 108:
+                message = "Relation EstRattache déjà créée";
+                break;
+
+            case 150:
+                message = "Auteur inconnu";
+                break;
+            case 151:
+                message = "Livre inconnu";
+                break;
+            case 152:
+                message = "Relation AEcrit inconnue";
+                break;
+            case 153:
+                message = "Relation AEteEcrit inconnue";
+                break;
+            case 154:
+                message = "Laboratoire inconnu";
+                break;
+            case 155:
+                message = "Université inconnue";
+                break;
+            case 156:
+                message = "Relation rattache inconnue";
+                break;
+            case 157:
+                message = "Keyword inconnu";
+                break;
+            case 158:
+                message = "Relation EstRattache inconnue";
+                break;
+
+            default:
+                message = "Unknown error";
+        }
+
         return message;
-    }    
+    }
 }

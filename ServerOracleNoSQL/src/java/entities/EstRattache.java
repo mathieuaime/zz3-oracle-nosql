@@ -14,6 +14,7 @@ import oracle.kv.Value;
  * @author mathieu
  */
 public class EstRattache {
+
     /*
      * The MAJOR_KEY is used to construct
      * the Key's major path component.
@@ -24,7 +25,7 @@ public class EstRattache {
     private String nomAuteur;
     private String type;
     private int rank;
-    
+
     //value laboratoire ou univ
     private int value;
 
@@ -34,14 +35,14 @@ public class EstRattache {
         this.rank = rank;
         this.value = value;
     }
-    
+
     public EstRattache(byte[] bytes) {
         String rattache = new String(bytes);
-        String[] elt = rattache.split("/");     
-        nomAuteur = elt[0];  
-        type = elt[1];     
-        rank = Integer.parseInt(elt[2]);     
-        value = Integer.parseInt(elt[3]);     
+        String[] elt = rattache.split("/");
+        nomAuteur = elt[0];
+        type = elt[1];
+        rank = Integer.parseInt(elt[2]);
+        value = Integer.parseInt(elt[3]);
     }
 
     public String getNomAuteur() {
@@ -75,7 +76,7 @@ public class EstRattache {
     public void setValue(int value) {
         this.value = value;
     }
-    
+
     public Key getStoreKey(String minorKey) {
         return Key.createKey(Arrays.asList(MAJOR_KEY, nomAuteur, type, String.valueOf(rank)), minorKey);
     }
@@ -83,11 +84,12 @@ public class EstRattache {
     public Value getStoreValue() {
         return Value.createValue(toString().getBytes());
     }
-    
+
     @Override
     public String toString() {
-        return nomAuteur + "/" + type + "/" + rank + "/" + value;
+        return nomAuteur + "/"
+                + type + "/"
+                + rank + "/"
+                + value;
     }
-    
 }
-

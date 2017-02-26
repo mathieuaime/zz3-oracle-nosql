@@ -26,7 +26,7 @@ import entities.Article;
  * @author mathieu
  */
 public class ArticleDAO {
-    
+
     private final String storeName = "kvstore";
     private final String hostName = "localhost";
     private final String hostPort = "5000";
@@ -35,35 +35,56 @@ public class ArticleDAO {
     public ArticleDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
-    
-    public Article read(String titre) throws ParseException {    
+
+    public List<Article> read() throws ParseException {
         Key myKey2 = Key.createKey(Article.MAJOR_KEY);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
-        
-        Article livre = new Article();
-        
-        while (i.hasNext()) 
-          {
-           Key k = i.next().getKey();
 
-           ValueVersion valueVersionrecherche = store.get(k); 
-           Value v = valueVersionrecherche.getValue();
-           byte[] bytes2 = v.getValue();
-           Article l = new Article(bytes2);
-           String t = l.getTitre();
-           
-           if (t.equals(titre)) {livre = l;  break; }    
+        List<Article> livres = new ArrayList<>();
+
+        while (i.hasNext()) {
+            Key k = i.next().getKey();
+
+            ValueVersion valueVersionrecherche = store.get(k);
+            Value v = valueVersionrecherche.getValue();
+            byte[] bytes2 = v.getValue();
+            Article l = new Article(bytes2);
+            livres.add(l);
         }
-        
-        return livre;
-        
+
+        return livres;
     }
-    
+
+    public Article read(String titre) throws ParseException {
+        Key myKey2 = Key.createKey(Article.MAJOR_KEY);
+        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
+
+        Article livre = new Article();
+
+        while (i.hasNext()) {
+            Key k = i.next().getKey();
+
+            ValueVersion valueVersionrecherche = store.get(k);
+            Value v = valueVersionrecherche.getValue();
+            byte[] bytes2 = v.getValue();
+            Article l = new Article(bytes2);
+            String t = l.getTitre();
+
+            if (t.equals(titre)) {
+                livre = l;
+                break;
+            }
+        }
+
+        return livre;
+
+    }
+
     public Article read(int livreId) throws ParseException {
         Article l = null;
-        
-        Key key = Key.createKey(Arrays.asList(Article.MAJOR_KEY,String.valueOf(livreId)),"info");
-            
+
+        Key key = Key.createKey(Arrays.asList(Article.MAJOR_KEY, String.valueOf(livreId)), "info");
+
         ValueVersion vv2 = store.get(key);
 
         if (vv2 != null) {
@@ -71,83 +92,71 @@ public class ArticleDAO {
             byte[] bytes2 = value2.getValue();
             l = new Article(bytes2);
         }
-        
-        return l;        
-    }
-    
-    public List<Article> read() throws ParseException {
-        Key myKey2 = Key.createKey(Article.MAJOR_KEY);
-        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
-        
-        List<Article> livres = new ArrayList<>();
-        
-        while (i.hasNext()) 
-          {
-           Key k = i.next().getKey();
 
-           ValueVersion valueVersionrecherche = store.get(k); 
-           Value v = valueVersionrecherche.getValue();
-           byte[] bytes2 = v.getValue();
-           Article l = new Article(bytes2);
-           livres.add(l);
-        }
-        
-        return livres;
+        return l;
     }
-    
-    public String create(Article livre) {
+
+    public int create(Article livre) {
         Version putIfAbsent = store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
-        
-        return (putIfAbsent != null ? "200" : "301");
+
+        return (putIfAbsent != null ? 0 : 101);
     }
 
-    public String create(int livreId, String titre, String resume, float prix) {
+    public int create(int livreId, String titre, String resume, float prix) {
         Article livre = new Article(livreId, titre, resume, prix);
         return create(livre);
-    }    
-    
-    public String update(int livreId, String titre, String resume, float prix) throws ParseException {
+    }
+
+    public int update(int idLivre, Article livre) throws ParseException {
+        return update(idLivre, livre.getTitre(), livre.getResume(), livre.getPrix());
+    }
+
+    public int update(int livreId, String titre, String resume, float prix) throws ParseException {
         Article l = read(livreId);
         if (l != null) {
-            if (titre != null) l.setTitre(titre);
-            if (resume != null) l.setResume(resume);
-            if (prix >= 0) l.setPrix(prix);
+            if (titre != null) {
+                l.setTitre(titre);
+            }
+            if (resume != null) {
+                l.setResume(resume);
+            }
+            if (prix >= 0) {
+                l.setPrix(prix);
+            }
             store.delete(l.getStoreKey("info"));
             store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());
         }
-        
-        return (l != null ? "200" : "401");
-    }  
-    
-    public String update(int idLivre, Article livre) throws ParseException {
-        return update(idLivre, livre.getTitre(), livre.getResume(), livre.getPrix());
+
+        return (l != null ? 0 : 151);
     }
-    
-    public String delete(int livreId) throws ParseException {
+
+    public int delete(int livreId) throws ParseException {
         Article l = read(livreId);
-        if (l != null) store.delete(l.getStoreKey("info"));
-        return (l != null ? "200" : "401");
+        if (l != null) {
+            store.delete(l.getStoreKey("info"));
+        }
+        return (l != null ? 0 : 151);
     }
-    
-    public void genererTest(int n) {       
-        
+
+    public void genererTest(int n) {
+
         for (int i = 0; i < n; i++) {
-            create(i, "Le bateau"+i, "Une histoire de bateau", 20);
-        } 
+            create(i, "Le bateau" + i, "Une histoire de bateau", 20);
+        }
     }
-    
-    public void afficherTest(int n) throws ParseException {       
-        
+
+    public void afficherTest(int n) throws ParseException {
+
         for (int i = 0; i < n; i++) {
             Article l = read(i);
             System.out.println(l);
-        } 
+        }
     }
-    
-    public void supprimerTest(int n) throws ParseException {       
-        
+
+    public void supprimerTest(int n) throws ParseException {
+
         for (int i = 0; i < n; i++) {
             delete(i);
-        } 
+        }
     }
 }

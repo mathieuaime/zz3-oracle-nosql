@@ -16,6 +16,7 @@ import oracle.kv.Value;
  * @author mathieu
  */
 public class Author implements Serializable {
+
     /*
      * The auteurId is a unique identifier and is used to construct
      * the Key's major path.
@@ -34,7 +35,7 @@ public class Author implements Serializable {
     private String phone;
     private String fax;
     private String mail;
-    
+
     public Author(int id, String nom, String prenom, String adresse, String phone, String fax, String mail) {
         this.nom = nom;
         this.prenom = prenom;
@@ -44,31 +45,31 @@ public class Author implements Serializable {
         this.mail = mail;
         this.id = id;
     }
-    
+
     public Author(byte[] bytes) {
         String auteur = new String(bytes);
         String[] elt = auteur.split("/");
         id = Integer.parseInt(elt[0]);
         nom = elt[1];
-        prenom = elt[2];        
-        adresse = elt[3];        
-        phone = elt[4];        
-        fax = elt[5];        
-        mail = elt[6];     
+        prenom = elt[2];
+        adresse = elt[3];
+        phone = elt[4];
+        fax = elt[5];
+        mail = elt[6];
     }
-    
+
     public Author() {
-        this(-1,null,null,null,null,null,null);
+        this(-1, null, null, null, null, null, null);
     }
 
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public String getNom() {
         return nom;
     }
@@ -118,22 +119,22 @@ public class Author implements Serializable {
     }
 
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(id)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY, String.valueOf(id)), minorKey);
     }
 
     public Value getStoreValue() {
         return Value.createValue(toString().getBytes());
     }
-    
+
     @Override
     public String toString() {
-        return  id + "/" + 
-                nom + "/" + 
-                prenom + "/" + 
-                adresse + "/" + 
-                phone + "/" + 
-                fax + "/" + 
-                mail;
+        return id + "/"
+                + nom + "/"
+                + prenom + "/"
+                + adresse + "/"
+                + phone + "/"
+                + fax + "/"
+                + mail;
     }
 
     @Override
@@ -184,7 +185,4 @@ public class Author implements Serializable {
         }
         return true;
     }
-    
-    
-    
 }

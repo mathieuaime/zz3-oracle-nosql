@@ -25,7 +25,7 @@ import entities.Author;
  * @author mathieu
  */
 public class AuthorDAO {
-    
+
     private final String storeName = "kvstore";
     private final String hostName = "localhost";
     private final String hostPort = "5000";
@@ -34,166 +34,176 @@ public class AuthorDAO {
     public AuthorDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
-    
-    public Author read(String nom) {    
+
+    public List<Author> read() {
         Key myKey2 = Key.createKey(Author.MAJOR_KEY);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
-        
-        Author auteur = new Author();
-        
-        while (i.hasNext()) 
-          {
-           Key k = i.next().getKey();
 
-           ValueVersion valueVersionrecherche = store.get(k); 
-           Value v = valueVersionrecherche.getValue();
-           byte[] bytes2 = v.getValue();
-           Author a = new Author(bytes2);
-           String t = a.getNom();
-           
-           if (t.equals(nom)) {auteur = a; break; }      
+        List<Author> auteurs = new ArrayList<>();
+
+        while (i.hasNext()) {
+            Key k = i.next().getKey();
+
+            ValueVersion valueVersionrecherche = store.get(k);
+            Value v = valueVersionrecherche.getValue();
+            byte[] bytes2 = v.getValue();
+            Author a = new Author(bytes2);
+            auteurs.add(a);
         }
-        
-        return auteur;
-        
+
+        return auteurs;
     }
-    
+
+    public Author read(String nom) {
+        Key myKey2 = Key.createKey(Author.MAJOR_KEY);
+        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
+
+        Author auteur = new Author();
+
+        while (i.hasNext()) {
+            Key k = i.next().getKey();
+
+            ValueVersion valueVersionrecherche = store.get(k);
+            Value v = valueVersionrecherche.getValue();
+            byte[] bytes2 = v.getValue();
+            Author a = new Author(bytes2);
+            String t = a.getNom();
+
+            if (t.equals(nom)) {
+                auteur = a;
+                break;
+            }
+        }
+
+        return auteur;
+
+    }
+
     public Author read(int auteurId) {
         Author a = null;
-        Key key = Key.createKey(Arrays.asList(Author.MAJOR_KEY,String.valueOf(auteurId)),"info");
-            
+        Key key = Key.createKey(Arrays.asList(Author.MAJOR_KEY, String.valueOf(auteurId)), "info");
+
         ValueVersion vv2 = store.get(key);
-        
+
         if (vv2 != null) {
             Value value2 = vv2.getValue();
             byte[] bytes2 = value2.getValue();
             a = new Author(bytes2);
         }
-        
-        return a;        
-    }
-    
-    public List<Author> read(){
-        Key myKey2 = Key.createKey(Author.MAJOR_KEY);
-        Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
-        
-        List<Author> auteurs = new ArrayList<>();
-        
-        while (i.hasNext()) 
-          {
-           Key k = i.next().getKey();
 
-           ValueVersion valueVersionrecherche = store.get(k); 
-           Value v = valueVersionrecherche.getValue();
-           byte[] bytes2 = v.getValue();
-           Author a = new Author(bytes2);
-           auteurs.add(a);
-        }
-        
-        return auteurs;
+        return a;
     }
-    
-    public List<Author> getLast(int n){
+
+    public List<Author> getLast(int n) {
         Key myKey2 = Key.createKey(Author.MAJOR_KEY);
         //Iterator<KeyValueVersion> i = store.multiGetIterator(Direction.REVERSE, 0, myKey2, null, null);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, myKey2, null, null);
-        
-        List<Author> auteurs = new ArrayList<>();
-        
-        while (i.hasNext()) 
-          {
-           Key k = i.next().getKey();
 
-           ValueVersion valueVersionrecherche = store.get(k); 
-           Value v = valueVersionrecherche.getValue();
-           byte[] bytes2 = v.getValue();
-           Author a = new Author(bytes2);
-           auteurs.add(a);
+        List<Author> auteurs = new ArrayList<>();
+
+        while (i.hasNext()) {
+            Key k = i.next().getKey();
+
+            ValueVersion valueVersionrecherche = store.get(k);
+            Value v = valueVersionrecherche.getValue();
+            byte[] bytes2 = v.getValue();
+            Author a = new Author(bytes2);
+            auteurs.add(a);
         }
-        
+
         return auteurs;
     }
-    
-    public String create(Author auteur) {     
+
+    public int create(Author auteur) {
         Version putIfAbsent = store.putIfAbsent(auteur.getStoreKey("info"), auteur.getStoreValue());
-        
-        return (putIfAbsent != null ? "200" : "300");    
+
+        return (putIfAbsent != null ? 0 : 100);
     }
 
-    public String create(int auteurId, String nom, String prenom, String adresse, String phone, String fax, String mail) {     
+    public int create(int auteurId, String nom, String prenom, String adresse, String phone, String fax, String mail) {
         Author auteur = new Author(auteurId, nom, prenom, adresse, phone, fax, mail);
         return create(auteur);
-    }    
-    
-    public String update(int auteurId, String nom, String prenom, String adresse, String phone, String fax, String mail) {
-        Author a = read(auteurId);
-        if (a != null) {
-            if (nom != null) a.setNom(nom);
-            if (prenom != null) a.setPrenom(prenom);
-            if (adresse != null) a.setAdresse(adresse);
-            if (phone != null) a.setPhone(phone);
-            if (fax != null) a.setFax(fax);
-            if (mail != null) a.setMail(mail);
-            store.delete(a.getStoreKey("info"));
-            store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue()); 
-        }
-        
-        return (a != null ? "200" : "400");
-    }    
-    
-    public String update(int auteurId, Author auteur) {
+    }
+
+    public int update(int auteurId, Author auteur) {
         return update(auteurId, auteur.getNom(), auteur.getPrenom(), auteur.getAdresse(), auteur.getPhone(), auteur.getFax(), auteur.getMail());
     }
-    
-    public String delete(int auteurId) {
+
+    public int update(int auteurId, String nom, String prenom, String adresse, String phone, String fax, String mail) {
+        Author a = read(auteurId);
+        if (a != null) {
+            if (nom != null) {
+                a.setNom(nom);
+            }
+            if (prenom != null) {
+                a.setPrenom(prenom);
+            }
+            if (adresse != null) {
+                a.setAdresse(adresse);
+            }
+            if (phone != null) {
+                a.setPhone(phone);
+            }
+            if (fax != null) {
+                a.setFax(fax);
+            }
+            if (mail != null) {
+                a.setMail(mail);
+            }
+            store.delete(a.getStoreKey("info"));
+            store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
+        }
+
+        return (a != null ? 0 : 150);
+    }
+
+    public int delete(int auteurId) {
         Author a = read(auteurId);
         boolean delete = false;
         if (a != null) {
             delete = store.delete(a.getStoreKey("info"));
         }
-        
-        return (delete ? "200" : "400");
+
+        return (delete ? 0 : 150);
     }
-    
-    public void genererTest(int n) {       
+
+    public void genererTest(int n) {
 
         for (int i = 0; i < n; i++) {
-            create(i, "Aimé"+i, "Mathieu", "Clermont", "4444", "4422", "mathieu@aime.com");
-        } 
+            create(i, "Aimé" + i, "Mathieu", "Clermont", "4444", "4422", "mathieu@aime.com");
+        }
     }
 
-    public void afficherTest(int n) {       
+    public void afficherTest(int n) {
 
         for (int i = 0; i < n; i++) {
             Author a = read(i);
             System.out.println(a);
-        } 
+        }
     }
-    
-    public void supprimerTest(int n) {       
+
+    public void supprimerTest(int n) {
 
         for (int i = 0; i < n; i++) {
             delete(i);
-        } 
+        }
     }
-    
+
     public void displayAll() {
-        Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED,0);
+        Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED, 0);
         System.out.println("\nDisplay All");
-        while (it.hasNext() )
-        {
+        while (it.hasNext()) {
             KeyValueVersion kvvi = it.next();
             System.out.println(kvvi.getKey());
         }
     }
-    
+
     public void deleteAll() {
-        Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED,0);
-        while (it.hasNext() )
-        {
+        Iterator<KeyValueVersion> it = store.storeIterator(Direction.UNORDERED, 0);
+        while (it.hasNext()) {
             KeyValueVersion kvvi = it.next();
             store.delete(kvvi.getKey());
         }
     }
-    
+
 }

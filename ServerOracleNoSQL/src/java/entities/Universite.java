@@ -5,46 +5,43 @@
  */
 package entities;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import oracle.kv.Key;
 import oracle.kv.Value;
-
 
 /**
  *
  * @author Dehbia Sam
  */
 public class Universite {
-     private int universiteId;
+
+    private int universiteId;
 
     public static String MAJOR_KEY = "university";
 
     private String nom;
     private String adresse;
-    
-    
+
     public Universite(int universiteId, String nom, String adresse) {
         this.nom = nom.trim();
         this.adresse = adresse.trim();
         this.universiteId = universiteId;
     }
-    
+
     public Universite(byte[] bytes) {
         String universite = new String(bytes);
         String[] elt = universite.split("/");
         this.universiteId = Integer.parseInt(elt[0]);
         nom = elt[1];
-        adresse = elt[2];        
-    
+        adresse = elt[2];
+
     }
-    
+
     public Universite() {
-        this(-1,"","");
+        this(-1, "", "");
     }
+
     /**
      * @return the universiteId
      */
@@ -86,18 +83,20 @@ public class Universite {
     public void setAdresse(String adresse) {
         this.adresse = adresse;
     }
-   
-        public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY,String.valueOf(universiteId)), minorKey);
+
+    public Key getStoreKey(String minorKey) {
+        return Key.createKey(Arrays.asList(MAJOR_KEY, String.valueOf(universiteId)), minorKey);
     }
 
     public Value getStoreValue() {
         return Value.createValue(toString().getBytes());
     }
-    
+
     @Override
     public String toString() {
-        return universiteId + "/" + nom + "/" + adresse;
+        return universiteId + "/"
+                + nom + "/"
+                + adresse;
     }
 
     @Override

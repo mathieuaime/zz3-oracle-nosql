@@ -14,6 +14,7 @@ import oracle.kv.Value;
  * @author mathieu
  */
 public class AEteEcrit {
+
     /*
      * The MAJOR_KEY is used to construct
      * the Key's major path component.
@@ -22,7 +23,7 @@ public class AEteEcrit {
 
     //key
     private String articleTitre;
-    
+
     //value
     private int idAuteur;
 
@@ -35,17 +36,17 @@ public class AEteEcrit {
         this.idAuteur = idAuteur;
         this.articleTitre = articleTitre;
     }
-    
-    public AEteEcrit(byte[] bytes) {        
+
+    public AEteEcrit(byte[] bytes) {
         String auteur = new String(bytes);
         String[] elt = auteur.split("/");
-        
+
         this.articleTitre = elt[0];
         this.idAuteur = Integer.parseInt(elt[1]);
     }
-    
+
     public AEteEcrit() {
-        this(null,-1);
+        this(null, -1);
     }
 
     public int getIdAuteur() {
@@ -62,8 +63,8 @@ public class AEteEcrit {
 
     public void setArticleTitre(String articleTitre) {
         this.articleTitre = articleTitre;
-    }    
-    
+    }
+
     public Key getStoreKey(String minorKey) {
         return Key.createKey(Arrays.asList(MAJOR_KEY, articleTitre), minorKey);
     }
@@ -71,10 +72,10 @@ public class AEteEcrit {
     public Value getStoreValue() {
         return Value.createValue(toString().getBytes());
     }
-    
+
     @Override
     public String toString() {
-        return articleTitre + "/" + idAuteur;
+        return articleTitre + "/" 
+                + idAuteur;
     }
-    
 }

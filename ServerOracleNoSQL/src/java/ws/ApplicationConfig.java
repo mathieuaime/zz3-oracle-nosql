@@ -8,13 +8,15 @@ import java.util.Set;
 @ApplicationPath("ws")
 public class ApplicationConfig extends Application {
 
-  @Override
-  public Set<Class<?>> getClasses() {
-    Set<Class<?>> service = new HashSet<>();
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> service = new HashSet<>();
 
-    service.add(AuthorWS.class);
-    service.add(ArticleWS.class);
+        service.add(AuthorWS.class);
+        service.add(ArticleWS.class);
+        service.add(LaboratoryWS.class);
+        service.add(UniversityWS.class);
 
-    return service;
-  }     
+        return service;
+    }
 }
