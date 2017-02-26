@@ -44,7 +44,7 @@ public class UniversityWSTest extends TestCase {
     EstRattache estRattacheA = new EstRattache(auteurA.getNom(), Universite.MAJOR_KEY, 1, univA.getUniversiteId());
 
     AEcrit aEcrit = new AEcrit(auteurA.getNom(), 1, articleA.getId());
-    AEteEcrit aEteEcrit = new AEteEcrit(articleA.getTitre(), auteurA.getId());
+    AEteEcrit aEteEcrit = new AEteEcrit(articleA.getTitre(), 1, auteurA.getId());
 
     @BeforeClass
     public static void setUpClass() throws Exception {

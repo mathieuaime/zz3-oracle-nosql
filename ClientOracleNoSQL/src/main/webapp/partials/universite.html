@@ -1,11 +1,7 @@
-
-
 <!DOCTYPE html>
 
 <div>
-
-    <h2>Universites</h2>
-
+    <h2>Universités</h2>
 
     <p>
         <strong class="text-danger">{{draftOracleControllerError}}</strong>
@@ -13,30 +9,26 @@
 
     <ul id="draftOracleTabs" class="nav nav-tabs"
         >
-        <li data-ng-class="{active:currentTab == 'tabVoirUniversites'}"><a
-                role="button" id="tabVoirUniversitesBtn"
-                data-ng-click="currentTab = 'tabVoirUniversites'">Voir les
-                universites</a></li>
-        <li data-ng-class="{active:currentTab == 'tabGestionUniversites'}"><a
-                role="button" id="tabGestionUniversitesBtn"
-
-                data-ng-click="currentTab = 'tabGestionUniversites'">Recherche des 
-                universites</a></li>
+        <li data-ng-class="{active:currentTab == 'tabVoirUniversites'}">
+            <a role="button" id="tabVoirUniversitesBtn" 
+               data-ng-click="currentTab = 'tabVoirUniversites'">
+                Voir les universités
+            </a>
+        </li>
+        <li data-ng-class="{active:currentTab == 'tabGestionUniversites'}">
+            <a role="button" id="tabGestionUniversitesBtn" 
+               data-ng-click="currentTab = 'tabGestionUniversites'">
+                Recherche des universités
+            </a>
+        </li>
     </ul>
 
+    <div id="tabVoirUniversites" data-ng-show="currentTab == 'tabVoirUniversites'">
 
-
-
-    <div id="tabVoirUniversites"
-         data-ng-show="currentTab == 'tabVoirUniversites'">
-
-
-        <h3>Liste des universites </h3>
-
+        <h3>Liste des universités </h3>
 
         <p>
-            Filtrer :&emsp;<input type="text" size="30"
-                                  data-ng-model="universitesFilter">
+            Filtrer :&emsp;<input type="text" size="30" data-ng-model="universitesFilter">
         </p>
 
         <table class="table table-hover">
@@ -56,22 +48,24 @@
                     <td>{{universite.nom}}</td>
                     <td> {{universite.adresse}}</td>
 
-                    <td width="60px"><a role="button"
-                                        data-ng-click="editUniversite(universite)"><img
-                                alt="modifier" src="img/modify.png" data-toggle="modal"
-                                data-target="#modifyUniversiteModal"></a> <a
-                            data-toggle="modal" data-target="#confirmation" role="button"
-                            data-ng-click="setRemovableUniversite(universite)"><img
-                                alt="supprimer" src="img/delete.png"></a></td>
+                    <td width="60px">
+                        <a role="button" data-ng-click="editUniversite(universite)">
+                            <img alt="modifier" src="img/modify.png" data-toggle="modal" data-target="#modifyUniversiteModal">
+                        </a>
+                        <a data-toggle="modal" data-target="#confirmation" role="button"
+                           data-ng-click="setRemovableUniversite(universite)">
+                            <img alt="supprimer" src="img/delete.png">
+                        </a>
+                    </td>
                 </tr>
             </tbody>
         </table>
 
         <p>
             <button type="button" class="btn btn-primary" data-toggle="modal"
-                    data-target="#createUniversiteModal"
-                    >Ajouter une
-                universite</button>
+                    data-target="#createUniversiteModal">
+                Ajouter une universite
+            </button>
         </p>
 
         <div id="createUniversiteModal" class="modal fade" role="dialog">
@@ -83,14 +77,16 @@
                             <h4 class="modal-title">Ajouter un universite</h4>
                         </div>
                         <div class="modal-body form-group">
-                            <label for="createUniversiteId">Id</label> <input type="text"
-                                                                              class="form-control"
-                                                                              data-ng-model="formData.createUniversiteId" size="30"
-                                                                              placeholder="Id"> <br />
+                            <label for="createUniversiteId">Id</label> 
+                            <input type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createUniversiteId" size="30"
+                                   placeholder="Id"> 
+                            <br />
                             <label for="createUniversiteNom">Nom</label> 
                             <input type="text"
                                    class="form-control"
-                                   data-ng-model="formData.createUniversiteNomPrenom" size="30"
+                                   data-ng-model="formData.createUniversiteNom" size="30"
                                    placeholder="Nom">
                             <br /> 
 
@@ -103,7 +99,7 @@
                         </div>
                         <div class="modal-footer form-group">
                             <button class="btn btn-primary" type="submit"
-                                    data-ng-click="controlNewUniversite()">Ajouter</button>
+                                    data-ng-click="createUniversite()">Ajouter</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                         </div>
                     </form>
@@ -128,7 +124,7 @@
                                    data-ng-model="formData.createUniversiteId" size="30"
                                    placeholder="Id"> 
                             <br />
-                            
+
                             <label for="createUniversiteNom">Nom</label> 
                             <input type="text"
                                    class="form-control"
@@ -181,18 +177,10 @@
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
-
-
     </div>
 
-
-
-
-    <div id="tabGestionUniversites"
-         data-ng-if="currentTab == 'tabGestionUniversites'">
-
+    <div id="tabGestionUniversites" data-ng-if="currentTab == 'tabGestionUniversites'">
         <h2> Recherche des universites </h2>
-
     </div>
 
 

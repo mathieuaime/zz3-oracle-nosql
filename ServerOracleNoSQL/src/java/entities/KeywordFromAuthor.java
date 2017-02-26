@@ -1,5 +1,6 @@
 package entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -8,7 +9,7 @@ import oracle.kv.Value;
  *
  * @author Mathieu
  */
-public class KeywordFromAuthor {
+public class KeywordFromAuthor implements Serializable {
 
     //key
     private String author;

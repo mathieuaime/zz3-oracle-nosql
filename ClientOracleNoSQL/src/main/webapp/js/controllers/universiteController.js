@@ -22,7 +22,7 @@ oraclenosqlControllers.controller('universiteMainController', ['$scope', '$rootS
         $scope.formData = {};
 
         $scope.universite_confirm = "";
-        
+
         /*
          * fonction permettant de récupérer la liste des universites
          */
@@ -56,7 +56,7 @@ oraclenosqlControllers.controller('universiteMainController', ['$scope', '$rootS
                         $scope.formData.createUniversiteAdresse).then(
                         function (result) {
                             $rootScope.draftWplanControllerError = '';
-                            $scope.universites.push(result);
+                            $scope.universites.push(result.objectList[0]);
                         },
                         function (error) {
                             $rootScope.draftWplanControllerError = error;
@@ -73,75 +73,70 @@ oraclenosqlControllers.controller('universiteMainController', ['$scope', '$rootS
             $('#createUniversiteModal').modal('hide');
 
         },
+                $scope.initializeUniversite = function () {
 
-        $scope.initializeUniversite = function () {
+                    $scope.formData.createUniversiteId = "";
+                    $scope.formData.createUniversiteNom = "";
 
-            $scope.formData.createUniversiteId = "";
-            $scope.formData.createUniversiteNom = "";
+                    $scope.formData.createUniversiteAdresse = "";
+                },
+                $scope.editUniversite = function (universite) {
 
-            $scope.formData.createUniversiteAdresse = "";
-        },
+                    $scope.formData.universite = universite;
 
-        $scope.editUniversite = function (universite) {
+                    //Initialisation du formulaire
 
-            $scope.formData.universite = universite;
+                    $scope.formData.createUniversiteId = universite.universiteId;
+                    $scope.formData.createUniversiteNom = universite.nom;
 
-            //Initialisation du formulaire
+                    $scope.formData.createUniversiteAdresse = universite.adresse;
+                },
+                $scope.modifyUniversite = function ()
+                {
+                    // contrôle des champs qui doivent être définis
+                    if ($scope.formData.createUniversiteId && $scope.formData.createUniversiteNom) {
+                        // appel au service effectuant la requête (une promesse est renvoyée : gestion de l'appel en mode synchrone)
+                        universiteMainFactory.modifyUniversite(
+                                $scope.formData.createUniversiteId,
+                                $scope.formData.createUniversiteNom,
+                                $scope.formData.createUniversiteAdresse).then(
+                                function (result) {
+                                    $rootScope.draftWplanControllerError = '';
+                                    $scope.universites.splice($scope.universites.indexOf($scope.formData.universite))
+                                    $scope.universites.push(result.objectList[0]);
 
-            $scope.formData.createUniversiteId = universite.universiteId;
-            $scope.formData.createUniversiteNom = universite.nom;
+                                },
+                                function (error) {
+                                    $rootScope.draftWplanControllerError = error;
+                                    $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+                                });
+                    } else {
+                        $rootScope.draftWplanControllerError = 'Vous devez renseigner l\'universiteId et le nom du universite.';
+                    }
 
-            $scope.formData.createUniversiteAdresse = universite.adresse;
-        },
+                    // remise à blanc des champs de saisie pour la création d'un universite
+                    $scope.formData = {};
 
-        $scope.modifyUniversite = function ()
-        {
-            // contrôle des champs qui doivent être définis
-            if ($scope.formData.createUniversiteId && $scope.formData.createUniversiteNom) {
-                // appel au service effectuant la requête (une promesse est renvoyée : gestion de l'appel en mode synchrone)
-                universiteMainFactory.modifyUniversite(
-                        $scope.formData.createUniversiteId,
-                        $scope.formData.createUniversiteNom,
-                        $scope.formData.createUniversiteAdresse).then(
-                        function (result) {
-                            $rootScope.draftWplanControllerError = '';
-                            $scope.universites.splice($scope.universites.indexOf($scope.formData.universite))
-                            $scope.universites.push(result);
+                    // fermeture de la fenêtre modale
+                    $('#modifyUniversiteModal').modal('hide');
+                },
+                $scope.setRemovableUniversite = function (universite) {
+                    $scope.universite_confirm = universite;
+                },
+                $scope.removeUniversite = function (universite) {
+                    universiteMainFactory.removeUniversite(universite.universiteId).then(
+                            function (result) {
+                                $rootScope.draftWplanControllerError = '';
+                                var index = $scope.universite.indexOf(universite);
+                                $scope.universites.splice(index, 1);
 
-                        },
-                        function (error) {
-                            $rootScope.draftWplanControllerError = error;
-                            $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
-                        });
-            } else {
-                $rootScope.draftWplanControllerError = 'Vous devez renseigner l\'universiteId et le nom du universite.';
-            }
+                            },
+                            function (error) {
+                                $rootScope.draftWplanControllerError = error;
 
-            // remise à blanc des champs de saisie pour la création d'un universite
-            $scope.formData = {};
-
-            // fermeture de la fenêtre modale
-            $('#modifyUniversiteModal').modal('hide');
-        },
-
-        $scope.setRemovableUniversite = function (universite) {
-            $scope.universite_confirm = universite;
-        },
-
-        $scope.removeUniversite = function (universite) {
-            universiteMainFactory.removeUniversite(universite.universiteId).then(
-                    function (result) {
-                        $rootScope.draftWplanControllerError = '';
-                        var index = $scope.universite.indexOf(universite);
-                        $scope.universites.splice(index, 1);
-
-                    },
-                    function (error) {
-                        $rootScope.draftWplanControllerError = error;
-
-                    });
-            $('#confirmation').modal('hide');
-        };
+                            });
+                    $('#confirmation').modal('hide');
+                };
     }
 ]);
 

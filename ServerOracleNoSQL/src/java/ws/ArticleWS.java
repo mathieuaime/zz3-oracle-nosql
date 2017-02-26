@@ -60,6 +60,7 @@ public class ArticleWS {
         int status = ldao.create(article);
 
         RestResponse<Article> resp = new RestResponse<>(status, (status != 0 ? "409" : "201"));
+        resp.addObjectList(article);
         return resp;
     }
 
@@ -69,6 +70,7 @@ public class ArticleWS {
         int status = ldao.update(id, article);
 
         RestResponse<Article> resp = new RestResponse<>(status, (status != 0 ? "204" : "200"));
+        resp.addObjectList(article);
         return resp;
     }
 
@@ -83,7 +85,7 @@ public class ArticleWS {
 
     @Path("{id}/auteur")
     @GET
-    public RestResponse<Author> listAuteur(@PathParam("titre") int idArticle) throws ParseException {
+    public RestResponse<Author> listAuteur(@PathParam("id") int idArticle) throws ParseException {
         Article l = ldao.read(idArticle);
         RestResponse<Author> resp = new RestResponse<>(151, "204");
 

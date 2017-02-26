@@ -5,6 +5,7 @@
  */
 package entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -13,7 +14,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class AEteEcrit {
+public class AEteEcrit implements Serializable {
 
     /*
      * The MAJOR_KEY is used to construct
@@ -23,6 +24,7 @@ public class AEteEcrit {
 
     //key
     private String articleTitre;
+    private int rank;
 
     //value
     private int idAuteur;
@@ -32,8 +34,9 @@ public class AEteEcrit {
      * @param idAuteur value
      * @param articleTitre key
      */
-    public AEteEcrit(String articleTitre, int idAuteur) {
+    public AEteEcrit(String articleTitre, int rank, int idAuteur) {
         this.idAuteur = idAuteur;
+        this.rank = rank;
         this.articleTitre = articleTitre;
     }
 
@@ -42,11 +45,12 @@ public class AEteEcrit {
         String[] elt = auteur.split("/");
 
         this.articleTitre = elt[0];
-        this.idAuteur = Integer.parseInt(elt[1]);
+        this.rank = Integer.parseInt(elt[1]);
+        this.idAuteur = Integer.parseInt(elt[2]);
     }
 
     public AEteEcrit() {
-        this(null, -1);
+        this(null, -1, -1);
     }
 
     public int getIdAuteur() {
@@ -55,6 +59,14 @@ public class AEteEcrit {
 
     public void setIdAuteur(int idAuteur) {
         this.idAuteur = idAuteur;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public String getArticleTitre() {
@@ -66,7 +78,7 @@ public class AEteEcrit {
     }
 
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY, articleTitre), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY, articleTitre, String.valueOf(rank)), minorKey);
     }
 
     public Value getStoreValue() {
@@ -75,7 +87,8 @@ public class AEteEcrit {
 
     @Override
     public String toString() {
-        return articleTitre + "/" 
+        return articleTitre + "/"
+                + rank + "/"
                 + idAuteur;
     }
 }

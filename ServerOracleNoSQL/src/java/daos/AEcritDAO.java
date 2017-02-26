@@ -188,9 +188,11 @@ public class AEcritDAO {
             } else {
                 return 151;
             }
+        } else {
+            return 152;
         }
 
-        return (a != null ? 0 : 152);
+        return 0;
     }
 
     public int delete(String auteurNom) {

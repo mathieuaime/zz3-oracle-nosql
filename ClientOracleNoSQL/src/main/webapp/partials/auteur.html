@@ -4,248 +4,325 @@
 
 <div>
 
-	<h2>Auteurs</h2>
+    <h2>Auteurs</h2>
 
 
-	<p>
-		<strong class="text-danger">{{draftWplanControllerError}}</strong>
-	</p>
+    <p>
+        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+    </p>
 
-	<ul id="draftOracleTabs" class="nav nav-tabs"
-		>
-		<li data-ng-class="{active:currentTab == 'tabVoirAuteurs'}"><a
-			role="button" id="tabVoirAuteursBtn"
-			data-ng-click="currentTab='tabVoirAuteurs'">Voir les
-				auteurs</a></li>
-		<li data-ng-class="{active:currentTab == 'tabGestionAuteurs'}"><a
-			role="button" id="tabGestionAuteursBtn"
-			
-			data-ng-click="currentTab='tabGestionAuteurs'">Recherche des auteurs
-                    </a></li>
-	</ul>
+    <ul id="draftOracleTabs" class="nav nav-tabs"
+        >
+        <li data-ng-class="{active:currentTab == 'tabVoirAuteurs'}"><a
+                role="button" id="tabVoirAuteursBtn"
+                data-ng-click="currentTab = 'tabVoirAuteurs'">Voir les
+                auteurs</a></li>
+        <li data-ng-class="{active:currentTab == 'tabGestionAuteurs'}"><a
+                role="button" id="tabGestionAuteursBtn"
 
-
-
-
-	<div id="tabVoirAuteurs"
-		data-ng-show="currentTab == 'tabVoirAuteurs'">
-
-
-<h3>Liste des auteurs</h3>
-
-		
-		<p>
-			Filtrer :&emsp;<input type="text" size="30"
-				data-ng-model="auteursFilter">
-		</p>
-
-		<table class="table table-hover">
-			<thead>
-				<tr>
-                                        <th>Id</th>
-					<th>Nom</th>
-					<th>Prénom</th>
-					<th>Adresse</th>
-					<th>Phone</th>
-                                        <th>Fax</th>
-                                        <th>Mail</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr
-					data-ng-repeat="auteur in auteurs">
-                                        <td>{{auteur.id}}</td>
-					<td>{{auteur.nom}}</td>
-					<td>{{auteur.prenom}}</td>
-                                        <td> {{auteur.adresse}}</td>
-                                        <td> {{auteur.phone}}</td>
-                                        <td> {{auteur.fax}}</td>
-                                        <td> {{auteur.mail}} </td>
-					<td width="60px"><a role="button"
-						data-ng-click="editAuteur(auteur)"><img
-							alt="modifier" src="img/modify.png" data-toggle="modal"
-							data-target="#modifyAuteurModal"></a> <a
-						data-toggle="modal" data-target="#confirmation" role="button"
-						data-ng-click="setRemovableAuteur(auteur)"><img
-							alt="supprimer" src="img/delete.png"></a></td>
-				</tr>
-			</tbody>
-		</table>
-
-		<p>
-			<button type="button" class="btn btn-primary" data-toggle="modal"
-				data-target="#createAuteurModal" data-ng-click="initializeAuteur()"
-				>Ajouter un
-				auteur</button>
-		</p>
-
-	
+                data-ng-click="currentTab = 'tabGestionAuteurs'">Recherche des auteurs
+            </a></li>
+    </ul>
 
 
 
-	<div id="createAuteurModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form data-ng-submit="">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Ajouter un auteur</h4>
-					</div>
-					<div class="modal-body form-group">
-                                            <label for="createAuteurId">Id</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurId" size="30"
-							placeholder="Id"> <br />
-						<label for="createAuteurNom">Nom</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurNom" size="30"
-							placeholder="Nom"> <br />
-                                                <label
-							for="createAuteurPrenom">Prénom</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurPrenom" size="30"
-							placeholder="Prénom"> <br /> 
-                                                 <label
-							for="createAuteurAdresse">Adresse</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurAdresse" size="30"
-							placeholder="Adresse"> <br /> 
-                                                 <label
-							for="createAuteurPrenom">Phone</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurPhone" size="30"
-							placeholder="Phone"> <br /> 
-                                                 <label
-							for="createAuteurFax">Fax</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurFax" size="30"
-							placeholder="Fax"> <br /> 
-                                                 <label
-							for="createAuteurMail">Mail</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurMail" size="30"
-							placeholder="Mail"> <br /> 
-                                                 
-                                                
-                                                 
-						
-					</div>
-                                    <strong class="text-danger">{{draftWplanControllerError}}</strong>
-					<div class="modal-footer form-group">
-						<button class="btn btn-primary" type="submit"
-							data-ng-click="createAuteur()">Ajouter</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+
+    <div id="tabVoirAuteurs" data-ng-show="currentTab == 'tabVoirAuteurs'">
+
+        <h3>Liste des auteurs</h3>
+        <p>
+            Filtrer :&emsp;<input type="text" size="30" data-ng-model="auteursFilter">
+        </p>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Mail</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    data-ng-repeat="auteur in auteurs">
+                    <td>{{auteur.id}}</td>
+                    <td>{{auteur.nom}}</td>
+                    <td>{{auteur.prenom}}</td>
+                    <td>{{auteur.mail}}</td>
+                    <td width="60px">
+                        <a role="button" data-ng-click="displayAuteur(auteur)">
+                            <img alt="afficher les détails" src="img/loupe.png" 
+                                 data-toggle="modal" data-target="#displayAuteurModal">
+                        </a>
+                        <a role="button" data-ng-click="editAuteur(auteur)">
+                            <img alt="modifier" src="img/modify.png" 
+                                 data-toggle="modal" data-target="#modifyAuteurModal">
+                        </a>
+                        <a data-toggle="modal" data-target="#confirmation" role="button"
+                           data-ng-click="setRemovableAuteur(auteur)">
+                            <img alt="supprimer" src="img/delete.png">
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <button type="button" class="btn btn-primary" 
+                    data-toggle="modal" data-target="#createAuteurModal" 
+                    data-ng-click="initializeAuteur()">
+                Ajouter un auteur
+            </button>
+        </p>
+
+        <div id="createAuteurModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form data-ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Ajouter un auteur</h4>
+                        </div>
+                        <div class="modal-body form-group">
+                            <label for="createAuteurId">Id</label> <input type="text"
+                                                                          class="form-control"
+                                                                          data-ng-model="formData.createAuteurId" size="30"
+                                                                          placeholder="Id"> <br />
+                            <label for="createAuteurNom">Nom</label> <input type="text"
+                                                                            class="form-control"
+                                                                            data-ng-model="formData.createAuteurNom" size="30"
+                                                                            placeholder="Nom"> <br />
+                            <label
+                                for="createAuteurPrenom">Prénom</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurPrenom" size="30"
+                                placeholder="Prénom"> <br /> 
+                            <label
+                                for="createAuteurAdresse">Adresse</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurAdresse" size="30"
+                                placeholder="Adresse"> <br /> 
+                            <label
+                                for="createAuteurPrenom">Phone</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurPhone" size="30"
+                                placeholder="Phone"> <br /> 
+                            <label
+                                for="createAuteurFax">Fax</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurFax" size="30"
+                                placeholder="Fax"> <br /> 
+                            <label
+                                for="createAuteurMail">Mail</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurMail" size="30"
+                                placeholder="Mail"> <br /> 
+                        </div>
+                        
+                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                        <div class="modal-footer form-group">
+                            <button class="btn btn-primary" type="submit"
+                                    data-ng-click="createAuteur()">Ajouter</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
 
 
 
-                
-                 <div id="modifyAuteurModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form data-ng-submit="">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Modification de {{
-							formData.createAuteurId }} {{
-							formData.createAuteurNom }}</h4>
-					</div>
-					<div class="modal-body form-group">
-						<label for="createAuteurId">Id</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurId" size="30"
-							placeholder="Id"> <br />
-						<label for="createAuteurNom">Nom</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurNom" size="30"
-							placeholder="Nom"> <br />
-                                                <label
-							for="createAuteurPrenom">Prénom</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurPrenom" size="30"
-							placeholder="Prénom"> <br /> 
-                                                 <label
-							for="createAuteurAdresse">Adresse</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurAdresse" size="30"
-							placeholder="Adresse"> <br /> 
-                                                 <label
-							for="createAuteurPrenom">Phone</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurPhone" size="30"
-							placeholder="Phone"> <br /> 
-                                                 <label
-							for="createAuteurFax">Fax</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurFax" size="30"
-							placeholder="Fax"> <br /> 
-                                                 <label
-							for="createAuteurMail">Mail</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createAuteurMail" size="30"
-							placeholder="Mail"> <br /> 
-                                                 
-                                                
-                                                 
-					</div>
-                                    <strong class="text-danger">{{draftWplanControllerError}}</strong>
-					<div class="modal-footer form-group">
-						<button class="btn btn-primary" type="submit"
-							data-ng-click="modifyAuteur()">Sauvegarder</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+
+        <div id="modifyAuteurModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form data-ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Modification de {{
+                                            formData.createAuteurId}} {{
+                                                        formData.createAuteurNom}}</h4>
+                        </div>
+                        <div class="modal-body form-group">
+                            <label for="createAuteurId">Id</label> <input type="text"
+                                                                          class="form-control"
+                                                                          data-ng-model="formData.createAuteurId" size="30"
+                                                                          placeholder="Id"> <br />
+                            <label for="createAuteurNom">Nom</label> <input type="text"
+                                                                            class="form-control"
+                                                                            data-ng-model="formData.createAuteurNom" size="30"
+                                                                            placeholder="Nom"> <br />
+                            <label
+                                for="createAuteurPrenom">Prénom</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurPrenom" size="30"
+                                placeholder="Prénom"> <br /> 
+                            <label
+                                for="createAuteurAdresse">Adresse</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurAdresse" size="30"
+                                placeholder="Adresse"> <br /> 
+                            <label
+                                for="createAuteurPrenom">Phone</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurPhone" size="30"
+                                placeholder="Phone"> <br /> 
+                            <label
+                                for="createAuteurFax">Fax</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurFax" size="30"
+                                placeholder="Fax"> <br /> 
+                            <label
+                                for="createAuteurMail">Mail</label> <input type="text"
+                                class="form-control"
+                                data-ng-model="formData.createAuteurMail" size="30"
+                                placeholder="Mail"> <br /> 
+
+
+
+                        </div>
+                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                        <div class="modal-footer form-group">
+                            <button class="btn btn-primary" type="submit"
+                                    data-ng-click="modifyAuteur()">Sauvegarder</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="displayAuteurModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form data-ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">
+                                Auteur n°{{article.id}}
+                            </h4>
+                        </div>
+
+                        <div class="modal-body form-group">
+                            <h3>Informations</h3>
+                            <table class="table">
+                                <tr>
+                                    <td>Id : </td>
+                                    <td>{{auteur.id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Nom : </td>
+                                    <td>{{auteur.nom}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Prénom : </td>
+                                    <td>{{auteur.prenom}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Adresse : </td>
+                                    <td>{{auteur.adresse}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mail : </td>
+                                    <td>{{auteur.mail}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Téléphone : </td>
+                                    <td>{{auteur.phone}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Fax : </td>
+                                    <td>{{auteur.fax}}</td>
+                                </tr>
+                            </table>
+
+                            <h3>Articles</h3>
+                            <div class="show-tags" data-ng-repeat="article in articles">
+                                <a class="tag" href="auteur/{{auteur.id}}/">
+                                    <span>
+                                        {{article.titre}}
+                                    </span>
+                                </a>
+                            </div>
+
+                            <h3>Universités</h3>
+                            <div class="show-tags" data-ng-repeat="univ in universites">
+                                <a class="tag" href="universite/{{univ.universiteId}}/">
+                                    <span>
+                                        {{univ.nom}}
+                                    </span>
+                                </a>
+                            </div>
+
+                            <h3>Laboratoires</h3>
+                            <div class="show-tags" data-ng-repeat="labo in laboratoires">
+                                <a class="tag" href="laboratoire/{{labo.laboratoireId}}/">
+                                    <span>
+                                        {{labo.nom}}
+                                    </span>
+                                </a>
+                            </div>
+
+                            <h3>Mots-clefs</h3>
+                            <div class="show-tags" data-ng-repeat="keyword in keywords">
+                                <a class="tag lower" href="discover/{{keyword.value}}/">
+                                    <span>
+                                        #{{keyword.value}}
+                                    </span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header alert alert-danger">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<h4 class="modal-title">Confirmation</h4>
-				</div>
-				<div class="modal-body">
-					<p>Etes-vous sur de vouloir supprimer cet auteur ?</p>
-                                         <strong class="text-danger">{{draftWplanControllerError}} {{auteur_confirm.id}}</strong>
-				</div>
-				<div class="modal-footer">
-					<!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal"
-						data-ng-click="removeAuteur(auteur_confirm)">Oui</button>-->
-                                      
-					<button class="btn btn-primary"
-						data-ng-click="removeAuteur(auteur_confirm)">Continuer</button>
-					<button class="btn btn-default" data-dismiss="modal">Annuler</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	<!-- /.modal -->
-           
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header alert alert-danger">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Confirmation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Etes-vous sur de vouloir supprimer cet auteur ?</p>
+                        <strong class="text-danger">{{draftWplanControllerError}} {{auteur_confirm.id}}</strong>
+                    </div>
+                    <div class="modal-footer">
+                        <!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                                data-ng-click="removeAuteur(auteur_confirm)">Oui</button>-->
 
+                        <button class="btn btn-primary"
+                                data-ng-click="removeAuteur(auteur_confirm)">Continuer</button>
+                        <button class="btn btn-default" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
-	
+        <!-- /.modal -->
+
+
+    </div>
+
 
 
 
     <div id="tabGestionAuteurs"
-		data-ng-if="currentTab == 'tabGestionAuteurs'">
+         data-ng-if="currentTab == 'tabGestionAuteurs'">
 
-            <h2> Recherche des auteurs </h2>
+        <h2> Recherche des auteurs </h2>
 
-        </div>
+    </div>
 
-        
+
 </div>

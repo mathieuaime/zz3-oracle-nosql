@@ -59,6 +59,7 @@ public class LaboratoryWS {
         int status = labodao.create(laboratoire);
 
         RestResponse<Laboratoire> resp = new RestResponse<>(status, (status != 0 ? "409" : "201"));
+        resp.addObjectList(laboratoire);
         return resp;
     }
 
@@ -68,6 +69,7 @@ public class LaboratoryWS {
         int status = labodao.update(id, laboratoire);
 
         RestResponse<Laboratoire> resp = new RestResponse<>(status, (status != 0 ? "204" : "200"));
+        resp.addObjectList(laboratoire);
         return resp;
     }
 

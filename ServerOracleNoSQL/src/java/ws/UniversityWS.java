@@ -59,6 +59,7 @@ public class UniversityWS {
         int status = udao.create(universite);
 
         RestResponse<Universite> resp = new RestResponse<>(status, (status != 0 ? "409" : "201"));
+        resp.addObjectList(universite);
         return resp;
     }
 
@@ -68,6 +69,7 @@ public class UniversityWS {
         int status = udao.update(id, universite);
 
         RestResponse<Universite> resp = new RestResponse<>(status, (status != 0 ? "204" : "200"));
+        resp.addObjectList(universite);
         return resp;
     }
 

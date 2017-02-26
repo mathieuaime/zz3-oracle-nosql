@@ -2,174 +2,250 @@
 
 <div>
 
-<h2> Articles scientifique</h2>
+    <h2> Articles scientifique</h2>
 
-<p>
-		<strong class="text-danger">{{draftOracleControllerError}}</strong>
-	</p>
-
-<ul id="draftOracleTabs" class="nav nav-tabs" >
-	<li data-ng-class="{active:currentTab === 'tabVoirArticles'}"><a
-		role="button" id="tabVoirArticlesBtn"
-		data-ng-click="currentTab='tabVoirArticles'">Voir les articles</a></li>
-                
-	<li data-ng-class="{active:currentTab === 'tabRechercheArticles'}"><a
-		role="button" id="tabRechercheArticlesBtn"
-		data-ng-click="currentTab='tabRechercheArticles'">Recherche des articles</a></li>
-</ul>
-
-
-
-<div id="tabVoirArticles" data-ng-show="currentTab === 'tabVoirArticles'">
-    <h3> Liste des articles </h3>
-   
     <p>
-			Filtrer :&emsp;<input type="text" size="30"
-				data-ng-model="articlesFilter">
+        <strong class="text-danger">{{draftOracleControllerError}}</strong>
     </p>
 
+    <ul id="draftOracleTabs" class="nav nav-tabs" >
+        <li data-ng-class="{active:currentTab === 'tabVoirArticles'}">
+            <a role="button" id="tabVoirArticlesBtn" data-ng-click="currentTab = 'tabVoirArticles'">
+                Voir les articles
+            </a>
+        </li>
 
-    <table class="table">
-			<thead>
-				<tr>
-					<th>id</th>
-					<th>titre</th>
-					<th>resume</th>
-					<th>prix</th>
-                                        <th> </th>
-					
-				</tr>
-			</thead>
-			<tbody>
-				<tr data-ng-repeat="article in articles">
-					<td>{{article.id}}</td>
-                                        <td>{{article.titre}}</td>
-					<td>{{article.resume}}</td>
-                                        <td>{{article.prix}}</td>
-                                        <td width="60px"><a role="button"
-						data-ng-click="editArticle(article)"><img
-							alt="modifier" src="img/modify.png" data-toggle="modal"
-							data-target="#modifyArticleModal"></a> <a
-						data-toggle="modal" data-target="#confirmation" role="button"
-						data-ng-click="setRemovableArticle(article)"><img
-							alt="supprimer" src="img/delete.png"></a></td>
-				</tr>
-			</tbody>
-		</table>
-
-<p><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createArticleModal"
-           data-ng-click="initializeArticle()">Ajouter un article</button></p>    
-
-<div id="createArticleModal" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<form data-ng-submit="">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title">Ajouter un article</h4>
-						</div>
-						<div class="modal-body form-group">
-                                                    <label for="createArticleId"> Id </label>
-                                                    <input type="text" class="form-control" data-ng-model="formData.createArticleId" size="30" placeholder="Id">
-                                                    <br>
-							<label for="createArticleTitre">Titre</label>
-							<input type="text" class="form-control" data-ng-model="formData.createArticleTitre" size="30" placeholder="Titre">
-							<br>
-							<label for="createArticleResume">Résumé</label>
-							<input type="text" class="form-control" data-ng-model="formData.createArticleResume" size="60" placeholder="Résumé">
-							<br>
-							<label for="createArticlePrix">Prix</label>
-							<input type="text" data-ng-model="formData.createArticlePrix" size="30" placeholder="Prix">
-                                                        <br>
-						</div>
-                                            <strong class="text-danger">{{draftWplanControllerError}}</strong>
-                                            
-						<div class="modal-footer form-group">
-							<button class="btn btn-primary" type="submit"
-                                                                data-ng-click="createArticle()">Ajouter</button>
-							<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-           
-           <div id="modifyArticleModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form data-ng-submit="">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Modification de {{
-							formData.createArticleId }} {{
-							formData.createArticleTitre }}</h4>
-					</div>
-					<div class="modal-body form-group">
-						<label for="createArticleId">Id</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createArticleId" size="30"
-							placeholder="Id"> <br /> 
-                                                <label for="createArticleTitre">Titre</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createArticleTitre" size="30"
-							placeholder="Titre"> <br /> 
-                                                <label for="createArticleResume">Resume</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createArticleResume" size="30"
-							placeholder="Resume"> <br /> 
-                                                <label for="createArticlePrix">Prix</label> <input type="text"
-							class="form-control"
-							data-ng-model="formData.createArticlePrix" size="30"
-							placeholder="Prix"> <br /> 
-
-					</div>
-                                    <strong class="text-danger">{{draftWplanControllerError}}</strong>
-					<div class="modal-footer form-group">
-						<button class="btn btn-primary" type="submit"
-							data-ng-click="modifyArticle()">Sauvegarder</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+        <li data-ng-class="{active:currentTab === 'tabRechercheArticles'}">
+            <a role="button" id="tabRechercheArticlesBtn" data-ng-click="currentTab = 'tabRechercheArticles'">
+                Recherche des articles
+            </a>
+        </li>
+    </ul>
 
 
-           <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header alert alert-danger">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<h4 class="modal-title">Confirmation</h4>
-				</div>
-				<div class="modal-body">
-					<p>Etes-vous sur de vouloir supprimer cet article ?</p>
-                                         <strong class="text-danger">{{draftWplanControllerError}} {{article_confirm.id}}</strong>
-				</div>
-				<div class="modal-footer">
-					<!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal"
-						data-ng-click="removeArticle(article_confirm)">Oui</button>-->
-                                      
-					<button class="btn btn-primary"
-						data-ng-click="removeArticle(article_confirm)">Continuer</button>
-					<button class="btn btn-default" data-dismiss="modal">Annuler</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	<!-- /.modal -->
-           
-         
-</div>
 
-<div id="tabRechercheArticles" data-ng-if="currentTab === 'tabRechercheArticles'">
-    
-  <h3>Recherche des articles</h3>  
-</div>
+    <div id="tabVoirArticles" data-ng-show="currentTab === 'tabVoirArticles'">
+        <h3> Liste des articles </h3>
+
+        <p>
+            Filtrer :&emsp;
+            <input type="text" size="30" data-ng-model="articlesFilter">
+        </p>
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Titre</th>
+                    <th>Prix</th>
+                    <th> </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="article in articles">
+                    <td>{{article.id}}</td>
+                    <td>{{article.titre}}</td>
+                    <td>{{article.prix}}</td>
+                    <td width="60px">
+                        <a role="button" data-ng-click="displayArticle(article)">
+                            <img alt="afficher les détails" src="img/loupe.png" data-toggle="modal"
+                                 data-target="#displayArticleModal">
+                        </a> 
+                        <a role="button" data-ng-click="editArticle(article)">
+                            <img alt="modifier" src="img/modify.png" data-toggle="modal"
+                                 data-target="#modifyArticleModal">
+                        </a> 
+                        <a data-toggle="modal" data-target="#confirmation" role="button"
+                           data-ng-click="setRemovableArticle(article)">
+                            <img alt="supprimer" src="img/delete.png">
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <button type="button" class="btn btn-primary" 
+                    data-toggle="modal" data-target="#createArticleModal"
+                    data-ng-click="initializeArticle()">
+                Ajouter un article
+            </button>
+        </p>    
+
+        <div id="createArticleModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form data-ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Ajouter un article</h4>
+                        </div>
+                        <div class="modal-body form-group">
+                            <label for="createArticleId"> Id </label>
+                            <input type="text" class="form-control" 
+                                   data-ng-model="formData.createArticleId" 
+                                   size="30" placeholder="Id">
+                            <br>
+                            <label for="createArticleTitre">Titre</label>
+                            <input type="text" class="form-control" 
+                                   data-ng-model="formData.createArticleTitre" 
+                                   size="30" placeholder="Titre">
+                            <br>
+                            <label for="createArticleResume">Résumé</label>
+                            <input type="text" class="form-control" 
+                                   data-ng-model="formData.createArticleResume" 
+                                   size="60" placeholder="Résumé">
+                            <br>
+                            <label for="createArticlePrix">Prix</label>
+                            <input type="text" data-ng-model="formData.createArticlePrix" 
+                                   size="30" placeholder="Prix">
+                            <br>
+                        </div>
+                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+
+                        <div class="modal-footer form-group">
+                            <button class="btn btn-primary" type="submit" data-ng-click="createArticle()">Ajouter</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="modifyArticleModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form data-ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">
+                                Modification de {{formData.createArticleId}} {{formData.createArticleTitre}}
+                            </h4>
+                        </div>
+
+                        <div class="modal-body form-group">
+                            <label for="createArticleId">Id</label> 
+                            <input type="text" class="form-control" 
+                                   data-ng-model="formData.createArticleId" 
+                                   size="30" placeholder="Id"> 
+                            <br/> 
+                            <label for="createArticleTitre">Titre</label>
+                            <input type="text" class="form-control"
+                                   data-ng-model="formData.createArticleTitre" 
+                                   size="30" placeholder="Titre">
+                            <br/> 
+                            <label for="createArticleResume">Resume</label>
+                            <input type="text" class="form-control"
+                                   data-ng-model="formData.createArticleResume" 
+                                   size="30" placeholder="Resume"> 
+                            <br/> 
+                            <label for="createArticlePrix">Prix</label>
+                            <input type="text" class="form-control"
+                                   data-ng-model="formData.createArticlePrix" 
+                                   size="30" placeholder="Prix"> 
+                            <br/> 
+                        </div>
+
+                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                        <div class="modal-footer form-group">
+                            <button class="btn btn-primary" type="submit" data-ng-click="modifyArticle()">Sauvegarder</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="displayArticleModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form data-ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">
+                                Article n°{{article.id}}
+                            </h4>
+                        </div>
+
+                        <div class="modal-body form-group">
+                            <h3>Informations</h3>
+                            <table class="table">
+                                <tr>
+                                    <td>Id : </td>
+                                    <td>{{article.id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Titre : </td>
+                                    <td>{{article.titre}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Prix : </td>
+                                    <td>{{article.prix}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Résumé : </td>
+                                    <td>{{article.resume}}</td>
+                                </tr>
+                            </table>
+
+                            <h3>Auteurs</h3>
+                            <div class="show-tags" data-ng-repeat="auteur in auteurs">
+                                <a class="tag" href="auteur/{{auteur.id}}/">
+                                    <span>
+                                        {{auteur.nom}} {{auteur.prenom}}
+                                    </span>
+                                </a>
+                            </div>
+
+                            <h3>Mots-clefs</h3>
+                            <div class="show-tags" data-ng-repeat="keyword in keywords">
+                                <a class="tag lower" href="discover/{{keyword.value}}/">
+                                    <span>
+                                        #{{keyword.value}}
+                                    </span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header alert alert-danger">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Confirmation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Etes-vous sur de vouloir supprimer cet article ?</p>
+                        <strong class="text-danger">{{draftWplanControllerError}} {{article_confirm.id}}</strong>
+                    </div>
+                    <div class="modal-footer">
+                        <!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                                data-ng-click="removeArticle(article_confirm)">Oui</button>-->
+
+                        <button class="btn btn-primary" data-ng-click="removeArticle(article_confirm)">Continuer</button>
+                        <button class="btn btn-default" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
+    <div id="tabRechercheArticles" data-ng-if="currentTab === 'tabRechercheArticles'">
+        <h3>Recherche des articles</h3>  
+    </div>
+
 </div>

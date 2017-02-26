@@ -5,6 +5,7 @@
  */
 package entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -13,7 +14,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class EstRattache {
+public class EstRattache implements Serializable {
 
     /*
      * The MAJOR_KEY is used to construct
@@ -43,6 +44,10 @@ public class EstRattache {
         type = elt[1];
         rank = Integer.parseInt(elt[2]);
         value = Integer.parseInt(elt[3]);
+    }
+    
+    public EstRattache() {
+        this(null,null,-1,-1);
     }
 
     public String getNomAuteur() {

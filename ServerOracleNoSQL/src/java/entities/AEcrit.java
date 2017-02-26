@@ -5,6 +5,7 @@
  */
 package entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -13,7 +14,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class AEcrit {
+public class AEcrit implements Serializable {
 
     /*
      * The MAJOR_KEY is used to construct

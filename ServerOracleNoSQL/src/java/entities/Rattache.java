@@ -5,6 +5,7 @@
  */
 package entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import oracle.kv.Key;
 import oracle.kv.Value;
@@ -13,7 +14,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class Rattache {
+public class Rattache implements Serializable {
 
     /*
      * The MAJOR_KEY is used to construct
@@ -42,6 +43,10 @@ public class Rattache {
         value = elt[1];
         rang = Integer.parseInt(elt[2]);
         idAuteur = Integer.parseInt(elt[3]);
+    }
+
+    public Rattache() {
+        this(null, null, -1, -1);
     }
 
     public void setIdAuteur(int idAuteur) {

@@ -150,7 +150,7 @@ public class AuthorWSTest extends TestCase {
         assertEquals(response.getCode(), 150);
 
         ws.addAuteur(auteurA);
-        response = ws.addArticle(auteurA.getNom(), ae);
+        response = ws.addArticle(auteurA.getId(), ae);
 
         //article inexistant
         assertEquals(response.getResponseCode(), "204");
@@ -162,7 +162,7 @@ public class AuthorWSTest extends TestCase {
         //ajout
         assertEquals(response.getResponseCode(), "201");
 
-        response = ws.addArticle(auteurA.getNom(), ae);
+        response = ws.addArticle(auteurA.getId(), ae);
 
         //double ajout
         assertEquals(response.getResponseCode(), "409");
@@ -522,7 +522,7 @@ public class AuthorWSTest extends TestCase {
         wsArticle.addArticle(articleA);
 
         AEcrit aEcrit = new AEcrit(auteurA.getNom(), 1, articleA.getId());
-        AEteEcrit aEteEcrit = new AEteEcrit(articleA.getTitre(), auteurA.getId());
+        AEteEcrit aEteEcrit = new AEteEcrit(articleA.getTitre(), 1, auteurA.getId());
         Keyword keyword = new Keyword("Keyword", 1, articleA.getId());
 
         response = ws.listKeywords(auteurA.getId());

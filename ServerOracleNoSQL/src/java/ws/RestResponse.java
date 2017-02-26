@@ -7,18 +7,21 @@ package ws;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
  * @author Mathieu
+ * @param <T>
  */
 public class RestResponse<T> implements Serializable {
 
     private String responseCode;
     private String message;
     private int code;
-    private List<T> objectList;
+    private Set<T> objectList;//TODO : tester avec List + test à l'ajout et Tout en Set
 
     public RestResponse() {
         this(200);
@@ -33,14 +36,14 @@ public class RestResponse<T> implements Serializable {
     }
 
     public RestResponse(int code, List<T> objectList) {
-        this(code, getStatus(code), getMessage(code), objectList);
+        this(code, getStatus(code), getMessage(code), new HashSet<T>(objectList));
     }
 
     public RestResponse(int code, String responseCode, List<T> objectList) {
-        this(code, responseCode, getMessage(code), objectList);
+        this(code, responseCode, getMessage(code), new HashSet<T>(objectList));
     }
 
-    public RestResponse(int code, String responseCode, String message, List<T> objectList) {
+    public RestResponse(int code, String responseCode, String message, HashSet<T> objectList) {
         this.responseCode = responseCode;
         this.code = code;
         this.message = message;
@@ -72,15 +75,15 @@ public class RestResponse<T> implements Serializable {
     }
 
     public List<T> getObjectList() {
-        return objectList;
+        return new ArrayList<T>(objectList);
     }
 
     public void setObjectList(List<T> objectList) {
-        this.objectList = objectList;
+        this.objectList = new HashSet<T>(objectList);
     }
 
     public void addObjectList(T object) {
-        this.objectList.add(object);//gérer doublon
+        this.objectList.add(object);
     }
 
     public static String getStatus(int code) {

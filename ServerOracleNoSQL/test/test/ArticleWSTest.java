@@ -36,8 +36,8 @@ public class ArticleWSTest extends TestCase {
     Author auteurB = new Author(1, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
     Author auteurC = new Author(2, "a", "m", "clermont", "1111", "2222", "aime@isima.fr");
 
-    AEteEcrit aEteEcrit1 = new AEteEcrit(articleA.getTitre(), auteurA.getId());
-    AEteEcrit aEteEcrit2 = new AEteEcrit(articleA.getTitre(), auteurC.getId());
+    AEteEcrit aEteEcrit1 = new AEteEcrit(articleA.getTitre(), 1, auteurA.getId());
+    AEteEcrit aEteEcrit2 = new AEteEcrit(articleA.getTitre(), 1, auteurC.getId());
 
     Keyword keywordA = new Keyword("keywordA", 1, 1);
     Keyword keywordB = new Keyword("keywordB", 1, 1);

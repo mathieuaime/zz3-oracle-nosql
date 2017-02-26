@@ -6,7 +6,7 @@
   * Contrôleur de la gestion des laboratoires.
   */
 
-oraclenosqlControllers.controller('laboratoireMainController', ['$scope', '$rootScope', '$log', 'laboratoireMainFactory', 
+oraclenosqlControllers.controller('laboratoireMainController', ['$scope', '$rootScope', '$log', 'laboratoireMainFactory',
     function ($scope, $rootScope, $log, laboratoireMainFactory) {
 
         /*
@@ -58,7 +58,7 @@ oraclenosqlControllers.controller('laboratoireMainController', ['$scope', '$root
                         $scope.formData.createLaboratoireAdresse).then(
                         function (result) {
                             $rootScope.draftWplanControllerError = '';
-                            $scope.laboratoires.push(result);
+                            $scope.laboratoires.push(result.objectList[0]);
                         },
                         function (error) {
                             $rootScope.draftWplanControllerError = error;
@@ -74,75 +74,69 @@ oraclenosqlControllers.controller('laboratoireMainController', ['$scope', '$root
             // fermeture de la fenêtre modale
             $('#createLaboratoireModal').modal('hide');
         },
-                
-        $scope.initializeLaboratoire = function () {
-            $scope.formData.createLaboratoireId = "";
-            $scope.formData.createLaboratoireNom = "";
-            $scope.formData.createLaboratoireAdresse = "";
-        },
-                
-        $scope.editLaboratoire = function (laboratoire) {
-            $scope.formData.laboratoire = laboratoire;
+                $scope.initializeLaboratoire = function () {
+                    $scope.formData.createLaboratoireId = "";
+                    $scope.formData.createLaboratoireNom = "";
+                    $scope.formData.createLaboratoireAdresse = "";
+                },
+                $scope.editLaboratoire = function (laboratoire) {
+                    $scope.formData.laboratoire = laboratoire;
 
-            //Initialisation du formulaire
-            $scope.formData.createLaboratoireId = laboratoire.laboratoireId;
-            $scope.formData.createLaboratoireNom = laboratoire.nom;
-            $scope.formData.createLaboratoireAdresse = laboratoire.adresse;
-        },
-                
-        $scope.modifyLaboratoire = function ()
-        {
-            // contrôle des champs qui doivent être définis
-            if ($scope.formData.createLaboratoireId && $scope.formData.createLaboratoireNom) {
-                // appel au service effectuant la requête (une promesse est renvoyée : gestion de l'appel en mode synchrone)
-                laboratoireMainFactory.modifyLaboratoire(
-                        $scope.formData.createLaboratoireId,
-                        $scope.formData.createLaboratoireNom,
-                        $scope.formData.createLaboratoireAdresse).then(
-                        function (result) {
-                            $rootScope.draftWplanControllerError = '';
-                            $scope.laboratoires.splice($scope.laboratoires.indexOf($scope.formData.laboratoire))
-                            $scope.laboratoires.push(result);
-
-                        },
-                        function (error) {
-                            $rootScope.draftWplanControllerError = error;
-                            $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
-                        }
-                );
-            } else {
-                $rootScope.draftWplanControllerError = 'Vous devez renseigner l\'laboratoireId et le nom du laboratoire.';
-            }
-
-            // remise à blanc des champs de saisie pour la création d'un laboratoire
-            $scope.formData = {};
-
-            // fermeture de la fenêtre modale
-            $('#modifyLaboratoireModal').modal('hide');
-        },
-                
-        $scope.setRemovableLaboratoire = function (laboratoire) {
-            $scope.laboratoire_confirm = laboratoire;
-        },
-                
-        $scope.removeLaboratoire = function (laboratoire) {
-            laboratoireMainFactory.removeLaboratoire(laboratoire.laboratoireId).then(
-                    function (result) {
-                        $rootScope.draftWplanControllerError = '';
-                        var index = $scope.laboratoire.indexOf(laboratoire);
-                        $scope.laboratoires.splice(index, 1);
-
-                    },
-                    function (error) {
-                        $rootScope.draftWplanControllerError = error;
-
+                    //Initialisation du formulaire
+                    $scope.formData.createLaboratoireId = laboratoire.laboratoireId;
+                    $scope.formData.createLaboratoireNom = laboratoire.nom;
+                    $scope.formData.createLaboratoireAdresse = laboratoire.adresse;
+                },
+                $scope.modifyLaboratoire = function ()
+                {
+                    // contrôle des champs qui doivent être définis
+                    if ($scope.formData.createLaboratoireId && $scope.formData.createLaboratoireNom) {
+                        // appel au service effectuant la requête (une promesse est renvoyée : gestion de l'appel en mode synchrone)
+                        laboratoireMainFactory.modifyLaboratoire(
+                                $scope.formData.createLaboratoireId,
+                                $scope.formData.createLaboratoireNom,
+                                $scope.formData.createLaboratoireAdresse).then(
+                                function (result) {
+                                    $rootScope.draftWplanControllerError = '';
+                                    $scope.laboratoires.splice($scope.laboratoires.indexOf($scope.formData.laboratoire))
+                                    $scope.laboratoires.push(result.objectList[0]);
+                                },
+                                function (error) {
+                                    $rootScope.draftWplanControllerError = error;
+                                    $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+                                }
+                        );
+                    } else {
+                        $rootScope.draftWplanControllerError = 'Vous devez renseigner l\'laboratoireId et le nom du laboratoire.';
                     }
-            );
-    
-            $('#confirmation').modal('hide');
-        };
+
+                    // remise à blanc des champs de saisie pour la création d'un laboratoire
+                    $scope.formData = {};
+
+                    // fermeture de la fenêtre modale
+                    $('#modifyLaboratoireModal').modal('hide');
+                },
+                $scope.setRemovableLaboratoire = function (laboratoire) {
+                    $scope.laboratoire_confirm = laboratoire;
+                },
+                $scope.removeLaboratoire = function (laboratoire) {
+                    laboratoireMainFactory.removeLaboratoire(laboratoire.laboratoireId).then(
+                            function (result) {
+                                $rootScope.draftWplanControllerError = '';
+                                var index = $scope.laboratoire.indexOf(laboratoire);
+                                $scope.laboratoires.splice(index, 1);
+
+                            },
+                            function (error) {
+                                $rootScope.draftWplanControllerError = error;
+
+                            }
+                    );
+
+                    $('#confirmation').modal('hide');
+                };
     }]
-);
+        );
 
 
 

@@ -5,6 +5,7 @@
  */
 package entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import oracle.kv.Key;
@@ -14,7 +15,7 @@ import oracle.kv.Value;
  *
  * @author Dehbia Sam
  */
-public class Laboratoire {
+public class Laboratoire implements Serializable {
 
     private int laboratoireId;
 

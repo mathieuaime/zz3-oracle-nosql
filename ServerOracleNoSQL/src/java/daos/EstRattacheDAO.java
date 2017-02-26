@@ -119,7 +119,7 @@ public class EstRattacheDAO {
     }
 
     public int create(String auteurNom, String type, int value) {
-        return create(auteurNom, type, getLastRank(auteurNom, type, "info"), value);
+        return create(auteurNom, type, 1 + getLastRank(auteurNom, type, "info"), value);
     }
 
     public int create(String auteurNom, String type, int rank, int value) {
