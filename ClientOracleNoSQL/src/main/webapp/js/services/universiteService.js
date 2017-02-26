@@ -24,20 +24,10 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
 		// création d'un universite
 		createUniversite: function(id,nom,adresse) {
 			
-			// mise à blanc des paramètres non définis pour éviter les erreurs de signature
-			if (undefined == id) id = '';
-			if (undefined == nom) nom = '';
-			if (undefined == adresse) adresse = '';
-                        
-			
-			$log.debug('universiteMainFactory - create universite : ' + id+' ' + nom + ' ' + adresse);
-			
+			var data = { "universiteId":id,"nom":nom,"adresse":adresse};
 			var deferred = $q.defer();
-			$http({
-				method: 'POST',
-				url: 'http://localhost:8080/ServerOracleNoSQL/ws/university',
-				params: { id: universiteId,nom: nom, adresse: adresse}
-			}).then(function successCallback(response) {
+                        
+			$http.post('http://localhost:8080/ServerOracleNoSQL/ws/university', JSON.stringify(data)).then(function successCallback(response) {
 				$log.debug('... réponse du serveur : OK.');
 				deferred.resolve(response.data);
 			}, function errorCallback(response) {
@@ -45,7 +35,7 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
 				$log.debug('***********************************************');
 				$log.debug(response);
 				$log.debug('***********************************************');
-				// deferred.reject('Impossible de créer l\'universite');
+		deferred.reject('Impossible de créer l\'université');
 				deferred.reject(response.data);
 			});
 			return deferred.promise;
@@ -77,12 +67,6 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
                                 deferred.reject('Impossible de supprimer l\'université');
                                 deferred.reject(response.data);
 			});
-		}
-		
-
-	
-		
-		
+		}		
 	}
-	
 }]);
