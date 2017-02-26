@@ -30,6 +30,23 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
 			  });
 			return deferred.promise;
 		},
+                
+                // lecture d'une universite
+		readUniversite: function(id) {
+			var deferred = $q.defer();
+			$log.debug('universiteMainFactory - reading universites : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/university/'+id
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer les universites.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
+		},
 	
 		// création d'un universite
 		createUniversite: function(universiteId,nom, adresse) {
@@ -77,6 +94,76 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
                                 deferred.reject('Impossible de supprimer le universite');
                                 deferred.reject(response.data);
 			});
+		},
+                
+                
+                // lecture des auteurs d'une universite à partir de l'id
+		readUniversiteAuteursFromId: function(id) {
+			var deferred = $q.defer();
+			$log.debug('universiteMainFactory - reading universites : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/university/'+id+'/auteurs'
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer les universites.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
+		},
+                
+                // lecture des auteurs d'un universite à partir du nom
+		readUniversiteAuteursFromNom: function(nom) {
+			var deferred = $q.defer();
+			$log.debug('universiteMainFactory - reading universites : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/university/'+nom+'/auteursFromName'
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer les universites.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
+		},
+                
+                
+                
+                // lecture des articles d'une universite à partir de l'id
+		readUniversiteArticlesFromId: function(id) {
+			var deferred = $q.defer();
+			$log.debug('universiteMainFactory - reading universites : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/university/'+id+'/articles'
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer les universites.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
+		},
+                // lecture des articles d'un universite à partir du nom
+		readUniversiteArticlesFromNom: function(nom) {
+			var deferred = $q.defer();
+			$log.debug('universiteMainFactory - reading universites : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/university/'+nom+'/articlesFromName'
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer les universites.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
 		}
 	};
 	

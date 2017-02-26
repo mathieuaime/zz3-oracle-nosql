@@ -30,6 +30,22 @@ oraclenosqlServices.factory('laboratoireMainFactory', ['$http', '$q', '$log', fu
 			  });
 			return deferred.promise;
 		},
+                // lecture d un laboratoire
+		readLaboratoire: function(id) {
+			var deferred = $q.defer();
+			$log.debug('laboratoireMainFactory - reading laboratoires : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/laboratory/'+id
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer le laboratoire.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
+		},
 	
 		// création d'un laboratoire
 		createLaboratoire: function(laboratoireId,nom, adresse) {
@@ -77,7 +93,74 @@ oraclenosqlServices.factory('laboratoireMainFactory', ['$http', '$q', '$log', fu
                                 deferred.reject('Impossible de supprimer le laboratoire');
                                 deferred.reject(response.data);
 			});
+		},
+                
+                readLaboratoireAuteurs: function(id) {
+			var deferred = $q.defer();
+			$log.debug('laboratoireMainFactory - reading laboratoires : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/laboratory/'+id+'/auteurs'
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer le laboratoire.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
+		},
+                
+                //Obtenir les auteurs rattachés à un laboratoires
+                readLaboratoireAuteursFromNom: function(nom) {
+			var deferred = $q.defer();
+			$log.debug('laboratoireMainFactory - reading laboratoires : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/laboratory/'+nom+ '/auteursFromName'
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer le laboratoire.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
+		},
+                 //Obtenir les articles rattachés à un laboratoires à partir de l'id
+                readLaboratoireArticlesFromId: function(id) {
+			var deferred = $q.defer();
+			$log.debug('laboratoireMainFactory - reading laboratoires : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/laboratory/'+id+ '/articles'
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer le laboratoire.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
+		},
+                
+                 //Obtenir les articles rattachés à un laboratoires à partir du nom
+                readLaboratoireArticlesFromNom: function(nom) {
+			var deferred = $q.defer();
+			$log.debug('laboratoireMainFactory - reading laboratoires : appel au serveur ...');
+			$http({
+				method: 'GET',
+				url: 'http://localhost:8080/ServerOracleNoSQL/ws/laboratory/'+nom+ '/articlesFromName'
+			}).then(function successCallback(response) {
+				$log.debug('... réponse du serveur : OK.');
+			    deferred.resolve(response.data);
+			}, function errorCallback(response) {
+				deferred.reject('Erreur - Impossible de récupérer le laboratoire.');
+				$log.debug('... réponse du serveur : erreur.');
+			  });
+			return deferred.promise;
 		}
+                
 	};
 	
 }]);
