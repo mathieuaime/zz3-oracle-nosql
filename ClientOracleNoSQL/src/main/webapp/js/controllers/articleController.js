@@ -2,14 +2,17 @@
  * Contrôleur de la gestion du réalisé.
  */
 
-oraclenosqlControllers.controller('articleMainController',['$scope','$rootScope','$log','articleMainFactory',function($scope, $rootScope, $log, articleMainFactory) {
+oraclenosqlControllers.controller('articleMainController',['$scope','$rootScope','$log','articleMainFactory','auteurMainFactory',function($scope, $rootScope, $log, articleMainFactory,auteurMainFactory) {
 
 							
 							// lecture des données à afficher
+                                                        readAuteurs();
 							readArticles();
 							$scope.currentTab = 'tabVoirArticles';
 							$scope.formData = {};
                                                         $scope.article_confirm="";
+                                                        $scope.rang = 1;
+                                                        $scope.auteursDispo = [{"id":1,"prenom":"dehbia","nom":"sam","adresse":"erzerz","phone":"erezrz","fax":"ererz","mail":"erezrz"},{"id":2,"prenom":"mathieu","nom":"aime","adresse":"erzerz","phone":"erezrz","fax":"ererz","mail":"erezrz"}];
 
         function readArticles() { // fonction privée (pas ajoutée au $scope)
 		
@@ -27,6 +30,12 @@ oraclenosqlControllers.controller('articleMainController',['$scope','$rootScope'
 	}
         $scope.createArticle = function() {
 		
+                
+                for (var i = 0; i < $scope.auteursDispo.length; i++) {
+			if ($scope.auteursDispo[i].nom == $scope.formData.createAuteurSelect) {
+				$scope.idAuteurAjouter = $scope.auteursDispo[i].id;
+			}			
+		}
 		// contrôle des champs qui doivent être définis
 		if ($scope.formData.createArticleId && $scope.formData.createArticleTitre) {
 			// appel au service effectuant la requête (une promesse est renvoyée : gestion de l'appel en mode synchrone)
@@ -37,7 +46,32 @@ oraclenosqlControllers.controller('articleMainController',['$scope','$rootScope'
 					$scope.formData.createArticlePrix).then(
 					function(result) {
 						$rootScope.draftWplanControllerError = '';
-                                                       $scope.articles.push(result);
+                                                      
+                                                       
+                                                       articleMainFactory.createAEteEcrit(
+                                                               
+                                                               $scope.formData.createArticleTitre,
+                                                               $scope.idAuteurAjouter,
+                                                               $scope.formData.createArticleId).then(
+					function(result) {
+						$rootScope.draftWplanControllerError = '';
+                                                auteurMainFactory.createAEcritFromId($scope.formData.createAuteurSelect,
+                                                                                                $scope.formData.createArticleId,$scope.rang,$scope.idAuteurAjouter).then(
+                                                                                                        function(result){
+                                                                                                            $rootScope.draftWplanControllerError = 'Article ajouté';
+                                                                                                        },
+                                                                                                        function(error){
+                                                                                                            $rootScope.draftWplanControllerError = error;
+					
+                                                                                                        });
+                                                
+                                                      
+                                                       }, 
+					function(error) {
+						$rootScope.draftWplanControllerError = error;
+						$log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+					});
+                                                     
 					}, 
 					function(error) {
 						$rootScope.draftWplanControllerError = error;

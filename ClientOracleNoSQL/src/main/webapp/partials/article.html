@@ -81,8 +81,14 @@
 							<label for="createArticlePrix">Prix</label>
 							<input type="text" data-ng-model="formData.createArticlePrix" size="30" placeholder="Prix">
                                                         <br>
+                                                        <label for="createAuteurSelect"> Nom Auteur </label>
+                                                        <select name="auteurSelect" id="auteurSelect"
+							data-ng-options="auteur.prenom + ' ' + auteur.nom for auteur in auteursDispo"
+							data-ng-model="formData.createAuteurSelect"></select>
+                                                        <br>
 						</div>
-                                            <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                                           
+                                            <strong class="text-danger">{{draftWplanControllerError}}  {{idAuteurAjouter}}</strong>
                                             
 						<div class="modal-footer form-group">
 							<button class="btn btn-primary" type="submit"
