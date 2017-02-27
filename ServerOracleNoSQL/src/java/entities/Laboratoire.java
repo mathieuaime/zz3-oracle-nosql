@@ -15,7 +15,7 @@ import oracle.kv.Value;
  *
  * @author Dehbia Sam
  */
-public class Laboratoire implements Serializable {
+public class Laboratoire implements Serializable, Comparable {
 
     private int laboratoireId;
 
@@ -131,5 +131,11 @@ public class Laboratoire implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        Laboratoire a = (Laboratoire) obj;
+        return (laboratoireId > a.laboratoireId ? 1 : laboratoireId < a.laboratoireId ? -1 : 0);
     }
 }

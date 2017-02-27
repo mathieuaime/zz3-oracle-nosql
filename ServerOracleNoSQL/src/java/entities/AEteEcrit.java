@@ -14,7 +14,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class AEteEcrit implements Serializable {
+public class AEteEcrit implements Serializable, Comparable {
 
     /*
      * The MAJOR_KEY is used to construct
@@ -90,5 +90,15 @@ public class AEteEcrit implements Serializable {
         return articleTitre + "/"
                 + rank + "/"
                 + idAuteur;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        AEteEcrit a = (AEteEcrit) obj;
+        if (articleTitre.equals(a.articleTitre)) { // achieving uniqueness
+            return (rank > a.rank ? 1 : rank < a.rank ? -1 : 0);
+        } else {
+            return articleTitre.compareTo(a.articleTitre);
+        }
     }
 }

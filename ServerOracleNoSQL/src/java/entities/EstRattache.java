@@ -14,7 +14,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class EstRattache implements Serializable {
+public class EstRattache implements Serializable, Comparable {
 
     /*
      * The MAJOR_KEY is used to construct
@@ -96,5 +96,19 @@ public class EstRattache implements Serializable {
                 + type + "/"
                 + rank + "/"
                 + value;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        EstRattache a = (EstRattache) obj;
+        if (nomAuteur.equals(a.nomAuteur)) { // achieving uniqueness
+            if (type.equals(a.type)) { // achieving uniqueness
+                return (rank > a.rank ? 1 : rank < a.rank ? -1 : 0);
+            } else {
+                return type.compareTo(a.type);
+            }
+        } else {
+            return nomAuteur.compareTo(a.nomAuteur);
+        }
     }
 }

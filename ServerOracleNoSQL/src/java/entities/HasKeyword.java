@@ -14,7 +14,7 @@ import oracle.kv.Value;
  *
  * @author Mathieu
  */
-public class HasKeyword implements Serializable {
+public class HasKeyword implements Serializable, Comparable {
 
     //key
     private String titreArticle;
@@ -81,5 +81,15 @@ public class HasKeyword implements Serializable {
         return titreArticle + "/" 
                 + rank + "/" 
                 + keyword;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        HasKeyword a = (HasKeyword) obj;
+        if (titreArticle.equals(a.titreArticle)) { // achieving uniqueness
+            return (rank > a.rank ? 1 : rank < a.rank ? -1 : 0);
+        } else {
+            return titreArticle.compareTo(a.titreArticle);
+        }
     }
 }

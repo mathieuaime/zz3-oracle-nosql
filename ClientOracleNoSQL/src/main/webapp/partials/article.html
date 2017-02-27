@@ -83,31 +83,44 @@
                             <h4 class="modal-title">Ajouter un article</h4>
                         </div>
                         <div class="modal-body form-group">
-                            <label for="createArticleId"> Id </label>
-                            <input type="text" class="form-control" 
+                            <label for="createArticleId">Id</label>
+                            <input id="createArticleId" type="text" class="form-control" 
                                    data-ng-model="formData.createArticleId" 
                                    size="30" placeholder="Id">
-                            <br>
+                            <br/>
                             <label for="createArticleTitre">Titre</label>
-                            <input type="text" class="form-control" 
+                            <input id="createArticleTitre" type="text" class="form-control" 
                                    data-ng-model="formData.createArticleTitre" 
                                    size="30" placeholder="Titre">
-                            <br>
+                            <br/>
+                            <label for="createArticlePrix">Prix</label>
+                            <input id="createArticlePrix" type="text" class="form-control" 
+                                   data-ng-model="formData.createArticlePrix" 
+                                   size="30" placeholder="Prix">
+                            <br/>
+                            <label for="createArticleKeywords">Mots-Clefs</label>
+                            <div id="createArticleKeywords">
+                                <div id="listKeyword" class="show-tags">
+                                    <input class="tag tagInput" type="text" 
+                                           data-ng-model="keyword.value"
+                                           data-ng-change="addListKeywords()"
+                                           ng-repeat="keyword in formData.keywordInputs"
+                                           size="30" placeholder="#keyword">
+                                </div>
+                            </div>
+
+                            <br/>
                             <label for="createArticleResume">Résumé</label>
-                            <input type="text" class="form-control" 
+                            <input id="createArticleResume" type="text" class="form-control" 
                                    data-ng-model="formData.createArticleResume" 
                                    size="60" placeholder="Résumé">
-                            <br>
-                            <label for="createArticlePrix">Prix</label>
-                            <input type="text" data-ng-model="formData.createArticlePrix" 
-                                   size="30" placeholder="Prix">
-                            <br>
-                        </div>
-                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                            <br/>
+                            <strong class="text-danger">{{draftWplanControllerError}}</strong>
 
-                        <div class="modal-footer form-group">
-                            <button class="btn btn-primary" type="submit" data-ng-click="createArticle()">Ajouter</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                            <div class="modal-footer form-group">
+                                <button class="btn btn-primary" type="submit" data-ng-click="createArticle()">Ajouter</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -161,55 +174,53 @@
         <div id="displayArticleModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form data-ng-submit="">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">
-                                Article n°{{article.id}}
-                            </h4>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">
+                            Article n°{{article.id}}
+                        </h4>
+                    </div>
+
+                    <div class="modal-body form-group">
+                        <h3>Informations</h3>
+                        <table class="table">
+                            <tr>
+                                <td>Id : </td>
+                                <td>{{article.id}}</td>
+                            </tr>
+                            <tr>
+                                <td>Titre : </td>
+                                <td>{{article.titre}}</td>
+                            </tr>
+                            <tr>
+                                <td>Prix : </td>
+                                <td>{{article.prix}}</td>
+                            </tr>
+                            <tr>
+                                <td>Résumé : </td>
+                                <td>{{article.resume}}</td>
+                            </tr>
+                        </table>
+
+                        <h3>Auteurs</h3>
+                        <div class="show-tags" data-ng-repeat="aut in auteurs">
+                            <a class="tag" href="auteur/{{aut.id}}/">
+                                <span>
+                                    {{aut.nom}} {{aut.prenom}}
+                                </span>
+                            </a>
                         </div>
 
-                        <div class="modal-body form-group">
-                            <h3>Informations</h3>
-                            <table class="table">
-                                <tr>
-                                    <td>Id : </td>
-                                    <td>{{article.id}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Titre : </td>
-                                    <td>{{article.titre}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Prix : </td>
-                                    <td>{{article.prix}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Résumé : </td>
-                                    <td>{{article.resume}}</td>
-                                </tr>
-                            </table>
-
-                            <h3>Auteurs</h3>
-                            <div class="show-tags" data-ng-repeat="auteur in auteurs">
-                                <a class="tag" href="auteur/{{auteur.id}}/">
-                                    <span>
-                                        {{auteur.nom}} {{auteur.prenom}}
-                                    </span>
-                                </a>
-                            </div>
-
-                            <h3>Mots-clefs</h3>
-                            <div class="show-tags" data-ng-repeat="keyword in keywords">
-                                <a class="tag lower" href="discover/{{keyword.value}}/">
-                                    <span>
-                                        #{{keyword.value}}
-                                    </span>
-                                </a>
-                            </div>
-
+                        <h3>Mots-clefs</h3>
+                        <div class="show-tags" data-ng-repeat="keyword in keywords">
+                            <a class="tag lower" href="discover/{{keyword.value}}/">
+                                <span>
+                                    #{{keyword.value}}
+                                </span>
+                            </a>
                         </div>
-                    </form>
+
+                    </div>
                 </div>
             </div>
         </div>

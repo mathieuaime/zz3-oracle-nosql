@@ -44,6 +44,19 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                             $rootScope.draftWplanControllerError = error;
                             $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
                         });
+                for (var keyword in $scope.formData.keywordInputs) {
+                    articleMainFactory.addKeyword(
+                            $scope.formData.createArticleId,
+                            keyword.value).then(
+                            function (result) {
+                                $rootScope.draftWplanControllerError = '';
+                            },
+                            function (error) {
+                                $rootScope.draftWplanControllerError = error;
+                                $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+                            });
+                }
+
             } else {
                 $rootScope.draftWplanControllerError = 'Vous devez renseigner l\'id et le nom de l\'article.';
             }
@@ -77,7 +90,7 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                     $scope.article = article;
 
                     // appel au service effectuant la requête
-                    articleMainFactory.readAuteurs(article.id).then(
+                    articleMainFactory.getAuteurFromArticle(article.id).then(
                             function (result) {
                                 $rootScope.draftOracleControllerError = '';
                                 $scope.auteurs = result.objectList;
@@ -88,7 +101,7 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                                 $log.debug(' erreur retournée au contrôleur : ' + error);
                             });
 
-                    articleMainFactory.readKeywords(article.id).then(
+                    articleMainFactory.getKeywordFromId(article.id).then(
                             function (result) {
                                 $rootScope.draftOracleControllerError = '';
                                 $scope.keywords = result.objectList;
@@ -138,7 +151,6 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                                 $rootScope.draftWplanControllerError = '';
                                 var index = $scope.article.indexOf(article);
                                 $scope.articles.splice(index, 1);
-
                             },
                             function (error) {
                                 $rootScope.draftWplanControllerError = error;
@@ -146,4 +158,17 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                             });
                     $('#confirmation').modal('hide');
                 };
+
+        $scope.formData.keywordInputs = [{ value:''}];
+
+        //on modification in the list of keywords
+        $scope.addListKeywords = function () {
+            if ($scope.formData.keywordInputs.filter(function (keyword) { return keyword.value === ''; }).length === 0) {
+                //if not, let's add one.
+                $scope.formData.keywordInputs.push({
+                    value:''
+                })
+                //and that will automatically add an input to the html
+            }
+        };
     }]);

@@ -144,12 +144,17 @@ tr[id|=detail] {
 }
 
 .tag {
-    border-radius: 15px;
-    border: 1px solid #ebf0f2;
+    border-radius: 5px;
+    border: 2px solid #ebf0f2;
     color: #49596a;
     font-size: 13px;
     line-height: 20px;
-    padding: 2px 6px;
+    padding: 3px 6px;
+}
+
+.tagInput {
+    width: 100px;
+    margin: 3px 6px;
 }
 
 .lower {
@@ -158,6 +163,6 @@ tr[id|=detail] {
 
 .show-tags {
     padding-bottom: 5px;
-    margin-right: 5px;
+    margin-right: 6px;
     display: inline-block;
 }

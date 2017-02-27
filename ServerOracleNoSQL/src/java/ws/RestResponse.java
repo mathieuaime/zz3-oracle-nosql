@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -36,18 +37,18 @@ public class RestResponse<T> implements Serializable {
     }
 
     public RestResponse(int code, List<T> objectList) {
-        this(code, getStatus(code), getMessage(code), new HashSet<T>(objectList));
+        this(code, getStatus(code), getMessage(code), objectList);
     }
 
     public RestResponse(int code, String responseCode, List<T> objectList) {
-        this(code, responseCode, getMessage(code), new HashSet<T>(objectList));
+        this(code, responseCode, getMessage(code), objectList);
     }
 
-    public RestResponse(int code, String responseCode, String message, HashSet<T> objectList) {
+    public RestResponse(int code, String responseCode, String message, List<T> objectList) {
         this.responseCode = responseCode;
         this.code = code;
         this.message = message;
-        this.objectList = objectList;
+        this.objectList = new TreeSet<>(objectList);
     }
 
     public String getResponseCode() {
@@ -75,11 +76,11 @@ public class RestResponse<T> implements Serializable {
     }
 
     public List<T> getObjectList() {
-        return new ArrayList<T>(objectList);
+        return new ArrayList<>(objectList);
     }
 
     public void setObjectList(List<T> objectList) {
-        this.objectList = new HashSet<T>(objectList);
+        this.objectList = new TreeSet<>(objectList);
     }
 
     public void addObjectList(T object) {

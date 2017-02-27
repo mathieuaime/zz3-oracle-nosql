@@ -4,7 +4,7 @@
     <h2>Universités</h2>
 
     <p>
-        <strong class="text-danger">{{draftOracleControllerError}}</strong>
+        <strong class="text-danger">{{draftWplanControllerError}}</strong>
     </p>
 
     <ul id="draftOracleTabs" class="nav nav-tabs"
@@ -37,21 +37,20 @@
                     <th>Id</th>
                     <th>Nom</th>
                     <th>Adresse</th>
-
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr
-                    data-ng-repeat="universite in universites">
+                <tr data-ng-repeat="universite in universites">
                     <td>{{universite.universiteId}}</td>
                     <td>{{universite.nom}}</td>
                     <td> {{universite.adresse}}</td>
 
                     <td width="60px">
                         <a role="button" data-ng-click="editUniversite(universite)">
-                            <img alt="modifier" src="img/modify.png" data-toggle="modal" data-target="#modifyUniversiteModal">
-                        </a>
+                            <img alt="modifier" src="img/modify.png" data-toggle="modal"
+                                 data-target="#modifyUniversiteModal">
+                        </a> 
                         <a data-toggle="modal" data-target="#confirmation" role="button"
                            data-ng-click="setRemovableUniversite(universite)">
                             <img alt="supprimer" src="img/delete.png">
@@ -62,8 +61,7 @@
         </table>
 
         <p>
-            <button type="button" class="btn btn-primary" data-toggle="modal"
-                    data-target="#createUniversiteModal">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUniversiteModal">
                 Ajouter une universite
             </button>
         </p>
@@ -74,7 +72,7 @@
                     <form data-ng-submit="">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Ajouter un universite</h4>
+                            <h4 class="modal-title">Ajouter une université</h4>
                         </div>
                         <div class="modal-body form-group">
                             <label for="createUniversiteId">Id</label> 
@@ -83,12 +81,13 @@
                                    data-ng-model="formData.createUniversiteId" size="30"
                                    placeholder="Id"> 
                             <br />
+
                             <label for="createUniversiteNom">Nom</label> 
                             <input type="text"
                                    class="form-control"
                                    data-ng-model="formData.createUniversiteNom" size="30"
-                                   placeholder="Nom">
-                            <br /> 
+                                   placeholder="Nom"> 
+                            <br/>
 
                             <label for="createUniversiteAdresse">Adresse</label> 
                             <input type="text"
@@ -97,6 +96,8 @@
                                    placeholder="Adresse"> 
                             <br /> 
                         </div>
+                        
+                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
                         <div class="modal-footer form-group">
                             <button class="btn btn-primary" type="submit"
                                     data-ng-click="createUniversite()">Ajouter</button>
@@ -119,21 +120,24 @@
                         </div>
                         <div class="modal-body form-group">
                             <label for="createUniversiteId">Id</label> 
-                            <input type="text"
+                            <input id="createUniversiteId"
+                                   type="text"
                                    class="form-control"
                                    data-ng-model="formData.createUniversiteId" size="30"
                                    placeholder="Id"> 
                             <br />
 
                             <label for="createUniversiteNom">Nom</label> 
-                            <input type="text"
+                            <input id="createUniversiteNom"
+                                   type="text"
                                    class="form-control"
                                    data-ng-model="formData.createUniversiteNom" size="30"
                                    placeholder="Nom"> 
                             <br />
 
                             <label for="createUniversiteAdresse">Adresse</label> 
-                            <input type="text"
+                            <input id="createUniversiteAdresse"
+                                   type="text"
                                    class="form-control"
                                    data-ng-model="formData.createUniversiteAdresse" size="30"
                                    placeholder="Adresse"> 
@@ -141,14 +145,15 @@
                         </div>
                         <strong class="text-danger">{{draftWplanControllerError}}</strong>
                         <div class="modal-footer form-group">
-                            <button class="btn btn-primary" type="submit" data-ng-click="modifyUniversite()">Sauvegarder</button>
+                            <button class="btn btn-primary" type="submit"
+                                    data-ng-click="modifyUniversite()">Sauvegarder</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
+        
         <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -160,13 +165,14 @@
                         <h4 class="modal-title">Confirmation</h4>
                     </div>
                     <div class="modal-body">
-                        <p>Etes-vous sur de vouloir supprimer cet l'universite {{
-                                    universite_confirm.id}} {{ universite_confirm.nom}}?</p>
+                        <p>Etes-vous sur de vouloir supprimer cet universite ?</p>
+                        <strong class="text-danger">{{draftWplanControllerError}} {{universite_confirm.universiteId}}</strong>
                     </div>
                     <div class="modal-footer">
                         <!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal"
                                 data-ng-click="removeUniversite(universite_confirm)">Oui</button>-->
+
                         <button class="btn btn-primary"
                                 data-ng-click="removeUniversite(universite_confirm)">Continuer</button>
                         <button class="btn btn-default" data-dismiss="modal">Annuler</button>

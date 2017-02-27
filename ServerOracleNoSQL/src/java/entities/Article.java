@@ -19,7 +19,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class Article implements Serializable {
+public class Article implements Serializable, Comparable {
 
     /*
      * The id is a unique identifier and is used to construct
@@ -201,5 +201,11 @@ public class Article implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        Article a = (Article) obj;
+        return (id > a.id ? 1 : id < a.id ? -1 : 0);
     }
 }

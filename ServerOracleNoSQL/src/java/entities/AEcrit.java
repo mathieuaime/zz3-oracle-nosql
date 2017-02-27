@@ -14,7 +14,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class AEcrit implements Serializable {
+public class AEcrit implements Serializable, Comparable {
 
     /*
      * The MAJOR_KEY is used to construct
@@ -24,15 +24,15 @@ public class AEcrit implements Serializable {
 
     //key
     private String auteurNom;
-    private int rang;
+    private int rank;
 
     //value
     private int idArticle;
 
-    public AEcrit(String auteurNom, int rang, int idArticle) {
+    public AEcrit(String auteurNom, int rank, int idArticle) {
         this.auteurNom = auteurNom;
         this.idArticle = idArticle;
-        this.rang = rang;
+        this.rank = rank;
     }
 
     public AEcrit(byte[] bytes) {
@@ -40,7 +40,7 @@ public class AEcrit implements Serializable {
 
         String[] elt = titre.split("/");
         this.auteurNom = elt[0];
-        this.rang = Integer.parseInt(elt[1]);
+        this.rank = Integer.parseInt(elt[1]);
         this.idArticle = Integer.parseInt(elt[2]);
     }
 
@@ -64,16 +64,16 @@ public class AEcrit implements Serializable {
         this.idArticle = idArticle;
     }
 
-    public int getRang() {
-        return rang;
+    public int getRank() {
+        return rank;
     }
 
-    public void setRang(int rang) {
-        this.rang = rang;
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public Key getStoreKey(String minorKey) {
-        return Key.createKey(Arrays.asList(MAJOR_KEY, auteurNom, String.valueOf(rang)), minorKey);
+        return Key.createKey(Arrays.asList(MAJOR_KEY, auteurNom, String.valueOf(rank)), minorKey);
     }
 
     public Value getStoreValue() {
@@ -83,7 +83,17 @@ public class AEcrit implements Serializable {
     @Override
     public String toString() {
         return auteurNom + "/"
-                + rang + "/"
+                + rank + "/"
                 + idArticle;
+    }
+
+    @Override
+    public int compareTo(Object obj) {
+        AEcrit a = (AEcrit) obj;
+        if (auteurNom.equals(a.auteurNom)) { // achieving uniqueness
+            return (rank > a.rank ? 1 : rank < a.rank ? -1 : 0);
+        } else {
+            return auteurNom.compareTo(a.auteurNom);
+        }
     }
 }

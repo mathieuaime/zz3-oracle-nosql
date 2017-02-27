@@ -15,7 +15,7 @@ import oracle.kv.Value;
  *
  * @author mathieu
  */
-public class Author implements Serializable {
+public class Author implements Serializable, Comparable {
 
     /*
      * The auteurId is a unique identifier and is used to construct
@@ -184,5 +184,11 @@ public class Author implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        Author a = (Author) obj;
+        return (id > a.id ? 1 : id < a.id ? -1 : 0);
     }
 }

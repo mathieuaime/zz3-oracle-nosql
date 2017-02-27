@@ -9,7 +9,7 @@ import oracle.kv.Value;
  *
  * @author Mathieu
  */
-public class KeywordFromAuthor implements Serializable {
+public class KeywordFromAuthor implements Serializable, Comparable {
 
     //key
     private String author;
@@ -76,5 +76,15 @@ public class KeywordFromAuthor implements Serializable {
         return author + "/"
                 + rank + "/"
                 + keyword;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        KeywordFromAuthor a = (KeywordFromAuthor) obj;
+        if (author.equals(a.author)) { // achieving uniqueness
+            return (rank > a.rank ? 1 : rank < a.rank ? -1 : 0);
+        } else {
+            return author.compareTo(a.author);
+        }
     }
 }

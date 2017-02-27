@@ -141,8 +141,8 @@ public class AEcritDAO {
     }
 
     public int create(AEcrit a, String minorPath) throws ParseException {
-        if (a.getRang() < 0) {
-            a.setRang(1 + getLastRang(a.getAuteurNom(), minorPath));
+        if (a.getRank() < 0) {
+            a.setRank(1 + getLastRang(a.getAuteurNom(), minorPath));
         }
 
         ArticleDAO adao = new ArticleDAO();

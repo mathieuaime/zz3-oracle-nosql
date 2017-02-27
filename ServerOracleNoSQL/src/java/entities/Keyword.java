@@ -15,7 +15,7 @@ import oracle.kv.Value;
  *
  * @author Mathieu
  */
-public class Keyword implements Serializable {
+public class Keyword implements Serializable, Comparable {
 
     //key
     private String keyword;
@@ -115,5 +115,15 @@ public class Keyword implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        Keyword a = (Keyword) obj;
+        if (keyword.equals(a.keyword)) { // achieving uniqueness
+            return (rank > a.rank ? 1 : rank < a.rank ? -1 : 0);
+        } else {
+            return keyword.compareTo(a.keyword);
+        }
     }
 }

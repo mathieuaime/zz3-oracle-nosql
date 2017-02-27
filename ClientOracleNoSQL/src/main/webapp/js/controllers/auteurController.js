@@ -95,7 +95,7 @@ oraclenosqlControllers.controller('auteurMainController', ['$scope', '$rootScope
                     $scope.auteur = auteur;
 
                     // appel au service effectuant la requête
-                    auteurMainFactory.readArticles(auteur.id).then(
+                    auteurMainFactory.getArticleFromAuteur(auteur.id).then(
                             function (result) {
                                 $rootScope.draftOracleControllerError = '';
                                 $scope.articles = result.objectList;
@@ -106,7 +106,7 @@ oraclenosqlControllers.controller('auteurMainController', ['$scope', '$rootScope
                                 $log.debug(' erreur retournée au contrôleur : ' + error);
                             });
 
-                    auteurMainFactory.readUniversites(auteur.id).then(
+                    auteurMainFactory.getUniversity(auteur.id).then(
                             function (result) {
                                 $rootScope.draftOracleControllerError = '';
                                 $scope.universites = result.objectList;
@@ -117,7 +117,7 @@ oraclenosqlControllers.controller('auteurMainController', ['$scope', '$rootScope
                                 $log.debug(' erreur retournée au contrôleur : ' + error);
                             });
 
-                    auteurMainFactory.readLaboratoires(auteur.id).then(
+                    auteurMainFactory.GetLaboratoiresAuteurFromId(auteur.id).then(
                             function (result) {
                                 $rootScope.draftOracleControllerError = '';
                                 $scope.laboratoires = result.objectList;
@@ -128,7 +128,7 @@ oraclenosqlControllers.controller('auteurMainController', ['$scope', '$rootScope
                                 $log.debug(' erreur retournée au contrôleur : ' + error);
                             });
 
-                    auteurMainFactory.readKeywords(auteur.id).then(
+                    auteurMainFactory.getKeywordAuteur(auteur.id).then(
                             function (result) {
                                 $rootScope.draftOracleControllerError = '';
                                 $scope.keywords = result.objectList;

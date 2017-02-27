@@ -15,7 +15,7 @@ import oracle.kv.Value;
  *
  * @author Dehbia Sam
  */
-public class Universite implements Serializable {
+public class Universite implements Serializable, Comparable {
 
     private int universiteId;
 
@@ -131,5 +131,11 @@ public class Universite implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    @Override
+    public int compareTo(Object obj) {
+        Universite a = (Universite) obj;
+        return (universiteId > a.universiteId ? 1 : universiteId < a.universiteId ? -1 : 0);
     }
 }
