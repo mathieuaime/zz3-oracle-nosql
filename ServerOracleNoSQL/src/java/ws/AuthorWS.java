@@ -142,8 +142,7 @@ public class AuthorWS {
     @Path("{nom}/articleFromName")
     @POST
     public RestResponse<AEcrit> addArticle(@PathParam("nom") String nomAuteur, AEcrit aEcrit) throws ParseException {
-        aEcrit.setAuteurNom(nomAuteur);
-        int status = aedao.create(aEcrit);
+        int status = aedao.create(nomAuteur, aEcrit.getIdArticle());
 
         RestResponse<AEcrit> resp = new RestResponse<>(status, (status >= 150 ? "204" : (status >= 100 ? "409" : "201")));
         return resp;

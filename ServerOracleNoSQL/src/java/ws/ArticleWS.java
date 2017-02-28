@@ -241,10 +241,9 @@ public class ArticleWS {
         RestResponse<Keyword> resp = new RestResponse<>(151, "204");
 
         if (l != null) {
-            keyword.setIdArticle(idArticle);
             resp = new RestResponse<>(0, "201");
 
-            int status = kdao.create(keyword);
+            int status = kdao.create(keyword.getKeyword(), idArticle);
             if (status != 0) {
                 resp = new RestResponse<>(status, "409");
             }

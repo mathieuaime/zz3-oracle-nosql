@@ -11,42 +11,67 @@
         <strong class="text-danger">{{draftWplanControllerError}}</strong>
     </p>
 
-    <ul id="draftOracleTabs" class="nav nav-tabs"
-        >
-        <li data-ng-class="{active:currentTab == 'tabVoirAuteurs'}"><a
+    <ul id="draftOracleTabs" class="nav nav-tabs">
+        <li data-ng-class="{active:currentTab === 'tabVoirAuteurs'}"><a
                 role="button" id="tabVoirAuteursBtn"
                 data-ng-click="currentTab = 'tabVoirAuteurs'">Voir les
                 auteurs</a></li>
-        <li data-ng-class="{active:currentTab == 'tabGestionAuteurs'}"><a
+        <li data-ng-class="{active:currentTab === 'tabGestionAuteurs'}"><a
                 role="button" id="tabGestionAuteursBtn"
 
-                data-ng-click="currentTab = 'tabGestionAuteurs'">Recherche des auteurs
+                data-ng-click="currentTab = 'tabGestionAuteurs'">Recherche avancée
             </a></li>
     </ul>
 
-
-
-
-    <div id="tabVoirAuteurs" data-ng-show="currentTab == 'tabVoirAuteurs'">
+    <div id="tabVoirAuteurs" data-ng-show="currentTab === 'tabVoirAuteurs'">
 
         <h3>Liste des auteurs</h3>
-        <p>
-            Filtrer :&emsp;<input type="text" size="30" data-ng-model="auteursFilter">
-        </p>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+
+                <input type="text" class="form-control" placeholder="Recherche d'un auteur" ng-model="searchAuteur">
+            </div>      
+        </div>
 
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Mail</th>
+                    <th>
+                        <a ng-click="sortType = 'id';sortReverse = !sortReverse">
+                            Id 
+                            <span ng-show="sortType === 'id' && !sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-show="sortType === 'id' && sortReverse" class="fa fa-caret-down"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a ng-click="sortType = 'nom';sortReverse = !sortReverse">
+                            Nom 
+                            <span ng-show="sortType === 'nom' && !sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-show="sortType === 'nom' && sortReverse" class="fa fa-caret-down"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a ng-click="sortType = 'prenom';sortReverse = !sortReverse">
+                            Prénom 
+                            <span ng-show="sortType === 'prenom' && !sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-show="sortType === 'prenom' && sortReverse" class="fa fa-caret-down"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a ng-click="sortType = 'mail';sortReverse = !sortReverse">
+                            Mail 
+                            <span ng-show="sortType === 'mail' && !sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-show="sortType === 'mail' && sortReverse" class="fa fa-caret-down"></span>
+                        </a>
+                    </th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr
-                    data-ng-repeat="auteur in auteurs">
+                    data-ng-repeat="auteur in auteurs| orderBy:sortType:sortReverse | filter:searchAuteur">
                     <td>{{auteur.id}}</td>
                     <td>{{auteur.nom}}</td>
                     <td>{{auteur.prenom}}</td>
@@ -86,48 +111,79 @@
                             <h4 class="modal-title">Ajouter un auteur</h4>
                         </div>
                         <div class="modal-body form-group">
-                            <label for="createAuteurId">Id</label> <input type="text"
-                                                                          class="form-control"
-                                                                          data-ng-model="formData.createAuteurId" size="30"
-                                                                          placeholder="Id"> <br />
-                            <label for="createAuteurNom">Nom</label> <input type="text"
-                                                                            class="form-control"
-                                                                            data-ng-model="formData.createAuteurNom" size="30"
-                                                                            placeholder="Nom"> <br />
-                            <label
-                                for="createAuteurPrenom">Prénom</label> <input type="text"
-                                class="form-control"
-                                data-ng-model="formData.createAuteurPrenom" size="30"
-                                placeholder="Prénom"> <br /> 
-                            <label
-                                for="createAuteurAdresse">Adresse</label> <input type="text"
-                                class="form-control"
-                                data-ng-model="formData.createAuteurAdresse" size="30"
-                                placeholder="Adresse"> <br /> 
-                            <label
-                                for="createAuteurPrenom">Phone</label> <input type="text"
-                                class="form-control"
-                                data-ng-model="formData.createAuteurPhone" size="30"
-                                placeholder="Phone"> <br /> 
-                            <label
-                                for="createAuteurFax">Fax</label> <input type="text"
-                                class="form-control"
-                                data-ng-model="formData.createAuteurFax" size="30"
-                                placeholder="Fax"> <br /> 
-                            <label
-                                for="createAuteurMail">Mail</label> <input type="text"
-                                class="form-control"
-                                data-ng-model="formData.createAuteurMail" size="30"
-                                placeholder="Mail"> <br /> 
+                            <label for="createAuteurId">Id</label> 
+                            <input id="createAuteurId" type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createAuteurId" size="30"
+                                   placeholder="Id"> 
+                            <br />
+                            <label for="createAuteurNom">Nom</label> 
+                            <input id="createAuteurNom" type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createAuteurNom" size="30"
+                                   placeholder="Nom"> 
+                            <br />
+                            <label for="createAuteurPrenom">Prénom</label> 
+                            <input id="createAuteurPrenom" type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createAuteurPrenom" size="30"
+                                   placeholder="Prénom"> 
+                            <br /> 
+                            <label for="createAuteurAdresse">Adresse</label> 
+                            <input id="createAuteurAdresse" type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createAuteurAdresse" size="30"
+                                   placeholder="Adresse"> 
+                            <br /> 
+                            <label for="createAuteurPrenom">Phone</label> 
+                            <input id="createAuteurPrenom" type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createAuteurPhone" size="30"
+                                   placeholder="Phone"> 
+                            <br /> 
+                            <label for="createAuteurFax">Fax</label> 
+                            <input id="createAuteurFax" type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createAuteurFax" size="30"
+                                   placeholder="Fax"> 
+                            <br /> 
+                            <label for="createAuteurMail">Mail</label>
+                            <input id="createAuteurMail" type="text"
+                                   class="form-control"
+                                   data-ng-model="formData.createAuteurMail" size="30"
+                                   placeholder="Mail"> 
+                            <br /> 
+                            <label>Universités</label>
+                            <div id="createAuteurUniversites">
+                                <div class="show-tags">
+                                    <select class="tag selectInput" 
+                                            ng-model="univ.id" 
+                                            ng-repeat="univ in formData.univInputs"
+                                            ng-options="x.universiteId as x.nom for x in listUniversites track by x.universiteId"
+                                            ng-change="addListUniversites()">
+                                    </select>
+                                </div>
+                            </div>
+                            <label>Laboratoires</label>
+                            <div id="createAuteurLaboratoires">
+                                <div id="listLaboratoire" class="show-tags">
+                                    <select class="tag selectInput" 
+                                            ng-model="labo.id" 
+                                            ng-repeat="labo in formData.laboInputs"
+                                            ng-options="x.laboratoireId as x.nom for x in listLaboratoires track by x.laboratoireId"
+                                            ng-change="addListLaboratoires()">
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        
+
                         <strong class="text-danger">{{draftWplanControllerError}}</strong>
                         <div class="modal-footer form-group">
                             <button class="btn btn-primary" type="submit"
                                     data-ng-click="createAuteur()">Ajouter</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                         </div>
-                        
+
                     </form>
                 </div>
             </div>
@@ -143,8 +199,8 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                             <h4 class="modal-title">Modification de {{
-                                            formData.createAuteurId}} {{
-                                                        formData.createAuteurNom}}</h4>
+                                        formData.createAuteurId}} {{
+                                                    formData.createAuteurNom}}</h4>
                         </div>
                         <div class="modal-body form-group">
                             <label for="createAuteurId">Id</label> <input type="text"
@@ -180,6 +236,8 @@
                                 class="form-control"
                                 data-ng-model="formData.createAuteurMail" size="30"
                                 placeholder="Mail"> <br /> 
+
+
 
 
 
@@ -310,17 +368,12 @@
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
-
-
     </div>
 
-
-
-
     <div id="tabGestionAuteurs"
-         data-ng-if="currentTab == 'tabGestionAuteurs'">
+         data-ng-if="currentTab === 'tabGestionAuteurs'">
 
-        <h2> Recherche des auteurs </h2>
+        <h3> Recherche avancée </h3>
 
     </div>
 

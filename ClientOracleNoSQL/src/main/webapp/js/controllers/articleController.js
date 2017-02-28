@@ -1,15 +1,20 @@
 /**
  * Contrôleur de la gestion du réalisé.
  */
+oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScope', '$log', 'articleMainFactory', 'auteurMainFactory',
+    function ($scope, $rootScope, $log, articleMainFactory, auteurMainFactory) {
 
-oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScope', '$log', 'articleMainFactory',
-    function ($scope, $rootScope, $log, articleMainFactory) {
 
         // lecture des données à afficher
+        readAuteurs();
         readArticles();
         $scope.currentTab = 'tabVoirArticles';
         $scope.formData = {};
         $scope.article_confirm = "";
+
+        $scope.sortType = 'id'; // set the default sort type
+        $scope.sortReverse = false;  // set the default sort order
+        $scope.searchArticle = '';  // set the default search/filter term
 
         function readArticles() { // fonction privée (pas ajoutée au $scope)
 
@@ -26,6 +31,72 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                     });
         }
 
+        /*
+         * fonction permettant de récupérer la liste des auteurs
+         */
+        function readAuteurs() { // fonction privée (pas ajoutée au $scope)
+
+            // appel au service effectuant la requête (une promesse est renvoyée : gestion de l'appel en mode synchrone)
+            auteurMainFactory.readAuteurs().then(
+                    function (result) {
+                        $rootScope.draftWplanControllerError = '';
+                        $scope.listAuteurs = result.objectList;
+                    },
+                    function (error) {
+                        $scope.listAuteurs = [];
+                        $rootScope.draftWplanControllerError = error;
+                        $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+                    });
+        }
+
+        function addRelation() {//TODO verifier que chaque requetes est finie avant de passer à la suivante
+            //supprimer doublon auteur
+            
+            for (var i = 0; i < $scope.formData.auteurInputs.length; ++i) {
+                var auteur = $scope.formData.auteurInputs[i];
+                if (auteur.id !== '') {
+                    articleMainFactory.createAEteEcrit(
+                            $scope.formData.createArticleId,
+                            auteur.id).then(
+                            function (result) {
+                                $rootScope.draftWplanControllerError = '';
+                            },
+                            function (error) {
+                                $rootScope.draftWplanControllerError = error;
+                                $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+                            });
+
+                    auteurMainFactory.createAEcritFromId(
+                            $scope.formData.createArticleId,
+                            auteur.id).then(
+                            function (result) {
+                                $rootScope.draftWplanControllerError = '';
+                            },
+                            function (error) {
+                                $rootScope.draftWplanControllerError = error;
+                            });
+                }
+            }
+
+            //supprimer doublon keyword
+
+            for (var i = 0; i < $scope.formData.keywordInputs.length; i++) {
+                var keyword = $scope.formData.keywordInputs[i];
+                if (keyword.value !== '') {
+                    articleMainFactory.addKeyword(
+                            $scope.formData.createArticleId,
+                            keyword.value).then(
+                            function (result) {
+                                $rootScope.draftWplanControllerError = '';
+                            },
+                            function (error) {
+                                $rootScope.draftWplanControllerError = error;
+                                $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
+                            });
+                }
+            }
+        }
+
         $scope.createArticle = function () {
 
             // contrôle des champs qui doivent être définis
@@ -39,30 +110,18 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                         function (result) {
                             $rootScope.draftWplanControllerError = '';
                             $scope.articles.push(result.objectList[0]);
+                            addRelation();
+                            // remise à blanc des champs de saisie pour la création d'un article
+                            $scope.formData = {};
                         },
                         function (error) {
                             $rootScope.draftWplanControllerError = error;
                             $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
                         });
-                for (var keyword in $scope.formData.keywordInputs) {
-                    articleMainFactory.addKeyword(
-                            $scope.formData.createArticleId,
-                            keyword.value).then(
-                            function (result) {
-                                $rootScope.draftWplanControllerError = '';
-                            },
-                            function (error) {
-                                $rootScope.draftWplanControllerError = error;
-                                $log.debug('draftWplanController - erreur retournée au contrôleur : ' + error);
-                            });
-                }
-
             } else {
                 $rootScope.draftWplanControllerError = 'Vous devez renseigner l\'id et le nom de l\'article.';
             }
 
-            // remise à blanc des champs de saisie pour la création d'un article
-            $scope.formData = {};
 
             // fermeture de la fenêtre modale
             $('#createArticleModal').modal('hide');
@@ -73,6 +132,8 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                     $scope.formData.createArticleTitre = "";
                     $scope.formData.createArticleResume = "";
                     $scope.formData.createArticlePrix = "";
+                    $scope.formData.auteurInputs = [{id: ''}];
+                    $scope.formData.keywordInputs = [{value: ''}];
                 },
                 $scope.editArticle = function (article) {
 
@@ -159,14 +220,31 @@ oraclenosqlControllers.controller('articleMainController', ['$scope', '$rootScop
                     $('#confirmation').modal('hide');
                 };
 
-        $scope.formData.keywordInputs = [{ value:''}];
+        $scope.formData.keywordInputs = [{value: ''}];
 
         //on modification in the list of keywords
         $scope.addListKeywords = function () {
-            if ($scope.formData.keywordInputs.filter(function (keyword) { return keyword.value === ''; }).length === 0) {
+            if (!$scope.formData.keywordInputs.filter(function (keyword) {
+                return !keyword.value;
+            }).length) {
                 //if not, let's add one.
                 $scope.formData.keywordInputs.push({
-                    value:''
+                    value: ''
+                })
+                //and that will automatically add an input to the html
+            }
+        };
+
+        $scope.formData.auteurInputs = [{id: ''}];
+
+        //on modification in the list of auteurs
+        $scope.addListAuteurs = function () {
+            if (!$scope.formData.auteurInputs.filter(function (auteur) {
+                return !auteur.id;
+            }).length) {
+                //if not, let's add one.
+                $scope.formData.auteurInputs.push({
+                    id: ''
                 })
                 //and that will automatically add an input to the html
             }

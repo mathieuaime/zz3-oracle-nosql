@@ -2,7 +2,7 @@
 
 <div>
 
-    <h2> Articles scientifique</h2>
+    <h2>Articles scientifiques</h2>
 
     <p>
         <strong class="text-danger">{{draftOracleControllerError}}</strong>
@@ -17,46 +17,63 @@
 
         <li data-ng-class="{active:currentTab === 'tabRechercheArticles'}">
             <a role="button" id="tabRechercheArticlesBtn" data-ng-click="currentTab = 'tabRechercheArticles'">
-                Recherche des articles
+                Recherche avancée
             </a>
         </li>
     </ul>
 
-
-
     <div id="tabVoirArticles" data-ng-show="currentTab === 'tabVoirArticles'">
         <h3> Liste des articles </h3>
 
-        <p>
-            Filtrer :&emsp;
-            <input type="text" size="30" data-ng-model="articlesFilter">
-        </p>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
 
+                <input type="text" class="form-control" placeholder="Recherche d'un article" ng-model="searchArticle">
+            </div>      
+        </div>
 
-        <table class="table">
+        <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Titre</th>
-                    <th>Prix</th>
-                    <th> </th>
-
+                    <th>
+                        <a ng-click="sortType = 'id';sortReverse = !sortReverse">
+                            Id 
+                            <span ng-show="sortType === 'id' && !sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-show="sortType === 'id' && sortReverse" class="fa fa-caret-down"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a ng-click="sortType = 'titre';sortReverse = !sortReverse">
+                            Titre 
+                            <span ng-show="sortType === 'titre' && !sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-show="sortType === 'titre' && sortReverse" class="fa fa-caret-down"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a ng-click="sortType = 'prix';sortReverse = !sortReverse">
+                            Prix 
+                            <span ng-show="sortType === 'prix' && !sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-show="sortType === 'prix' && sortReverse" class="fa fa-caret-down"></span>
+                        </a>
+                    </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="article in articles">
+                <tr data-ng-repeat="article in articles | orderBy:sortType:sortReverse | filter:searchArticle">
                     <td>{{article.id}}</td>
                     <td>{{article.titre}}</td>
                     <td>{{article.prix}}</td>
                     <td width="60px">
                         <a role="button" data-ng-click="displayArticle(article)">
-                            <img alt="afficher les détails" src="img/loupe.png" data-toggle="modal"
-                                 data-target="#displayArticleModal">
-                        </a> 
+                            <img alt="afficher les détails" src="img/loupe.png" 
+                                 data-toggle="modal" data-target="#displayArticleModal">
+                        </a>
                         <a role="button" data-ng-click="editArticle(article)">
-                            <img alt="modifier" src="img/modify.png" data-toggle="modal"
-                                 data-target="#modifyArticleModal">
-                        </a> 
+                            <img alt="modifier" src="img/modify.png" 
+                                 data-toggle="modal" data-target="#modifyArticleModal">
+                        </a>
                         <a data-toggle="modal" data-target="#confirmation" role="button"
                            data-ng-click="setRemovableArticle(article)">
                             <img alt="supprimer" src="img/delete.png">
@@ -68,11 +85,11 @@
 
         <p>
             <button type="button" class="btn btn-primary" 
-                    data-toggle="modal" data-target="#createArticleModal"
+                    data-toggle="modal" data-target="#createArticleModal" 
                     data-ng-click="initializeArticle()">
                 Ajouter un article
             </button>
-        </p>    
+        </p>
 
         <div id="createArticleModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -83,22 +100,35 @@
                             <h4 class="modal-title">Ajouter un article</h4>
                         </div>
                         <div class="modal-body form-group">
-                            <label for="createArticleId">Id</label>
+                            <label for="createArticleId"> Id </label>
                             <input id="createArticleId" type="text" class="form-control" 
-                                   data-ng-model="formData.createArticleId" 
-                                   size="30" placeholder="Id">
-                            <br/>
+                                   data-ng-model="formData.createArticleId" size="30" placeholder="Id">
+                            <br>
                             <label for="createArticleTitre">Titre</label>
                             <input id="createArticleTitre" type="text" class="form-control" 
-                                   data-ng-model="formData.createArticleTitre" 
-                                   size="30" placeholder="Titre">
-                            <br/>
+                                   data-ng-model="formData.createArticleTitre" size="30" placeholder="Titre">
+                            <br>
+                            <label for="createArticleResume">Résumé</label>
+                            <input id="createArticleResume" type="text" class="form-control" 
+                                   data-ng-model="formData.createArticleResume" size="60" placeholder="Résumé">
+                            <br>
                             <label for="createArticlePrix">Prix</label>
-                            <input id="createArticlePrix" type="text" class="form-control" 
-                                   data-ng-model="formData.createArticlePrix" 
-                                   size="30" placeholder="Prix">
-                            <br/>
-                            <label for="createArticleKeywords">Mots-Clefs</label>
+                            <input id="createArticlePrix" type="text" class="form-control"
+                                   data-ng-model="formData.createArticlePrix" size="30" placeholder="Prix">
+                            <br>
+                            <label>Auteurs</label>
+                            <div id="createArticleAuteurs">
+                                <div id="listAuteur" class="show-tags">
+                                    <select class="tag selectInput" 
+                                            ng-model="aut.id" 
+                                            ng-repeat="aut in formData.auteurInputs"
+                                            ng-options="x.id as x.nom + ' ' + x.prenom for x in listAuteurs track by x.id"
+                                            ng-change="addListAuteurs()">
+                                    </select>
+
+                                </div>
+                            </div>
+                            <label>Mots-Clefs</label>
                             <div id="createArticleKeywords">
                                 <div id="listKeyword" class="show-tags">
                                     <input class="tag tagInput" type="text" 
@@ -108,19 +138,14 @@
                                            size="30" placeholder="#keyword">
                                 </div>
                             </div>
+                        </div>
 
-                            <br/>
-                            <label for="createArticleResume">Résumé</label>
-                            <input id="createArticleResume" type="text" class="form-control" 
-                                   data-ng-model="formData.createArticleResume" 
-                                   size="60" placeholder="Résumé">
-                            <br/>
-                            <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                        <strong class="text-danger">{{draftWplanControllerError}}  {{idAuteurAjouter}}</strong>
 
-                            <div class="modal-footer form-group">
-                                <button class="btn btn-primary" type="submit" data-ng-click="createArticle()">Ajouter</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-                            </div>
+                        <div class="modal-footer form-group">
+                            <button class="btn btn-primary" type="submit"
+                                    data-ng-click="createArticle()">Ajouter</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                         </div>
                     </form>
                 </div>
@@ -133,37 +158,50 @@
                     <form data-ng-submit="">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">
-                                Modification de {{formData.createArticleId}} {{formData.createArticleTitre}}
-                            </h4>
+                            <h4 class="modal-title">Ajouter un article</h4>
                         </div>
-
                         <div class="modal-body form-group">
-                            <label for="createArticleId">Id</label> 
-                            <input type="text" class="form-control" 
-                                   data-ng-model="formData.createArticleId" 
-                                   size="30" placeholder="Id"> 
-                            <br/> 
+                            <label for="createArticleId"> Id </label>
+                            <input type="text" class="form-control" data-ng-model="formData.createArticleId" size="30" placeholder="Id">
+                            <br>
                             <label for="createArticleTitre">Titre</label>
-                            <input type="text" class="form-control"
-                                   data-ng-model="formData.createArticleTitre" 
-                                   size="30" placeholder="Titre">
-                            <br/> 
-                            <label for="createArticleResume">Resume</label>
-                            <input type="text" class="form-control"
-                                   data-ng-model="formData.createArticleResume" 
-                                   size="30" placeholder="Resume"> 
-                            <br/> 
+                            <input type="text" class="form-control" data-ng-model="formData.createArticleTitre" size="30" placeholder="Titre">
+                            <br>
+                            <label for="createArticleResume">Résumé</label>
+                            <input type="text" class="form-control" data-ng-model="formData.createArticleResume" size="60" placeholder="Résumé">
+                            <br>
                             <label for="createArticlePrix">Prix</label>
-                            <input type="text" class="form-control"
-                                   data-ng-model="formData.createArticlePrix" 
-                                   size="30" placeholder="Prix"> 
-                            <br/> 
+                            <input type="text" data-ng-model="formData.createArticlePrix" size="30" placeholder="Prix">
+                            <br>
+                            <label>Auteurs</label>
+                            <div id="modifyArticleAuteurs">
+                                <div class="show-tags">
+                                    <select class="tag selectInput" 
+                                            ng-model="aut.id" 
+                                            ng-repeat="aut in formData.auteurInputs"
+                                            ng-options="x.id as x.nom + ' ' + x.prenom for x in auteurs track by x.id"
+                                            ng-change="addListAuteurs()">
+                                    </select>
+
+                                </div>
+                            </div>
+                            <h3>Mots-Clefs</h3>
+                            <div id="modifyArticleKeywords">
+                                <div class="show-tags">
+                                    <input class="tag tagInput" type="text" 
+                                           data-ng-model="keyword.value"
+                                           data-ng-change="addListKeywords()"
+                                           ng-repeat="keyword in formData.keywordInputs"
+                                           size="30" placeholder="#keyword">
+                                </div>
+                            </div>
                         </div>
 
-                        <strong class="text-danger">{{draftWplanControllerError}}</strong>
+                        <strong class="text-danger">{{draftWplanControllerError}}  {{idAuteurAjouter}}</strong>
+
                         <div class="modal-footer form-group">
-                            <button class="btn btn-primary" type="submit" data-ng-click="modifyArticle()">Sauvegarder</button>
+                            <button class="btn btn-primary" type="submit"
+                                    data-ng-click="createArticle()">Ajouter</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
                         </div>
                     </form>
@@ -225,38 +263,35 @@
             </div>
         </div>
 
-
-        <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header alert alert-danger">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title">Confirmation</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Etes-vous sur de vouloir supprimer cet article ?</p>
-                        <strong class="text-danger">{{draftWplanControllerError}} {{article_confirm.id}}</strong>
-                    </div>
-                    <div class="modal-footer">
-                        <!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"
-                                data-ng-click="removeArticle(article_confirm)">Oui</button>-->
-
-                        <button class="btn btn-primary" data-ng-click="removeArticle(article_confirm)">Continuer</button>
-                        <button class="btn btn-default" data-dismiss="modal">Annuler</button>
-                    </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!-- /.modal -->
     </div>
+    <div id="confirmation" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header alert alert-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Etes-vous sur de vouloir supprimer cet article ?</p>
+                    <strong class="text-danger">{{draftWplanControllerError}} {{article_confirm.id}}</strong>
+                </div>
+                <div class="modal-footer">
+                    <!--  Red version <button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"
+                            data-ng-click="removeArticle(article_confirm)">Oui</button>-->
+
+                    <button class="btn btn-primary" data-ng-click="removeArticle(article_confirm)">Continuer</button>
+                    <button class="btn btn-default" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
     <div id="tabRechercheArticles" data-ng-if="currentTab === 'tabRechercheArticles'">
-        <h3>Recherche des articles</h3>  
+        <h3>Recherche avancée</h3>  
     </div>
-
-</div>

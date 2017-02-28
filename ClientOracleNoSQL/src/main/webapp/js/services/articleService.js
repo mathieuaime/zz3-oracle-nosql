@@ -275,7 +275,6 @@ oraclenosqlServices.factory('articleMainFactory', ['$http', '$q', '$log', functi
             //ajouter un mot de passe à un article
             addKeyword: function (idArticle, keyword) {
                 var data = {
-                    "idArticle": idArticle,
                     "keyword": keyword
                 };
                 var deferred = $q.defer();

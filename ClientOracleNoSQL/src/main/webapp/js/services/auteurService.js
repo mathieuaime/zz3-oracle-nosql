@@ -120,17 +120,16 @@ oraclenosqlServices.factory('auteurMainFactory', ['$http', '$q', '$log', functio
             },
 
             //creation relation A ecrit à partir de l'id de l'auteur
-            createAEcritFromId: function (nomAuteur, idArticle, rang, idAuteur) {
+            createAEcritFromId: function (idArticle, idAuteur) {
                 var data = {
-                    "auteurNom": nomAuteur,
-                    "idArticle": idArticle,
-                    "rang": rang
+                    "idArticle": idArticle
                 };
                 var deferred = $q.defer();
-                $http.post('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + idAuteur + '/article', JSON.stringify(data)).then(function successCallback(response) {
-                    $log.debug('... réponse du serveur : OK.');
-                    deferred.resolve(response.data);
-                }, function errorCallback(response) {
+                $http.post('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + idAuteur + '/article', JSON.stringify(data)).then(
+                        function successCallback(response) {
+                            $log.debug('... réponse du serveur : OK.');
+                            deferred.resolve(response.data);
+                        }, function errorCallback(response) {
                     $log.debug('... réponse du serveur : erreur.');
                     deferred.reject('Impossible de créer l\'article');
                     deferred.reject(response.data);
@@ -278,16 +277,11 @@ oraclenosqlServices.factory('auteurMainFactory', ['$http', '$q', '$log', functio
                     deferred.reject(response.data);
                 });
                 return deferred.promise;
-
-
             },
 
             //Création de la relation est rattaché : un auteur est rattache à une universite
-            createEstRattacheUniversite: function (idAuteur, nomAuteur, type, rank, value) {
+            createEstRattacheUniversite: function (idAuteur, value) {
                 var data = {
-                    "nomAuteur": nomAuteur,
-                    "type": type,
-                    "rank": rank,
                     "value": value
                 };
                 var deferred = $q.defer();
@@ -300,8 +294,6 @@ oraclenosqlServices.factory('auteurMainFactory', ['$http', '$q', '$log', functio
                     deferred.reject(response.data);
                 });
                 return deferred.promise;
-
-
             },
 
             //Mise à jour de la relation est rattaché : un auteur est rattache à une universite
@@ -362,7 +354,7 @@ oraclenosqlServices.factory('auteurMainFactory', ['$http', '$q', '$log', functio
             GetLaboratoiresAuteurFromNom: function (nom) {
 
                 var deferred = $q.defer();
-                $http.get('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + nom + '/laboratoireFromName').then(function successCallback(response) {
+                $http.get('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + nom + '/laboratoryFromName').then(function successCallback(response) {
                     $log.debug('... réponse du serveur : OK.');
                     deferred.resolve(response.data);
                 }, function errorCallback(response) {
@@ -374,15 +366,12 @@ oraclenosqlServices.factory('auteurMainFactory', ['$http', '$q', '$log', functio
             },
 
             //Création de la relation est rattaché : un auteur est rattache à un laboratoire
-            createEstRattacheLaboratoire: function (idAuteur, nomAuteur, type, rank, value) {
+            createEstRattacheLaboratoire: function (idAuteur, value) {
                 var data = {
-                    "nomAuteur": nomAuteur,
-                    "type": type,
-                    "rank": rank,
                     "value": value
                 };
                 var deferred = $q.defer();
-                $http.post('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + idAuteur + '/laboratoire', JSON.stringify(data)).then(function successCallback(response) {
+                $http.post('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + idAuteur + '/laboratory', JSON.stringify(data)).then(function successCallback(response) {
                     $log.debug('... réponse du serveur : OK.');
                     deferred.resolve(response.data);
                 }, function errorCallback(response) {
@@ -404,7 +393,7 @@ oraclenosqlServices.factory('auteurMainFactory', ['$http', '$q', '$log', functio
                     "value": value
                 };
                 var deferred = $q.defer();
-                $http.put('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + idAuteur + '/laboratoireFromName/' + idLaboratoire + '/' + rank, JSON.stringify(data)).then(function successCallback(response) {
+                $http.put('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + idAuteur + '/laboratoryFromName/' + idLaboratoire + '/' + rank, JSON.stringify(data)).then(function successCallback(response) {
                     $log.debug('... réponse du serveur : OK.');
                     deferred.resolve(response.data);
                 }, function errorCallback(response) {
@@ -420,7 +409,7 @@ oraclenosqlServices.factory('auteurMainFactory', ['$http', '$q', '$log', functio
             deleteEstRattacheLaboratoire: function (idAuteur, rank, idLaboratoire) {
 
                 var deferred = $q.defer();
-                $http.delete('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + idAuteur + '/laboratoireFromName/' + idLaboratoire + '/' + rank).then(function successCallback(response) {
+                $http.delete('http://localhost:8080/ServerOracleNoSQL/ws/auteur/' + idAuteur + '/laboratoryFromName/' + idLaboratoire + '/' + rank).then(function successCallback(response) {
                     $log.debug('... réponse du serveur : OK.');
                     deferred.resolve(response.data);
                 }, function errorCallback(response) {

@@ -51,7 +51,7 @@ oraclenosqlServices.factory('universiteMainFactory', ['$http', '$q', '$log', fun
 		// création d'un universite
 		createUniversite: function(universiteId,nom, adresse) {
 			
-			var data = { "universiteId":id,"nom":nom,"adresse":adresse};
+			var data = { "universiteId":universiteId,"nom":nom,"adresse":adresse};
 			var deferred = $q.defer();
                         
 			$http.post('http://localhost:8080/ServerOracleNoSQL/ws/university', JSON.stringify(data)).then(function successCallback(response) {
