@@ -85,14 +85,18 @@ public class UniversiteDAO {
         return l;
     }
 
+    public boolean exist(int universiteId) {
+        Key key = Key.createKey(Arrays.asList(Universite.MAJOR_KEY, String.valueOf(universiteId)), "info");
+        return store.get(key) != null;
+    }
+
     public int create(Universite universite) {
         Version putIfAbsent = store.putIfAbsent(universite.getStoreKey("info"), universite.getStoreValue());
         return (putIfAbsent != null ? 0 : 105);
     }
 
     public int create(int universiteId, String nom, String adresse) {
-        Universite universite = new Universite(universiteId, nom, adresse);
-        return create(universite);
+        return create(new Universite(universiteId, nom, adresse));
     }
 
     public int update(int universiteId, Universite universite) {
@@ -100,8 +104,8 @@ public class UniversiteDAO {
     }
 
     public int update(int universiteId, String nom, String adresse) {
-        Universite l = read(universiteId);
-        if (l != null) {
+        if (exist(universiteId)) {
+            Universite l = read(universiteId);
             if (nom != null) {
                 l.setNom(nom);
             }
@@ -110,15 +114,17 @@ public class UniversiteDAO {
             }
             store.delete(l.getStoreKey("info"));
             store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());
+            
+            return 0;
+        } else {
+            return 155;
         }
-        return (l != null ? 0 : 155);
     }
 
     public int delete(int universiteId) {
-        Universite a = read(universiteId);
         boolean delete = false;
-        if (a != null) {
-            delete = store.delete(a.getStoreKey("info"));
+        if (exist(universiteId)) {
+            delete = store.delete(read(universiteId).getStoreKey("info"));
         }
 
         return (delete ? 0 : 155);

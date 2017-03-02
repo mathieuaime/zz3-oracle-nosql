@@ -93,6 +93,11 @@ public class AuthorDAO {
 
         return a;
     }
+    
+    public boolean exist(int auteurId) {
+        Key key = Key.createKey(Arrays.asList(Author.MAJOR_KEY, String.valueOf(auteurId)), "info");
+        return store.get(key) != null;
+    }
 
     public List<Author> getLast(int n) {
         Key myKey2 = Key.createKey(Author.MAJOR_KEY);
@@ -121,8 +126,7 @@ public class AuthorDAO {
     }
 
     public int create(int auteurId, String nom, String prenom, String adresse, String phone, String fax, String mail) {
-        Author auteur = new Author(auteurId, nom, prenom, adresse, phone, fax, mail);
-        return create(auteur);
+        return create(new Author(auteurId, nom, prenom, adresse, phone, fax, mail));
     }
 
     public int update(int auteurId, Author auteur) {
@@ -130,8 +134,8 @@ public class AuthorDAO {
     }
 
     public int update(int auteurId, String nom, String prenom, String adresse, String phone, String fax, String mail) {
-        Author a = read(auteurId);
-        if (a != null) {
+        if (exist(auteurId)) {
+            Author a = read(auteurId);
             if (nom != null) {
                 a.setNom(nom);
             }
@@ -152,16 +156,17 @@ public class AuthorDAO {
             }
             store.delete(a.getStoreKey("info"));
             store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
+            
+            return 0;
+        } else {
+            return 150;
         }
-
-        return (a != null ? 0 : 150);
     }
 
     public int delete(int auteurId) {
-        Author a = read(auteurId);
         boolean delete = false;
-        if (a != null) {
-            delete = store.delete(a.getStoreKey("info"));
+        if (exist(auteurId)) {
+            delete = store.delete(read(auteurId).getStoreKey("info"));
         }
 
         return (delete ? 0 : 150);

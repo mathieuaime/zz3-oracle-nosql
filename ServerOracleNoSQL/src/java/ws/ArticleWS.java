@@ -86,10 +86,9 @@ public class ArticleWS {
     @Path("{id}/auteur")
     @GET
     public RestResponse<Author> listAuteur(@PathParam("id") int idArticle) throws ParseException {
-        Article l = ldao.read(idArticle);
         RestResponse<Author> resp = new RestResponse<>(151, "204");
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             resp = listAuteur(ldao.read(idArticle).getTitre());
         }
 
@@ -121,10 +120,9 @@ public class ArticleWS {
     @Path("{id}/auteur")
     @POST
     public RestResponse<AEteEcrit> addAuteur(@PathParam("id") int idArticle, AEteEcrit aEteEcrit) throws ParseException {
-        Article l = ldao.read(idArticle);
         RestResponse<AEteEcrit> resp = new RestResponse<>(151, "204");
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             resp = addAuteur(ldao.read(idArticle).getTitre(), aEteEcrit);
         }
 
@@ -143,10 +141,9 @@ public class ArticleWS {
     @Path("{id}/auteur/{idAuteur}")
     @PUT
     public RestResponse<AEteEcrit> updateAuteur(@PathParam("id") int idArticle, @PathParam("idAuteur") int idAuteur, AEteEcrit newAEteEcrit) throws ParseException {
-        Article l = ldao.read(idArticle);
         RestResponse<AEteEcrit> resp = new RestResponse<>(151, "204");
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             resp = updateAuteur(ldao.read(idArticle).getTitre(), idAuteur, newAEteEcrit);
         }
 
@@ -165,10 +162,9 @@ public class ArticleWS {
     @Path("{id}/auteur")
     @DELETE
     public RestResponse<AEteEcrit> deleteAllAuteur(@PathParam("id") int idArticle) throws ParseException {
-        Article l = ldao.read(idArticle);
         RestResponse<AEteEcrit> resp = new RestResponse<>(151, "204");
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             resp = deleteAllAuteur(ldao.read(idArticle).getTitre());
         }
 
@@ -187,10 +183,9 @@ public class ArticleWS {
     @Path("{id}/auteur/{idAuteur}")
     @DELETE
     public RestResponse<AEteEcrit> deleteAuteur(@PathParam("id") int idArticle, @PathParam("idAuteur") int idAuteur) throws ParseException {
-        Article l = ldao.read(idArticle);
         RestResponse<AEteEcrit> resp = new RestResponse<>(151, "204");
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             resp = deleteAuteur(ldao.read(idArticle).getTitre(), idAuteur);
         }
 
@@ -209,10 +204,9 @@ public class ArticleWS {
     @Path("{id}/keyword")
     @GET
     public RestResponse<String> listKeywords(@PathParam("id") int idArticle) throws ParseException {
-        Article l = ldao.read(idArticle);
         RestResponse<String> resp = new RestResponse<>(151, "204");
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             resp = listKeywords(ldao.read(idArticle).getTitre());
         }
 
@@ -237,10 +231,9 @@ public class ArticleWS {
     @Path("{id}/keyword")
     @POST
     public RestResponse<Keyword> addKeywords(@PathParam("id") int idArticle, Keyword keyword) throws ParseException {
-        Article l = ldao.read(idArticle);
         RestResponse<Keyword> resp = new RestResponse<>(151, "204");
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             resp = new RestResponse<>(0, "201");
 
             int status = kdao.create(keyword.getKeyword(), idArticle);
@@ -248,7 +241,7 @@ public class ArticleWS {
                 resp = new RestResponse<>(status, "409");
             }
 
-            status = hkdao.create(l.getTitre(), keyword.getKeyword());
+            status = hkdao.create(ldao.read(idArticle).getTitre(), keyword.getKeyword());
             if (status != 0) {
                 resp = new RestResponse<>(status, "409");
             }
@@ -260,14 +253,13 @@ public class ArticleWS {
     @Path("{id}/keyword/{keyword}/{rank}")
     @PUT
     public RestResponse<Keyword> updateKeywords(@PathParam("id") int idArticle, @PathParam("idKeyword") String keyword, @PathParam("rank") int rank, Keyword newKeyword) throws ParseException {
-        Article l = ldao.read(idArticle);
         int status = 151;
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             Keyword keyw = kdao.read(keyword, rank);
             if (keyw != null) {
                 status = kdao.update(keyword, idArticle, newKeyword.getIdArticle());
-                int update = hkdao.update(l.getTitre(), keyword, newKeyword.getKeyword());
+                int update = hkdao.update(ldao.read(idArticle).getTitre(), keyword, newKeyword.getKeyword());
                 if (status != 0) {
                     status = update;
                 }
@@ -282,14 +274,13 @@ public class ArticleWS {
     @Path("{id}/keyword/{keyword}/{rank}")
     @DELETE
     public RestResponse<Keyword> deleteKeywords(@PathParam("id") int idArticle, @PathParam("keyword") String keyword, @PathParam("rank") int rank) throws ParseException {
-        Article l = ldao.read(idArticle);
         int status = 151;
 
-        if (l != null) {
+        if (ldao.exist(idArticle)) {
             Keyword keyw = kdao.read(keyword, rank);
             if (keyw != null) {
                 status = kdao.delete(keyword);
-                for (HasKeyword hk : hkdao.read(l.getTitre())) {
+                for (HasKeyword hk : hkdao.read(ldao.read(idArticle).getTitre())) {
                     int delete = hkdao.delete(hk.getTitreArticle(), hk.getRank());
                     if (status != 0) {
                         status = delete;

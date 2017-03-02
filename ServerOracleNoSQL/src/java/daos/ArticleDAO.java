@@ -95,16 +95,19 @@ public class ArticleDAO {
 
         return l;
     }
+    
+    public boolean exist(int articleId) {
+        Key key = Key.createKey(Arrays.asList(Article.MAJOR_KEY, String.valueOf(articleId)), "info");
+        return store.get(key) != null;
+    }
 
     public int create(Article livre) {
         Version putIfAbsent = store.putIfAbsent(livre.getStoreKey("info"), livre.getStoreValue());
-
         return (putIfAbsent != null ? 0 : 101);
     }
 
     public int create(int livreId, String titre, String resume, float prix) {
-        Article livre = new Article(livreId, titre, resume, prix);
-        return create(livre);
+        return create(new Article(livreId, titre, resume, prix));
     }
 
     public int update(int idLivre, Article livre) throws ParseException {
@@ -112,8 +115,8 @@ public class ArticleDAO {
     }
 
     public int update(int livreId, String titre, String resume, float prix) throws ParseException {
-        Article l = read(livreId);
-        if (l != null) {
+        if (exist(livreId)) {
+            Article l = read(livreId);
             if (titre != null) {
                 l.setTitre(titre);
             }
@@ -125,17 +128,19 @@ public class ArticleDAO {
             }
             store.delete(l.getStoreKey("info"));
             store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());
+            
+            return 0;
+        } else {
+            return 151;
         }
-
-        return (l != null ? 0 : 151);
     }
 
     public int delete(int livreId) throws ParseException {
-        Article l = read(livreId);
-        if (l != null) {
-            store.delete(l.getStoreKey("info"));
+        boolean delete = false;
+        if (exist(livreId)) {
+            delete = store.delete(read(livreId).getStoreKey("info"));
         }
-        return (l != null ? 0 : 151);
+        return (delete ? 0 : 151);
     }
 
     public void genererTest(int n) {

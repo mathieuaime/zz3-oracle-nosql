@@ -32,6 +32,8 @@ public class AEcritDAO {
     private final String hostName = "localhost";
     private final String hostPort = "5000";
     private static KVStore store;
+    
+    private ArticleDAO adao = new ArticleDAO();
 
     public AEcritDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
@@ -49,16 +51,14 @@ public class AEcritDAO {
         ArrayList<AEcrit> ecrits = new ArrayList<>();
 
         while (it.hasNext()) {
-            Key k = it.next().getKey();
+            KeyValueVersion kvv = it.next();
 
-            if (k.getMinorPath().get(0).equals(minorPath)) {
-
-                ValueVersion vv2 = store.get(k);
-
-                Value value2 = vv2.getValue();
-                byte[] bytes2 = value2.getValue();
-                AEcrit a = new AEcrit(bytes2);
-                ecrits.add(a);
+            if (kvv.getKey().getMinorPath().get(0).equals(minorPath)) {
+                Value value = kvv.getValue();
+                if (value != null) {
+                    AEcrit a = new AEcrit(value.getValue());
+                    ecrits.add(a);
+                }
             }
         }
 
@@ -83,6 +83,11 @@ public class AEcritDAO {
         }
         return a;
     }
+    
+    public boolean exist(String auteurNom, int rang, String minorPath) {
+        Key key = Key.createKey(Arrays.asList(AEcrit.MAJOR_KEY, auteurNom, String.valueOf(rang)), minorPath);
+        return store.get(key) != null;
+    }
 
     public int getRang(String auteurNom, int idArticle) {
         return getRang(auteurNom, idArticle, "info");
@@ -96,22 +101,22 @@ public class AEcritDAO {
         int rg = -1;
 
         while (it.hasNext()) {
-            Key k = it.next().getKey();
+            KeyValueVersion kvv = it.next();
+            Key k = kvv.getKey();
 
             if (k.getMinorPath().get(0).equals(minorPath)) {
 
                 List<String> majorPath = k.getMajorPath();
                 String rang = majorPath.get(2);
 
-                ValueVersion vv2 = store.get(k);
+                Value value = kvv.getValue();
+                if (value != null) {
+                    AEcrit a = new AEcrit(value.getValue());
 
-                Value value2 = vv2.getValue();
-                byte[] bytes2 = value2.getValue();
-                AEcrit a = new AEcrit(bytes2);
-
-                if (a.getIdArticle() == idArticle) {
-                    rg = Integer.parseInt(rang);
-                    break;
+                    if (a.getIdArticle() == idArticle) {
+                        rg = Integer.parseInt(rang);
+                        break;
+                    }
                 }
             }
         }
@@ -144,14 +149,25 @@ public class AEcritDAO {
         if (a.getRank() < 0) {
             a.setRank(1 + getLastRang(a.getAuteurNom(), minorPath));
         }
-
-        ArticleDAO adao = new ArticleDAO();
-        Article read = adao.read(a.getIdArticle());
-        if (read != null) {
-            Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
-            return (putIfAbsent != null ? 0 : 102);
+        
+        boolean trouve = false;
+        
+        for(AEcrit k : read(a.getAuteurNom())) {
+            if (a.getIdArticle() == k.getIdArticle()) {
+                trouve = true;
+                break;
+            }
+        }
+        
+        if(!trouve) {
+            if (adao.exist(a.getIdArticle())) {
+                Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
+                return (putIfAbsent != null ? 0 : 102);
+            } else {
+                return 151;
+            }
         } else {
-            return 151;
+            return 102;
         }
     }
 
@@ -168,8 +184,7 @@ public class AEcritDAO {
     }
 
     public int create(String auteurNom, int idArticle, int rang, String minorPath) throws ParseException {
-        AEcrit aEcrit = new AEcrit(auteurNom, idArticle, rang);
-        return create(aEcrit, minorPath);
+        return create(new AEcrit(auteurNom, rang, idArticle), minorPath);
     }
 
     public int update(String auteurNom, int idArticle, int newIdArticle) throws ParseException {
@@ -177,22 +192,19 @@ public class AEcritDAO {
     }
 
     public int update(String auteurNom, int idArticle, int newIdArticle, String minorPath) throws ParseException {
-        AEcrit a = read(auteurNom, getRang(auteurNom, idArticle, minorPath), minorPath);
-        if (a != null) {
-            ArticleDAO adao = new ArticleDAO();
-            Article read = adao.read(newIdArticle);
-            if (read != null) {
+        if (exist(auteurNom, getRang(auteurNom, idArticle, minorPath), minorPath)) {
+            AEcrit a = read(auteurNom, getRang(auteurNom, idArticle, minorPath), minorPath);
+            if (adao.exist(newIdArticle)) {
                 a.setIdArticle(newIdArticle);
                 store.delete(a.getStoreKey(minorPath));
                 store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
+                return 0;
             } else {
                 return 151;
             }
         } else {
             return 152;
         }
-
-        return 0;
     }
 
     public int delete(String auteurNom) {
@@ -214,12 +226,12 @@ public class AEcritDAO {
     }
 
     public int delete(String auteurNom, int rang, String minorPath) {
-        AEcrit a = read(auteurNom, rang, minorPath);
-        if (a != null) {
-            store.delete(a.getStoreKey(minorPath));
+        boolean delete = false;
+        if (exist(auteurNom, rang, minorPath)) {
+            delete = store.delete(read(auteurNom, rang, minorPath).getStoreKey(minorPath));
         }
 
-        return (a != null ? 0 : 152);
+        return (delete ? 0 : 152);
     }
 
     public void genererTest(int n) throws ParseException {

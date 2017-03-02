@@ -112,6 +112,11 @@ public class EstRattacheDAO {
 
         return a;
     }
+    
+    public boolean exist(String auteurNom, String type, int rank) {
+        Key key = Key.createKey(Arrays.asList(EstRattache.MAJOR_KEY, auteurNom, type, String.valueOf(rank)), "info");
+        return store.get(key) != null;
+    }
 
     public int create(EstRattache a) {
         Version putIfAbsent = store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
@@ -123,14 +128,12 @@ public class EstRattacheDAO {
     }
 
     public int create(String auteurNom, String type, int rank, int value) {
-        EstRattache estRattache = new EstRattache(auteurNom, type, rank, value);
-        return create(estRattache);
+        return create(new EstRattache(auteurNom, type, rank, value));
     }
 
     public int update(String auteurNom, String type, int rank, int newValue) {
-        EstRattache read = read(auteurNom, type, rank);
-
-        if (read != null) {
+        if (exist(auteurNom, type, rank)) {
+            EstRattache read = read(auteurNom, type, rank);
             if (newValue > 0) {
                 read.setValue(newValue);
             }
@@ -156,10 +159,9 @@ public class EstRattacheDAO {
     }
 
     public int delete(String auteurNom, String type, int rank) {
-        EstRattache a = read(auteurNom, type, rank);
         boolean delete = false;
-        if (a != null) {
-            delete = store.delete(a.getStoreKey("info"));
+        if (exist(auteurNom, type, rank)) {
+            delete = store.delete(read(auteurNom, type, rank).getStoreKey("info"));
         }
         return (delete ? 0 : 158);
     }

@@ -31,6 +31,8 @@ public class AEteEcritDAO {
     private final String hostName = "localhost";
     private final String hostPort = "5000";
     private static KVStore store;
+    
+    private AuthorDAO adao = new AuthorDAO();
 
     public AEteEcritDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
@@ -42,15 +44,11 @@ public class AEteEcritDAO {
         Key key = Key.createKey(AEteEcrit.MAJOR_KEY);
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, key, null, null);
 
-        AEteEcrit aee;
-
         while (i.hasNext()) {
-            Key k = i.next().getKey();
-            ValueVersion valueVersionrecherche = store.get(k);
-            Value v = valueVersionrecherche.getValue();
-            byte[] bytes2 = v.getValue();
-            aee = new AEteEcrit(bytes2);
-            a.add(aee);
+            Value value = i.next().getValue();
+            if (value != null) {
+                a.add(new AEteEcrit(value.getValue()));
+            }
         }
 
         return a;
@@ -67,23 +65,20 @@ public class AEteEcritDAO {
 
         Iterator<KeyValueVersion> i = store.storeIterator(Direction.UNORDERED, 0, key, null, null);
 
-        AEteEcrit aee;
-
         while (i.hasNext()) {
-            Key k = i.next().getKey();
+            KeyValueVersion kvv = i.next();
 
-            if (minorKey.equals(k.getMinorPath().get(0))) {
-                ValueVersion valueVersionrecherche = store.get(k);
-                Value v = valueVersionrecherche.getValue();
-                byte[] bytes2 = v.getValue();
-                aee = new AEteEcrit(bytes2);
-                a.add(aee);
+            if (minorKey.equals(kvv.getKey().getMinorPath().get(0))) {
+                Value value = kvv.getValue();
+                if (value != null) {
+                    a.add(new AEteEcrit(value.getValue()));
+                }
             }
         }
 
         return a;
     }
-    
+
     public AEteEcrit read(String titreArticle, int rang) {
         return read(titreArticle, rang, "info");
     }
@@ -96,13 +91,17 @@ public class AEteEcritDAO {
         ValueVersion vv2 = store.get(key);
 
         if (vv2 != null) {
-            Value value2 = vv2.getValue();
-            byte[] bytes2 = value2.getValue();
-            a = new AEteEcrit(bytes2);
+            Value value = vv2.getValue();
+            a = new AEteEcrit(value.getValue());
         }
         return a;
     }
-    
+
+    public boolean exist(String titreArticle, int rang, String minorPath) {
+        Key key = Key.createKey(Arrays.asList(AEteEcrit.MAJOR_KEY, titreArticle, String.valueOf(rang)), minorPath);
+        return store.get(key) != null;
+    }
+
     public int getRang(String titreArticle, int idAuteur) {
         return getRang(titreArticle, idAuteur, "info");
     }
@@ -115,22 +114,22 @@ public class AEteEcritDAO {
         int rg = -1;
 
         while (it.hasNext()) {
-            Key k = it.next().getKey();
+            KeyValueVersion kvv = it.next();
+            Key k = kvv.getKey();
 
             if (k.getMinorPath().get(0).equals(minorPath)) {
 
                 List<String> majorPath = k.getMajorPath();
                 String rang = majorPath.get(2);
 
-                ValueVersion vv2 = store.get(k);
+                Value value = kvv.getValue();
+                if (value != null) {
+                    AEteEcrit a = new AEteEcrit(value.getValue());
 
-                Value value2 = vv2.getValue();
-                byte[] bytes2 = value2.getValue();
-                AEteEcrit a = new AEteEcrit(bytes2);
-
-                if (a.getIdAuteur()== idAuteur) {
-                    rg = Integer.parseInt(rang);
-                    break;
+                    if (a.getIdAuteur() == idAuteur) {
+                        rg = Integer.parseInt(rang);
+                        break;
+                    }
                 }
             }
         }
@@ -160,14 +159,12 @@ public class AEteEcritDAO {
     }
 
     public int create(AEteEcrit a, String minorPath) {
-        
+
         if (a.getRank() < 0) {
             a.setRank(1 + getLastRang(a.getArticleTitre(), minorPath));
         }
-        
-        AuthorDAO adao = new AuthorDAO();
-        Author read = adao.read(a.getIdAuteur());
-        if (read != null) {
+
+        if (adao.exist(a.getIdAuteur())) {
             Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
             return (putIfAbsent != null ? 0 : 103);
         } else {
@@ -180,41 +177,36 @@ public class AEteEcritDAO {
     }
 
     public int create(String articleTitre, int idAuteur, String minorKey) {
-        AEteEcrit aEcrit = new AEteEcrit(articleTitre, 1 + getLastRang(articleTitre, minorKey), idAuteur);
-
-        return create(aEcrit, minorKey);
+        return create(new AEteEcrit(articleTitre, 1 + getLastRang(articleTitre, minorKey), idAuteur), minorKey);
     }
-    
+
     public int create(String articleTitre, int idAuteur, int rang) {
         return create(articleTitre, idAuteur, rang, "info");
     }
 
     public int create(String articleTitre, int idAuteur, int rang, String minorPath) {
-        AEteEcrit aEcrit = new AEteEcrit(articleTitre, idAuteur, rang);
-        return create(aEcrit, minorPath);
+        return create(new AEteEcrit(articleTitre, idAuteur, rang), minorPath);
     }
 
     public int update(String articleTitre, int idAuteur, int newIdAuteur) {
         return update(articleTitre, idAuteur, newIdAuteur, "info");
     }
-    
+
     public int update(String articleTitre, int idAuteur, int newIdAuteur, String minorPath) {
-        AEteEcrit a = read(articleTitre, getRang(articleTitre, idAuteur, minorPath), minorPath);
-        if (a != null) {
-            AuthorDAO adao = new AuthorDAO();
-            Author read = adao.read(newIdAuteur);
-            if (read != null) {
+        if (exist(articleTitre, getRang(articleTitre, idAuteur, minorPath), minorPath)) {
+            AEteEcrit a = read(articleTitre, getRang(articleTitre, idAuteur, minorPath), minorPath);
+            if (adao.exist(newIdAuteur)) {
                 a.setIdAuteur(newIdAuteur);
                 store.delete(a.getStoreKey(minorPath));
                 store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
+                
+                return 0;
             } else {
                 return 150;
             }
         } else {
             return 153;
         }
-
-        return 0;
     }
 
     public int delete(String articleTitre) {
@@ -230,17 +222,18 @@ public class AEteEcritDAO {
 
         return result;
     }
+
     public int delete(String articleTitre, int rang) {
         return delete(articleTitre, rang, "info");
     }
 
     public int delete(String articleTitre, int rang, String minorPath) {
-        AEteEcrit a = read(articleTitre, rang, minorPath);
-        if (a != null) {
-            store.delete(a.getStoreKey(minorPath));
+        boolean delete = false;
+        if (exist(articleTitre, rang, minorPath)) {
+            delete = store.delete(read(articleTitre, rang, minorPath).getStoreKey(minorPath));
         }
 
-        return (a != null ? 0 : 153);
+        return (delete ? 0 : 153);
     }
 
     public void genererTest(int n) {

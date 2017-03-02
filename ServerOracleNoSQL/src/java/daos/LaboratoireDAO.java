@@ -84,6 +84,11 @@ public class LaboratoireDAO {
 
         return l;
     }
+    
+    public boolean exist(int laboratoireId) {
+        Key key = Key.createKey(Arrays.asList(Laboratoire.MAJOR_KEY, String.valueOf(laboratoireId)), "info");
+        return store.get(key) != null;
+    }
 
     public int create(Laboratoire laboratoire) {
         Version putIfAbsent = store.putIfAbsent(laboratoire.getStoreKey("info"), laboratoire.getStoreValue());
@@ -91,8 +96,7 @@ public class LaboratoireDAO {
     }
 
     public int create(int laboratoireId, String nom, String adresse) {
-        Laboratoire laboratoire = new Laboratoire(laboratoireId, nom, adresse);
-        return create(laboratoire);
+        return create(new Laboratoire(laboratoireId, nom, adresse));
     }
 
     public int update(int laboratoireId, Laboratoire laboratoire) {
@@ -100,8 +104,8 @@ public class LaboratoireDAO {
     }
 
     public int update(int laboratoireId, String nom, String adresse) {
-        Laboratoire l = read(laboratoireId);
-        if (l != null) {
+        if (exist(laboratoireId)) {
+            Laboratoire l = read(laboratoireId);
             if (nom != null) {
                 l.setNom(nom);
             }
@@ -110,15 +114,17 @@ public class LaboratoireDAO {
             }
             store.delete(l.getStoreKey("info"));
             store.putIfAbsent(l.getStoreKey("info"), l.getStoreValue());
+            
+            return 0;
+        } else {
+            return 154;
         }
-        return (l != null ? 0 : 154);
     }
 
     public int delete(int laboratoireId) {
-        Laboratoire a = read(laboratoireId);
         boolean delete = false;
-        if (a != null) {
-            delete = store.delete(a.getStoreKey("info"));
+        if (exist(laboratoireId)) {
+            delete = store.delete(read(laboratoireId).getStoreKey("info"));
         }
 
         return (delete ? 0 : 154);

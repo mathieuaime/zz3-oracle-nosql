@@ -81,6 +81,11 @@ public class HasKeywordDAO {
         }
         return a;
     }
+    
+    public boolean exist(String titreArticle, int rank, String minorPath) {
+        Key key = Key.createKey(Arrays.asList(HasKeyword.MAJOR_KEY, titreArticle, String.valueOf(rank)), minorPath);
+        return store.get(key) != null;
+    }
 
     public int getRank(String titreArticle, String keyword) {
         return getRank(titreArticle, keyword, "info");
@@ -161,8 +166,7 @@ public class HasKeywordDAO {
     }
 
     public int create(String titreArticle, String keyword, int rank, String minorPath) {
-        HasKeyword hasKeyword = new HasKeyword(titreArticle, rank, keyword);
-        return create(hasKeyword, minorPath);
+        return create(new HasKeyword(titreArticle, rank, keyword), minorPath);
     }
 
     public int update(String titreArticle, String keyword, String newKeyword) {
@@ -170,15 +174,18 @@ public class HasKeywordDAO {
     }
 
     public int update(String titreArticle, String keyword, String newKeyword, String minorPath) {
-        HasKeyword a = read(titreArticle, getRank(titreArticle, keyword, minorPath), minorPath);
-        if (a != null) {
+        
+        if (exist(titreArticle, getRank(titreArticle, keyword, minorPath), minorPath)) {
+            HasKeyword a = read(titreArticle, getRank(titreArticle, keyword, minorPath), minorPath);
             a.setKeyword(newKeyword);
             //TODO tester si le nouveau livre existe sinon erreur 401
             store.delete(a.getStoreKey(minorPath));
             store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
+            
+            return 0;
+        } else {
+            return 152;
         }
-
-        return (a != null ? 0 : 152);
     }
 
     public int delete(String titreArticle) {
@@ -200,12 +207,12 @@ public class HasKeywordDAO {
     }
 
     public int delete(String titreArticle, int rank, String minorPath) {
-        HasKeyword a = read(titreArticle, rank, minorPath);
-        if (a != null) {
-            store.delete(a.getStoreKey(minorPath));
+        boolean delete = false;
+        if (exist(titreArticle, rank, minorPath)) {
+            delete = store.delete(read(titreArticle, rank, minorPath).getStoreKey(minorPath));
         }
 
-        return (a != null ? 0 : 157);
+        return (delete ? 0 : 157);
     }
 
     public void genererTest(int n) {

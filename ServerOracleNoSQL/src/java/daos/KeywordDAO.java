@@ -5,7 +5,6 @@
  */
 package daos;
 
-import entities.Article;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -32,6 +31,8 @@ public class KeywordDAO {
     private final String hostName = "localhost";
     private final String hostPort = "5000";
     private static KVStore store;
+    
+    private ArticleDAO adao = new ArticleDAO();
 
     public KeywordDAO() {
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
@@ -82,6 +83,11 @@ public class KeywordDAO {
             a = new Keyword(bytes2);
         }
         return a;
+    }
+    
+    public boolean exist(String keyword, int rank, String minorPath) {
+        Key key = Key.createKey(Arrays.asList(Keyword.MAJOR_KEY, keyword, String.valueOf(rank)), minorPath);
+        return store.get(key) != null;
     }
 
     public int getRank(String keyword, int idArticle) {
@@ -144,14 +150,25 @@ public class KeywordDAO {
         if (a.getRank() < 0) {
             a.setRank(1 + getLastRank(a.getKeyword(), minorPath));
         }
-
-        ArticleDAO adao = new ArticleDAO();
-        Article read = adao.read(a.getIdArticle());
-        if (read != null) {
-            Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
-            return (putIfAbsent != null ? 0 : 107);
+        
+        boolean trouve = false;
+        
+        for(Keyword k : read(a.getKeyword())) {
+            if (a.getIdArticle() == k.getIdArticle()) {
+                trouve = true;
+                break;
+            }
+        }
+        if(!trouve) { 
+            
+            if (adao.exist(a.getIdArticle())) {
+                Version putIfAbsent = store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
+                return (putIfAbsent != null ? 0 : 107);
+            } else {
+                return 151;
+            }
         } else {
-            return 151;
+            return 107;
         }
     }
 
@@ -168,8 +185,7 @@ public class KeywordDAO {
     }
 
     public int create(String keyword, int idArticle, int rank, String minorPath) throws ParseException {
-        Keyword aEcrit = new Keyword(keyword, idArticle, rank);
-        return create(aEcrit, minorPath);
+        return create(new Keyword(keyword, rank, idArticle), minorPath);
     }
 
     public int update(String keyword, int idArticle, int newIdArticle) throws ParseException {
@@ -177,11 +193,10 @@ public class KeywordDAO {
     }
 
     public int update(String keyword, int idArticle, int newIdArticle, String minorPath) throws ParseException {
-        Keyword a = read(keyword, getRank(keyword, idArticle, minorPath), minorPath);
-        if (a != null) {
-            ArticleDAO adao = new ArticleDAO();
-            Article read = adao.read(a.getIdArticle());
-            if (read != null) {
+        
+        if (exist(keyword, getRank(keyword, idArticle, minorPath), minorPath)) {
+            Keyword a = read(keyword, getRank(keyword, idArticle, minorPath), minorPath);
+            if (adao.exist(a.getIdArticle())) {
                 a.setIdArticle(newIdArticle);
                 store.delete(a.getStoreKey(minorPath));
                 store.putIfAbsent(a.getStoreKey(minorPath), a.getStoreValue());
@@ -213,12 +228,13 @@ public class KeywordDAO {
     }
 
     public int delete(String keyword, int rank, String minorPath) {
-        Keyword a = read(keyword, rank, minorPath);
-        if (a != null) {
-            store.delete(a.getStoreKey(minorPath));
+        boolean delete = false;
+        
+        if (exist(keyword, rank, minorPath)) {
+            delete = store.delete(read(keyword, rank, minorPath).getStoreKey(minorPath));
         }
 
-        return (a != null ? 0 : 157);
+        return (delete ? 0 : 157);
     }
 
     public void genererTest(int n) throws ParseException {

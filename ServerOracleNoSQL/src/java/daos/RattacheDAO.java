@@ -94,19 +94,23 @@ public class RattacheDAO {
         return r;
     }
 
+    public boolean exist(String type, String value, int rang) {
+        Key key = Key.createKey(Arrays.asList(Rattache.MAJOR_KEY, type, value, String.valueOf(rang)), "info");
+
+        return store.get(key) != null;
+    }
+
     public int create(Rattache a) {
         Version putIfAbsent = store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
         return (putIfAbsent != null ? 0 : 106);
     }
 
     public int create(String type, String value, int idAuteur) {
-        Rattache rattache = new Rattache(value, type, 1 + getLastRang(type, value, "info"), idAuteur);
-        return create(rattache);
+        return create(new Rattache(value, type, 1 + getLastRang(type, value, "info"), idAuteur));
     }
 
     public int create(String type, String value, int idAuteur, int rang) {
-        Rattache rattache = new Rattache(value, type, rang, idAuteur);
-        return create(rattache);
+        return create(new Rattache(value, type, rang, idAuteur));
     }
 
     public int getRang(String type, String value, int idAuteur) {
@@ -162,16 +166,18 @@ public class RattacheDAO {
     }
 
     public int update(String type, String value, int rang, int idAuteur) {
-        Rattache a = read(type, value, rang);
-        if (a != null) {
+        
+        if (exist(type, value, rang)) {
+            Rattache a = read(type, value, rang);
             if (idAuteur > 0) {
                 a.setIdAuteur(idAuteur);
             }
             store.delete(a.getStoreKey("info"));
             store.putIfAbsent(a.getStoreKey("info"), a.getStoreValue());
+            return 0;
+        } else {
+            return 156;
         }
-
-        return (a != null ? 0 : 156);
     }
 
     public int update(String type, String value, int rang, Rattache r) {
@@ -199,10 +205,9 @@ public class RattacheDAO {
     }
 
     public int delete(String type, String value, int rang) {
-        Rattache a = read(type, value, rang);
         boolean delete = false;
-        if (a != null) {
-            delete = store.delete(a.getStoreKey("info"));
+        if (exist(type, value, rang)) {
+            delete = store.delete(read(type, value, rang).getStoreKey("info"));
         }
         return (delete ? 0 : 156);
     }

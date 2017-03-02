@@ -94,11 +94,10 @@ public class AuthorWS {
     @Path("{id}/article")
     @GET
     public RestResponse<Article> listArticle(@PathParam("id") int idAuteur) throws ParseException {
-        Author a = adao.read(idAuteur);
         RestResponse<Article> resp = new RestResponse<>(150, "204");
 
-        if (a != null) {
-            resp = listArticle(a.getNom());
+        if (adao.exist(idAuteur)) {
+            resp = listArticle(adao.read(idAuteur).getNom());
         }
 
         return resp;
@@ -129,10 +128,9 @@ public class AuthorWS {
     @Path("{id}/article")
     @POST
     public RestResponse<AEcrit> addArticle(@PathParam("id") int idAuteur, AEcrit aEcrit) throws ParseException {
-        Author a = adao.read(idAuteur);
         RestResponse<AEcrit> resp = new RestResponse<>(150, "204");
 
-        if (a != null) {
+        if (adao.exist(idAuteur)) {
             resp = addArticle(adao.read(idAuteur).getNom(), aEcrit);
         }
 
@@ -151,11 +149,10 @@ public class AuthorWS {
     @Path("{id}/article/{idArticle}")
     @PUT
     public RestResponse<AEcrit> updateArticle(@PathParam("id") int idAuteur, @PathParam("idArticle") int idArticle, AEcrit newAEcrit) throws ParseException {
-        Author a = adao.read(idAuteur);
         RestResponse<AEcrit> resp = new RestResponse<>(150, "204");
 
-        if (a != null) {
-            resp = updateArticle(a.getNom(), idArticle, newAEcrit);
+        if (adao.exist(idAuteur)) {
+            resp = updateArticle(adao.read(idAuteur).getNom(), idArticle, newAEcrit);
         }
 
         return resp;
@@ -174,10 +171,9 @@ public class AuthorWS {
     @Path("{id}/article")
     @DELETE
     public RestResponse<AEcrit> deleteAllArticle(@PathParam("id") int idAuteur) {
-        Author a = adao.read(idAuteur);
         RestResponse<AEcrit> resp = new RestResponse<>(150, "204");
 
-        if (a != null) {
+        if (adao.exist(idAuteur)) {
             resp = deleteAllArticle(adao.read(idAuteur).getNom());
         }
 
@@ -196,10 +192,9 @@ public class AuthorWS {
     @Path("{id}/article/{idArticle}")
     @DELETE
     public RestResponse<AEcrit> deleteArticle(@PathParam("id") int idAuteur, @PathParam("idArticle") int idArticle) {
-        Author a = adao.read(idAuteur);
         RestResponse<AEcrit> resp = new RestResponse<>(150, "204");
 
-        if (a != null) {
+        if (adao.exist(idAuteur)) {
             resp = deleteArticle(adao.read(idAuteur).getNom(), idArticle);
         }
 
@@ -218,11 +213,9 @@ public class AuthorWS {
     @Path("{id}/university")
     @GET
     public RestResponse<Universite> listUniversities(@PathParam("id") int idAuteur) {
-        Author a = adao.read(idAuteur);
-
         RestResponse<Universite> resp = new RestResponse<>(150, "204");
 
-        if (a != null) {
+        if (adao.exist(idAuteur)) {
             resp = listUniversities(adao.read(idAuteur).getNom());
         }
 
@@ -254,18 +247,18 @@ public class AuthorWS {
     @Path("{id}/university")
     @POST
     public RestResponse<Rattache> addUniversities(@PathParam("id") int idAuteur, EstRattache estRattache) {
-        Author a = adao.read(idAuteur);
+        
         int status = 150;
 
         RestResponse<Rattache> resp = new RestResponse<>(status, "204");
 
-        if (a != null) {
+        if (adao.exist(idAuteur)) {
             Universite univ = udao.read(estRattache.getValue());
 
             if (univ != null) {
                 resp = new RestResponse<>(0, "201");
 
-                status = erdao.create(a.getNom(), Universite.MAJOR_KEY, estRattache.getValue());
+                status = erdao.create(adao.read(idAuteur).getNom(), Universite.MAJOR_KEY, estRattache.getValue());
                 if (status != 0) {
                     resp = new RestResponse<>(status, (status >= 150 ? "204" : "409"));
                 }
@@ -285,13 +278,12 @@ public class AuthorWS {
     @Path("{id}/universityFromName/{idUniversity}/{rank}")
     @PUT
     public RestResponse<Universite> updateUniversities(@PathParam("nom") int idAuteur, @PathParam("idUniversity") int idUniversity, @PathParam("rank") int rank, EstRattache newEstRattache) {
-        Author auteur = adao.read(idAuteur);
         int status = 150;
         RestResponse<Universite> resp = new RestResponse<>(status, "204");
-        if (auteur != null) {
+        if (adao.exist(idAuteur)) {
             Universite oldUniv = udao.read(idUniversity);
             if (oldUniv != null) {
-                status = erdao.update(auteur.getNom(), Universite.MAJOR_KEY, rank, newEstRattache);
+                status = erdao.update(adao.read(idAuteur).getNom(), Universite.MAJOR_KEY, rank, newEstRattache);
                 if (status != 0) {
                     resp = new RestResponse<>(status, "204");
                 }
@@ -323,13 +315,12 @@ public class AuthorWS {
     @Path("{id}/universityFromName/{idUniversity}/{rank}")
     @DELETE
     public RestResponse<Universite> deleteUniversities(@PathParam("nom") int idAuteur, @PathParam("idUniversity") int idUniversity, @PathParam("rank") int rank) {
-        Author auteur = adao.read(idAuteur);
         int status = 150;
         RestResponse<Universite> resp = new RestResponse<>(status, "204");
-        if (auteur != null) {
+        if (adao.exist(idAuteur)) {
             Universite univ = udao.read(idUniversity);
             if (univ != null) {
-                status = erdao.delete(auteur.getNom(), Universite.MAJOR_KEY, rank);
+                status = erdao.delete(adao.read(idAuteur).getNom(), Universite.MAJOR_KEY, rank);
                 resp = new RestResponse<>(status, (status != 0 ? "204" : "200"));
 
                 status = rdao.delete(Universite.MAJOR_KEY, univ.getNom(), 1);
@@ -348,11 +339,9 @@ public class AuthorWS {
     @Path("{id}/laboratory")
     @GET
     public RestResponse<Laboratoire> listLaboratories(@PathParam("id") int idAuteur) {
-        Author a = adao.read(idAuteur);
-
         RestResponse<Laboratoire> resp = new RestResponse<>(150, "204");
 
-        if (a != null) {
+        if (adao.exist(idAuteur)) {
             resp = listLaboratories(adao.read(idAuteur).getNom());
         }
 
@@ -384,18 +373,17 @@ public class AuthorWS {
     @Path("{id}/laboratory")
     @POST
     public RestResponse<Rattache> addLaboratories(@PathParam("id") int idAuteur, EstRattache estRattache) {
-        Author a = adao.read(idAuteur);
         int status = 150;
 
         RestResponse<Rattache> resp = new RestResponse<>(status, "204");
 
-        if (a != null) {
+        if (adao.exist(idAuteur)) {
             Laboratoire labo = labodao.read(estRattache.getValue());
 
             if (labo != null) {
                 resp = new RestResponse<>(0, "201");
 
-                status = erdao.create(a.getNom(), Laboratoire.MAJOR_KEY, estRattache.getValue());
+                status = erdao.create(adao.read(idAuteur).getNom(), Laboratoire.MAJOR_KEY, estRattache.getValue());
                 if (status != 0) {
                     resp = new RestResponse<>(status, (status >= 150 ? "204" : "409"));
                 }
@@ -415,13 +403,12 @@ public class AuthorWS {
     @Path("{id}/laboratoryFromName/{idLaboratory}/{rank}")
     @PUT
     public RestResponse<Laboratoire> updateLaboratories(@PathParam("id") int idAuteur, @PathParam("idLaboratory") int idLaboratory, @PathParam("rank") int rank, EstRattache newEstRattache) {
-        Author auteur = adao.read(idAuteur);
         int status = 150;
         RestResponse<Laboratoire> resp = new RestResponse<>(status, "204");
-        if (auteur != null) {
+        if (adao.exist(idAuteur)) {
             Laboratoire oldLabo = labodao.read(idLaboratory);
             if (oldLabo != null) {
-                status = erdao.update(auteur.getNom(), Laboratoire.MAJOR_KEY, rank, newEstRattache);
+                status = erdao.update(adao.read(idAuteur).getNom(), Laboratoire.MAJOR_KEY, rank, newEstRattache);
                 if (status != 0) {
                     resp = new RestResponse<>(status, "204");
                 }
@@ -453,13 +440,12 @@ public class AuthorWS {
     @Path("{id}/laboratoryFromName/{idLaboratory}/{rank}")
     @DELETE
     public RestResponse<Laboratoire> deleteLaboratories(@PathParam("id") int idAuteur, @PathParam("idLaboratory") int idLaboratory, @PathParam("rank") int rank) {
-        Author auteur = adao.read(idAuteur);
         int status = 150;
         RestResponse<Laboratoire> resp = new RestResponse<>(status, "204");
-        if (auteur != null) {
+        if (adao.exist(idAuteur)) {
             Laboratoire labo = labodao.read(idLaboratory);
             if (labo != null) {
-                status = erdao.delete(auteur.getNom(), Laboratoire.MAJOR_KEY, rank);
+                status = erdao.delete(adao.read(idAuteur).getNom(), Laboratoire.MAJOR_KEY, rank);
                 resp = new RestResponse<>(status, (status != 0 ? "204" : "200"));
 
                 status = rdao.delete(Laboratoire.MAJOR_KEY, labo.getNom(), 1);
@@ -478,19 +464,16 @@ public class AuthorWS {
     @Path("{id}/keyword")
     @GET
     public RestResponse<String> listKeywords(@PathParam("id") int idAuteur) throws ParseException {
-        Author a = adao.read(idAuteur);
-
         RestResponse<String> resp = new RestResponse<>(150, "204");
 
-        if (a != null) {
+        if (adao.exist(idAuteur)) {
             resp = new RestResponse<>(151, "204");
-            for (AEcrit ae : aedao.read(a.getNom())) {
-                Article l = ldao.read(ae.getIdArticle());
-                if (l != null) {
+            for (AEcrit ae : aedao.read(adao.read(idAuteur).getNom())) {
+                if (ldao.exist(ae.getIdArticle())) {
                     resp.setCode(157);
                     resp.setMessage(RestResponse.getMessage(157));
                     resp.setResponseCode("204");
-                    for (HasKeyword hk : hkdao.read(l.getTitre())) {
+                    for (HasKeyword hk : hkdao.read(ldao.read(ae.getIdArticle()).getTitre())) {
                         resp.setCode(0);
                         resp.setMessage(RestResponse.getMessage(0));
                         resp.setResponseCode(RestResponse.getStatus(0));

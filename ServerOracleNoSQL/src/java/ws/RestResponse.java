@@ -84,7 +84,9 @@ public class RestResponse<T> implements Serializable {
     }
 
     public void addObjectList(T object) {
-        this.objectList.add(object);
+        if (object != null) {
+            this.objectList.add(object);
+        }
     }
 
     public static String getStatus(int code) {
