@@ -33,6 +33,7 @@ public class Performance {
     private static final int NB_IT = 50;
 
     private static final AEcritDAO A_ECRIT_DAO = new AEcritDAO();
+    private static final AEteEcritDAO A_ETE_ECRIT_DAO = new AEteEcritDAO();
 
     private static final AuthorWS AUTHOR_WS = new AuthorWS();
     private static final ArticleWS ARTICLE_WS = new ArticleWS();
@@ -219,6 +220,16 @@ public class Performance {
             startTime = System.currentTimeMillis();
             int nextInt = rand.nextInt(n);
             AUTHOR_WS.deleteAuteur(nextInt);
+                        
+            for (AEcrit a : A_ECRIT_DAO.read("Nom" + nextInt)) {
+                A_ECRIT_DAO.delete(a.getAuteurNom(), a.getRank());
+            }
+            
+            for(AEteEcrit a : A_ETE_ECRIT_DAO.read()) {
+                if (a.getIdAuteur() == nextInt)
+                    A_ETE_ECRIT_DAO.delete(a.getArticleTitre(), a.getRank());
+            }
+            
             endTime = System.currentTimeMillis();
             time += (endTime - startTime);
         }
