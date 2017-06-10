@@ -34,12 +34,12 @@ public class MySQLEntityDAOImpl implements EntityDAO<Entity> {
     }
 
     @Override
-    public Entity get(String search) {
+    public Entity get(String search) throws DAOEntityNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Entity get(long id) {
+    public Entity get(long id) throws DAOEntityNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
