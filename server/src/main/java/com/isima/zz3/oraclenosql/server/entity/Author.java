@@ -3,19 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.isima.zz3.oraclenosql.server.model;
+package com.isima.zz3.oraclenosql.server.entity;
 
+import com.isima.zz3.oraclenosql.server.entity.exception.AuthorBuildException;
+import com.isima.zz3.oraclenosql.server.entity.model.Entity;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
  *
  * @author mathieu
  */
-public class Author {
+public class Author extends Entity {
     
     private Author() {}
 
-    private int id;
     private String name;
     private String firstName;
     private String address;
@@ -26,10 +29,14 @@ public class Author {
     public static class Builder {
         private final Author author;
         
-        public Builder(String name, String firstName) {
+        public Builder(String name) {
             author = new Author();
             author.name = name;
+        }
+        
+        public Builder firstName(String firstName) {
             author.firstName = firstName;
+            return this;
         }
         
         public Builder address(String address) {
@@ -55,14 +62,24 @@ public class Author {
         public Author build() {
             return author;
         }
+        
+        public Author build(String[] author) throws AuthorBuildException {
+            if (author.length < 6) {
+                throw new AuthorBuildException();
+            }
+            return new Builder(author[0])
+                    .firstName(author[1])
+                    .address(author[2])
+                    .phone(author[3])
+                    .fax(author[4])
+                    .mail(author[5])
+                    .build();
+        }
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return name + "/" + firstName + "/" + address + "/" + phone + "/" + fax + "/" + mail;
     }
 
     public String getName() {
@@ -114,14 +131,13 @@ public class Author {
     }
 
     @Override
-    public String toString() {
-        return "Author{" + "id=" + id + ", nom=" + name + ", prenom=" + firstName + ", adresse=" + address + ", phone=" + phone + ", fax=" + fax + ", mail=" + mail + '}';
+    public List<String> getStoreKey() {
+        return Arrays.asList("author", String.valueOf(name));
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 97 * hash + this.id;
         hash = 97 * hash + Objects.hashCode(this.name);
         hash = 97 * hash + Objects.hashCode(this.firstName);
         hash = 97 * hash + Objects.hashCode(this.address);
@@ -143,9 +159,7 @@ public class Author {
             return false;
         }
         final Author other = (Author) obj;
-        if (this.id != other.id) {
-            return false;
-        }
+
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }

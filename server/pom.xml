@@ -12,14 +12,97 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <logbackVersion>1.0.13</logbackVersion>
+        <!-- JEE -->
+        <javax.version>7.0</javax.version>
+        <javax.persistence>1.0.2</javax.persistence>
+        <!-- BDD -->
+        <mysqlConnectorJava.version>5.1.39</mysqlConnectorJava.version>
+        <oracleNoSQL.version>3.5.2</oracleNoSQL.version>
+        <!-- Spring -->
+        <spring.version>4.3.9.RELEASE</spring.version>
+        <!-- Hibernate -->
+        <hibernateValidator.version>5.4.1.Final</hibernateValidator.version>
+        <hibernateCore.version>5.2.10.Final</hibernateCore.version>
+        <!-- Test -->
+        <junitVersion>4.12</junitVersion>
+        <mockitoVersion>1.10.19</mockitoVersion>
+        <hikariCPVersion>2.6.1</hikariCPVersion>
+        <dbUnit.version>2.4.9</dbUnit.version>
     </properties>
     
     <dependencies>
+        <!-- BDD dependencies-->
+        <dependency>
+            <groupId>com.oracle.kv</groupId>
+            <artifactId>oracle-nosql-client</artifactId>
+            <version>${oracleNoSQL.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysqlConnectorJava.version}</version>
+        </dependency>
+        <!-- JEE dependencies -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
-            <version>7.0</version>
+            <version>${javax.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>${javax.persistence}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernateValidator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernateCore.version}</version>
+        </dependency>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Unit test dependencies -->
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>${dbUnit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -30,8 +113,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>

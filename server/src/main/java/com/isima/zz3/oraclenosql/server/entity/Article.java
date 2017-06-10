@@ -3,18 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.isima.zz3.oraclenosql.server.model;
+package com.isima.zz3.oraclenosql.server.entity;
 
+import com.isima.zz3.oraclenosql.server.entity.exception.ArticleBuildException;
+import com.isima.zz3.oraclenosql.server.entity.model.Entity;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
  *
  * @author mathieu
  */
-public class Article {
+public class Article extends Entity {
 
-    private int id;
     private String title;
     private String resume;
     private float price;
@@ -23,14 +26,6 @@ public class Article {
     private LocalDate publication;
 
     private Article() {}
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -80,6 +75,11 @@ public class Article {
         this.publication = publication;
     }
 
+    @Override
+    public List<String> getStoreKey() {
+        return Arrays.asList("article", String.valueOf(title));
+    }
+
     public static class Builder {
         private final Article article;
 
@@ -116,23 +116,35 @@ public class Article {
         public Article build() {
             return article;
         }
+        
+        public Article build(String[] article) throws ArticleBuildException {
+            if (article.length < 6) {
+                throw new ArticleBuildException();
+            }
+            return new Builder(article[0])
+                    .resume(article[1])
+                    .price(Float.parseFloat(article[2]))
+                    .reception(LocalDate.parse(article[3]))
+                    .acceptation(LocalDate.parse(article[4]))
+                    .publication(LocalDate.parse(article[5]))
+                    .build();
+        }
     }
 
     @Override
     public String toString() {
-        return "Article{" + "id=" + id + ", title=" + title + ", resume=" + resume + ", price=" + price + ", reception=" + reception + ", acceptation=" + acceptation + ", publication=" + publication + '}';
+        return title + "/" + resume + "/" + price + "/" + reception + "/" + acceptation + "/" + publication;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 19 * hash + this.id;
-        hash = 19 * hash + Objects.hashCode(this.title);
-        hash = 19 * hash + Objects.hashCode(this.resume);
-        hash = 19 * hash + Float.floatToIntBits(this.price);
-        hash = 19 * hash + Objects.hashCode(this.reception);
-        hash = 19 * hash + Objects.hashCode(this.acceptation);
-        hash = 19 * hash + Objects.hashCode(this.publication);
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.title);
+        hash = 53 * hash + Objects.hashCode(this.resume);
+        hash = 53 * hash + Float.floatToIntBits(this.price);
+        hash = 53 * hash + Objects.hashCode(this.reception);
+        hash = 53 * hash + Objects.hashCode(this.acceptation);
+        hash = 53 * hash + Objects.hashCode(this.publication);
         return hash;
     }
 
@@ -148,9 +160,6 @@ public class Article {
             return false;
         }
         final Article other = (Article) obj;
-        if (this.id != other.id) {
-            return false;
-        }
         if (Float.floatToIntBits(this.price) != Float.floatToIntBits(other.price)) {
             return false;
         }

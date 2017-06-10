@@ -17,8 +17,8 @@ import daos.AuthorDAO;
 import daos.HasKeywordDAO;
 import daos.KeywordDAO;
 import com.isima.zz3.oraclenosql.server.relation.AEteEcrit;
-import com.isima.zz3.oraclenosql.server.model.Author;
-import com.isima.zz3.oraclenosql.server.model.Article;
+import com.isima.zz3.oraclenosql.server.entity.Author;
+import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.relation.HasKeyword;
 import com.isima.zz3.oraclenosql.server.relation.ArticleKeyword;
 

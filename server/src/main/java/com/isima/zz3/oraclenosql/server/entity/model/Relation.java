@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.isima.zz3.oraclenosql.server.model;
+package com.isima.zz3.oraclenosql.server.entity.model;
 
-import java.util.Map;
+import com.isima.zz3.oraclenosql.server.entity.exception.RelationBuildException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,14 +15,9 @@ import java.util.Objects;
  * @param <T> key
  * @param <U> value
  */
-public class Relation<T, U> {
-    private T key;
-    private Map<Long, U> values;
-
-    public Relation(T key, Map<Long, U> values) {
-        this.key = key;
-        this.values = values;
-    }
+public abstract class Relation<T extends Entity, U extends Entity> {
+    protected T key;
+    protected List<U> value;
 
     public T getKey() {
         return key;
@@ -31,24 +27,29 @@ public class Relation<T, U> {
         this.key = key;
     }
 
-    public Map<Long, U> getValues() {
-        return values;
+    public List<U> getValue() {
+        return value;
     }
 
-    public void setValues(Map<Long, U> values) {
-        this.values = values;
+    public void setValue(List<U> value) {
+        this.value = value;
+    }
+    
+    public abstract List<String> getStoreKey();
+    public String getStoreValue() {
+        return toString();
     }
 
     @Override
     public String toString() {
-        return "Relation{" + "key=" + key + ", values=" + values + '}';
+        return key + "/" + value;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.key);
-        hash = 29 * hash + Objects.hashCode(this.values);
+        int hash = 3;
+        hash = 41 * hash + Objects.hashCode(this.key);
+        hash = 41 * hash + Objects.hashCode(this.value);
         return hash;
     }
 
@@ -67,8 +68,6 @@ public class Relation<T, U> {
         if (!Objects.equals(this.key, other.key)) {
             return false;
         }
-        return Objects.equals(this.values, other.values);
-    }
-    
-    
+        return Objects.equals(this.value, other.value);
+    }  
 }

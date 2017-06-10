@@ -20,13 +20,13 @@ import daos.LaboratoireDAO;
 import daos.RattacheDAO;
 import daos.UniversiteDAO;
 import com.isima.zz3.oraclenosql.server.relation.AEcrit;
-import com.isima.zz3.oraclenosql.server.model.Author;
-import com.isima.zz3.oraclenosql.server.model.Article;
+import com.isima.zz3.oraclenosql.server.entity.Author;
+import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.relation.EstRattache;
 import com.isima.zz3.oraclenosql.server.relation.HasKeyword;
-import com.isima.zz3.oraclenosql.server.model.Laboratory;
+import com.isima.zz3.oraclenosql.server.entity.Laboratory;
 import com.isima.zz3.oraclenosql.server.relation.Rattache;
-import com.isima.zz3.oraclenosql.server.model.University;
+import com.isima.zz3.oraclenosql.server.entity.University;
 
 @Path("auteur")
 @Consumes(MediaType.APPLICATION_JSON)

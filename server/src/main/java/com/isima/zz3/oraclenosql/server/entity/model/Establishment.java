@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.isima.zz3.oraclenosql.server.model;
+package com.isima.zz3.oraclenosql.server.entity.model;
 
 import java.util.Objects;
 
@@ -11,33 +11,17 @@ import java.util.Objects;
  *
  * @author mathieu
  */
-public class Establishment {
-    private int id;
-    private String name;
-    private String address;
+public abstract class Establishment extends Entity {
+    protected String name;
+    protected String address;
 
-    public Establishment(int id, String nom, String address) {
+    public Establishment(String nom, String address) {
         this.name = nom;
         this.address = address;
-        this.id = id;
     }
 
     public Establishment() {
-        this(0, "", "");
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
+        this("", "");
     }
 
     /**
@@ -62,23 +46,22 @@ public class Establishment {
     }
 
     /**
-     * @param addresse the address to set
+     * @param address the address to set
      */
     public void setAddress(String address) {
         this.address = address;
     }
-
+    
     @Override
     public String toString() {
-        return "Establishment{" + "id=" + id + ", name=" + name + ", address=" + address + '}';
-    }
+        return name + "/" + address;
+    }   
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + this.id;
-        hash = 47 * hash + Objects.hashCode(this.name);
-        hash = 47 * hash + Objects.hashCode(this.address);
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + Objects.hashCode(this.address);
         return hash;
     }
 
@@ -94,9 +77,6 @@ public class Establishment {
             return false;
         }
         final Establishment other = (Establishment) obj;
-        if (this.id != other.id) {
-            return false;
-        }
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
@@ -105,4 +85,5 @@ public class Establishment {
         }
         return true;
     }
+
 }

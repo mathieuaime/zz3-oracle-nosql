@@ -16,10 +16,10 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 import daos.UniversiteDAO;
 import com.isima.zz3.oraclenosql.server.relation.AEcrit;
-import com.isima.zz3.oraclenosql.server.model.Article;
-import com.isima.zz3.oraclenosql.server.model.Author;
+import com.isima.zz3.oraclenosql.server.entity.Article;
+import com.isima.zz3.oraclenosql.server.entity.Author;
 import com.isima.zz3.oraclenosql.server.relation.Rattache;
-import com.isima.zz3.oraclenosql.server.model.University;
+import com.isima.zz3.oraclenosql.server.entity.University;
 import java.text.ParseException;
 
 @Path("university")
