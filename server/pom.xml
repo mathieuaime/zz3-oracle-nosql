@@ -13,7 +13,9 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <logbackVersion>1.0.13</logbackVersion>
+        <!-- Logger -->
+        <logback.version>1.0.13</logback.version>
+        <slf4japi.version>1.6.1</slf4japi.version>
         <!-- JEE -->
         <javax.version>7.0</javax.version>
         <javax.persistence>1.0.2</javax.persistence>
@@ -30,16 +32,11 @@
     <dependencies>
         <!-- BDD dependencies-->
         <dependency>
-            <groupId>com.oracle.kv</groupId>
-            <artifactId>oracle-nosql-client</artifactId>
-            <version>${oracleNoSQL.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysqlConnectorJava.version}</version>
         </dependency>
+        
         <!-- JEE dependencies -->
         <dependency>
             <groupId>javax</groupId>
@@ -53,6 +50,7 @@
             <version>${javax.persistence}</version>
             <scope>provided</scope>
         </dependency>
+        
         <!-- Unit test dependencies -->
         <dependency>
             <groupId>org.dbunit</groupId>
@@ -66,6 +64,18 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.2.10.Final</version>
+        </dependency>
+        
+        <!-- Logger -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4japi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
     </dependencies>
 
