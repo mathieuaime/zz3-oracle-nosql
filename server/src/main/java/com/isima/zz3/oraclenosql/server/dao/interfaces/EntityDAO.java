@@ -5,12 +5,10 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.interfaces;
 
-import com.isima.zz3.oraclenosql.server.entity.model.Entity;
-
 /**
  *
  * @author mathieu
  * @param <T>
  */
-public interface EntityDAO<T extends Entity> extends CRUD<T>, Search<T>, Pagination<T> {
+public interface EntityDAO<T> extends CRUD<T>, Search<T>, Pagination<T> {
 }

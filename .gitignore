@@ -11,3 +11,4 @@
 /ClientWebOracleNoSQL/target/
 /ClientOracleNoSQL/target/
 /server/nbproject/
+/server/src/main/resources/config/db/hibernate.cfg.xml

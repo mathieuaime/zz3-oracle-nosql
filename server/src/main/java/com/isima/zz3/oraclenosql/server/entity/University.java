@@ -5,19 +5,9 @@
  */
 package com.isima.zz3.oraclenosql.server.entity;
 
-import com.isima.zz3.oraclenosql.server.entity.model.Establishment;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  *
  * @author mathieu
  */
 public class University extends Establishment {
-
-    @Override
-    public List<String> getStoreKey() {
-        return Arrays.asList("university", String.valueOf(name));
-    }
-    
 }

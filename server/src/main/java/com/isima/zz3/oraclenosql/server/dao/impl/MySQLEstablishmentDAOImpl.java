@@ -5,46 +5,44 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.impl;
 
-import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotFoundException;
-import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotSavedException;
 import com.isima.zz3.oraclenosql.server.dao.interfaces.EntityDAO;
-import com.isima.zz3.oraclenosql.server.entity.model.Entity;
-import com.isima.zz3.oraclenosql.server.entity.model.Page;
-import java.util.Set;
+import com.isima.zz3.oraclenosql.server.entity.Establishment;
+import com.isima.zz3.oraclenosql.server.entity.Page;
+import java.util.List;
 
 /**
  *
  * @author mathieu
  */
-public class MySQLEntityDAOImpl implements EntityDAO<Entity> {
+public class MySQLEstablishmentDAOImpl implements EntityDAO<Establishment> {
 
     @Override
-    public Set<Entity> get() {
+    public List<Establishment> get() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Entity save(Entity object) throws DAOEntityNotSavedException {
+    public Establishment save(Establishment object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(Entity object) throws DAOEntityNotFoundException {
+    public void delete(Establishment object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Entity get(String search) throws DAOEntityNotFoundException {
+    public Establishment get(String search) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Entity get(long id) throws DAOEntityNotFoundException {
+    public Establishment get(long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Page<Entity> get(Page<?> page) {
+    public Page<Establishment> get(Page<?> page) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -52,4 +50,5 @@ public class MySQLEntityDAOImpl implements EntityDAO<Entity> {
     public long count(Page<?> page) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

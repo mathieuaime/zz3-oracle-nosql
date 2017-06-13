@@ -6,63 +6,89 @@
 package com.isima.zz3.oraclenosql.server.entity;
 
 import com.isima.zz3.oraclenosql.server.entity.exception.AuthorBuildException;
-import com.isima.zz3.oraclenosql.server.entity.model.Entity;
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 /**
  *
  * @author mathieu
  */
-public class Author extends Entity {
-    
-    private Author() {}
+@Entity
+public class Author implements Serializable {
 
+    public Author() {
+    }
+
+    @Id
+    private long id;
+
+    @Column
     private String name;
+
+    @Column
     private String firstName;
+
+    @Column
     private String address;
+
+    @Column
     private String phone;
+
+    @Column
     private String fax;
+
+    @Column
     private String mail;
     
+    @ManyToMany
+    private List<Article> articles;
+    
+    @ManyToMany
+    private List<Establishment> establishments;
+
     public static class Builder {
+
         private final Author author;
-        
+
         public Builder(String name) {
             author = new Author();
             author.name = name;
         }
-        
+
         public Builder firstName(String firstName) {
             author.firstName = firstName;
             return this;
         }
-        
+
         public Builder address(String address) {
             author.address = address;
             return this;
         }
-        
+
         public Builder phone(String phone) {
             author.phone = phone;
             return this;
         }
-        
+
         public Builder fax(String fax) {
             author.fax = fax;
             return this;
         }
-        
+
         public Builder mail(String mail) {
             author.mail = mail;
             return this;
         }
-        
+
         public Author build() {
             return author;
         }
-        
+
         public Author build(String[] author) throws AuthorBuildException {
             if (author.length < 6) {
                 throw new AuthorBuildException();
@@ -80,6 +106,14 @@ public class Author extends Entity {
     @Override
     public String toString() {
         return name + "/" + firstName + "/" + address + "/" + phone + "/" + fax + "/" + mail;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -128,11 +162,6 @@ public class Author extends Entity {
 
     public void setMail(String mail) {
         this.mail = mail;
-    }
-
-    @Override
-    public List<String> getStoreKey() {
-        return Arrays.asList("author", String.valueOf(name));
     }
 
     @Override

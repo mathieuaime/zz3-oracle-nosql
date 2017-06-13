@@ -5,15 +5,14 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.interfaces;
 
-import com.isima.zz3.oraclenosql.server.entity.model.Entity;
-import com.isima.zz3.oraclenosql.server.entity.model.Page;
+import com.isima.zz3.oraclenosql.server.entity.Page;
 
 /**
  *
  * @author mathieu
  * @param <T>
  */
-public interface Pagination<T extends Entity> {
+public interface Pagination<T> {
     Page<T> get(Page<?> page);
     long count(Page<?> page);
 }

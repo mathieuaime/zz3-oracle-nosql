@@ -5,18 +5,15 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.interfaces;
 
-import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotFoundException;
-import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotSavedException;
-import com.isima.zz3.oraclenosql.server.entity.model.Entity;
-import java.util.Set;
+import java.util.List;
 
 /**
  *
  * @author mathieu
  * @param <T>
  */
-public interface CRUD<T extends Entity> {
-    Set<T> get();
-    T save(T object) throws DAOEntityNotSavedException;
-    void delete(T object) throws DAOEntityNotFoundException;
+public interface CRUD<T> {
+    List<T> get();
+    T save(T object);
+    void delete(T object);
 }

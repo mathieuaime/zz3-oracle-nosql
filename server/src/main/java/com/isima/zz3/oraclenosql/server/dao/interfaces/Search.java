@@ -5,15 +5,12 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.interfaces;
 
-import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotFoundException;
-import com.isima.zz3.oraclenosql.server.entity.model.Entity;
-
 /**
  *
  * @author mathieu
  * @param <T>
  */
-public interface Search<T extends Entity> {
-    T get(String search) throws DAOEntityNotFoundException;
-    T get(long id) throws DAOEntityNotFoundException;
+public interface Search<T> {
+    T get(String search);
+    T get(long id);
 }

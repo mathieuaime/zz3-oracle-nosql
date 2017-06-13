@@ -6,7 +6,7 @@
 package com.isima.zz3.oraclenosql.server.dao.impl;
 
 import com.isima.zz3.oraclenosql.server.entity.model.Entity;
-import com.isima.zz3.oraclenosql.server.entity.model.Page;
+import com.isima.zz3.oraclenosql.server.entity.Page;
 import java.util.Set;
 import junit.framework.TestCase;
 
@@ -35,7 +35,7 @@ public class MySQLEntityDAOImplTest extends TestCase {
      */
     public void testGet_0args() {
         System.out.println("get");
-        MySQLEntityDAOImpl instance = new MySQLEntityDAOImpl();
+        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
         Set<Entity> expResult = null;
         Set<Entity> result = instance.get();
         assertEquals(expResult, result);
@@ -49,7 +49,7 @@ public class MySQLEntityDAOImplTest extends TestCase {
     public void testSave() throws Exception {
         System.out.println("save");
         Entity object = null;
-        MySQLEntityDAOImpl instance = new MySQLEntityDAOImpl();
+        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
         Entity expResult = null;
         Entity result = instance.save(object);
         assertEquals(expResult, result);
@@ -63,7 +63,7 @@ public class MySQLEntityDAOImplTest extends TestCase {
     public void testDelete() throws Exception {
         System.out.println("delete");
         Entity object = null;
-        MySQLEntityDAOImpl instance = new MySQLEntityDAOImpl();
+        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
         instance.delete(object);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -75,7 +75,7 @@ public class MySQLEntityDAOImplTest extends TestCase {
     public void testGet_String() throws Exception {
         System.out.println("get");
         String search = "";
-        MySQLEntityDAOImpl instance = new MySQLEntityDAOImpl();
+        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
         Entity expResult = null;
         Entity result = instance.get(search);
         assertEquals(expResult, result);
@@ -89,7 +89,7 @@ public class MySQLEntityDAOImplTest extends TestCase {
     public void testGet_long() throws Exception {
         System.out.println("get");
         long id = 0L;
-        MySQLEntityDAOImpl instance = new MySQLEntityDAOImpl();
+        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
         Entity expResult = null;
         Entity result = instance.get(id);
         assertEquals(expResult, result);
@@ -103,7 +103,7 @@ public class MySQLEntityDAOImplTest extends TestCase {
     public void testGet_Page() {
         System.out.println("get");
         Page page = null;
-        MySQLEntityDAOImpl instance = new MySQLEntityDAOImpl();
+        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
         Page<Entity> expResult = null;
         Page<Entity> result = instance.get(page);
         assertEquals(expResult, result);
@@ -117,7 +117,7 @@ public class MySQLEntityDAOImplTest extends TestCase {
     public void testCount() {
         System.out.println("count");
         Page page = null;
-        MySQLEntityDAOImpl instance = new MySQLEntityDAOImpl();
+        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
         long expResult = 0L;
         long result = instance.count(page);
         assertEquals(expResult, result);

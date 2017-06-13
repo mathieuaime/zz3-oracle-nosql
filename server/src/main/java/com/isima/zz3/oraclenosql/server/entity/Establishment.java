@@ -3,25 +3,57 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.isima.zz3.oraclenosql.server.entity.model;
+package com.isima.zz3.oraclenosql.server.entity;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /**
  *
  * @author mathieu
  */
-public abstract class Establishment extends Entity {
+@Entity
+public abstract class Establishment implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    protected long id;
+
+    @Column(unique = true, nullable = false)
     protected String name;
+
+    @Column
     protected String address;
+
+    @ManyToMany(mappedBy="authors")
+    private List<Author> authors;
+
+    public Establishment() {
+        this("", "");
+    }
 
     public Establishment(String nom, String address) {
         this.name = nom;
         this.address = address;
     }
 
-    public Establishment() {
-        this("", "");
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
@@ -51,11 +83,11 @@ public abstract class Establishment extends Entity {
     public void setAddress(String address) {
         this.address = address;
     }
-    
+
     @Override
     public String toString() {
         return name + "/" + address;
-    }   
+    }
 
     @Override
     public int hashCode() {
@@ -80,10 +112,7 @@ public abstract class Establishment extends Entity {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (!Objects.equals(this.address, other.address)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.address, other.address);
     }
 
 }

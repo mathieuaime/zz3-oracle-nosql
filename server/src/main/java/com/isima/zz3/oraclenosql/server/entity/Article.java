@@ -6,26 +6,55 @@
 package com.isima.zz3.oraclenosql.server.entity;
 
 import com.isima.zz3.oraclenosql.server.entity.exception.ArticleBuildException;
-import com.isima.zz3.oraclenosql.server.entity.model.Entity;
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 /**
  *
  * @author mathieu
  */
-public class Article extends Entity {
-
+@Entity
+public class Article implements Serializable {
+    
+    @Id
+    private long id;
+    
+    @Column
     private String title;
+    
+    @Column
     private String resume;
+    
+    @Column
     private float price;
+    
+    @Column
     private LocalDate reception;
+    
+    @Column
     private LocalDate acceptation;
+    
+    @Column
     private LocalDate publication;
 
-    private Article() {}
+    @ManyToMany(mappedBy="authors")
+    private List<Author> authors;
+
+    public Article() {}
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -73,11 +102,6 @@ public class Article extends Entity {
 
     public void setPublication(LocalDate publication) {
         this.publication = publication;
-    }
-
-    @Override
-    public List<String> getStoreKey() {
-        return Arrays.asList("article", String.valueOf(title));
     }
 
     public static class Builder {
