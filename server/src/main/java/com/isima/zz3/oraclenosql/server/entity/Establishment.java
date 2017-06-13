@@ -8,22 +8,18 @@ package com.isima.zz3.oraclenosql.server.entity;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.MappedSuperclass;
 
 /**
  *
  * @author mathieu
  */
-@Entity
+@MappedSuperclass
 public abstract class Establishment implements Serializable {
 
     @Id

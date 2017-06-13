@@ -5,9 +5,14 @@
  */
 package com.isima.zz3.oraclenosql.server.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  *
  * @author mathieu
  */
+@Entity
+@Table(name="laboratory")
 public class Laboratory extends Establishment {
 }
