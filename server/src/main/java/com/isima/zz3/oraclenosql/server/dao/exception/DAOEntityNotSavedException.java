@@ -9,7 +9,7 @@ package com.isima.zz3.oraclenosql.server.dao.exception;
  *
  * @author mathieu
  */
-public class DAOEntityNotSavedException extends Exception {
+public class DAOEntityNotSavedException extends RuntimeException {
 
     public DAOEntityNotSavedException() {
     }

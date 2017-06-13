@@ -5,18 +5,18 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.impl;
 
-import com.isima.zz3.oraclenosql.server.entity.model.Entity;
+import com.isima.zz3.oraclenosql.server.entity.Author;
 import com.isima.zz3.oraclenosql.server.entity.Page;
-import java.util.Set;
+import java.util.List;
 import junit.framework.TestCase;
 
 /**
  *
  * @author mathieu
  */
-public class MySQLEntityDAOImplTest extends TestCase {
+public class MySQLAuthorDAOImplTest extends TestCase {
     
-    public MySQLEntityDAOImplTest(String testName) {
+    public MySQLAuthorDAOImplTest(String testName) {
         super(testName);
     }
     
@@ -31,93 +31,93 @@ public class MySQLEntityDAOImplTest extends TestCase {
     }
 
     /**
-     * Test of get method, of class MySQLEntityDAOImpl.
+     * Test of get method, of class MySQLAuthorDAOImpl.
      */
     public void testGet_0args() {
         System.out.println("get");
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Set<Entity> expResult = null;
-        Set<Entity> result = instance.get();
+        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
+        List<Author> expResult = null;
+        List<Author> result = instance.get();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of save method, of class MySQLEntityDAOImpl.
+     * Test of save method, of class MySQLAuthorDAOImpl.
      */
-    public void testSave() throws Exception {
+    public void testSave() {
         System.out.println("save");
-        Entity object = null;
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Entity expResult = null;
-        Entity result = instance.save(object);
+        Author object = null;
+        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
+        Author expResult = null;
+        Author result = instance.save(object);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of delete method, of class MySQLEntityDAOImpl.
+     * Test of delete method, of class MySQLAuthorDAOImpl.
      */
-    public void testDelete() throws Exception {
+    public void testDelete() {
         System.out.println("delete");
-        Entity object = null;
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
+        Author object = null;
+        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
         instance.delete(object);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of get method, of class MySQLEntityDAOImpl.
+     * Test of get method, of class MySQLAuthorDAOImpl.
      */
-    public void testGet_String() throws Exception {
+    public void testGet_String() {
         System.out.println("get");
         String search = "";
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Entity expResult = null;
-        Entity result = instance.get(search);
+        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
+        List<Author> expResult = null;
+        List<Author> result = instance.get(search);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of get method, of class MySQLEntityDAOImpl.
+     * Test of get method, of class MySQLAuthorDAOImpl.
      */
-    public void testGet_long() throws Exception {
+    public void testGet_long() {
         System.out.println("get");
         long id = 0L;
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Entity expResult = null;
-        Entity result = instance.get(id);
+        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
+        Author expResult = null;
+        Author result = instance.get(id);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of get method, of class MySQLEntityDAOImpl.
+     * Test of get method, of class MySQLAuthorDAOImpl.
      */
     public void testGet_Page() {
         System.out.println("get");
         Page page = null;
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Page<Entity> expResult = null;
-        Page<Entity> result = instance.get(page);
+        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
+        Page<Author> expResult = null;
+        Page<Author> result = instance.get(page);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of count method, of class MySQLEntityDAOImpl.
+     * Test of count method, of class MySQLAuthorDAOImpl.
      */
     public void testCount() {
         System.out.println("count");
         Page page = null;
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
+        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
         long expResult = 0L;
         long result = instance.count(page);
         assertEquals(expResult, result);

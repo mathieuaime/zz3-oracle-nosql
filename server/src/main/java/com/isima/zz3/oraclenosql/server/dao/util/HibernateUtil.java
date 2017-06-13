@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.isima.zz3.oraclenosql.server.dao.config;
+package com.isima.zz3.oraclenosql.server.dao.util;
 
 import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.entity.Author;
@@ -21,9 +21,9 @@ import org.slf4j.Logger;
  *
  * @author mathieu
  */
-public class HibernateConfig {
+public class HibernateUtil {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(HibernateConfig.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(HibernateUtil.class);
 
     private static SessionFactory sessionFactory;
 

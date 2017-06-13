@@ -5,12 +5,14 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.interfaces;
 
+import java.util.List;
+
 /**
  *
  * @author mathieu
  * @param <T>
  */
 public interface Search<T> {
-    T get(String search);
+    List<T> get(String search);
     T get(long id);
 }
