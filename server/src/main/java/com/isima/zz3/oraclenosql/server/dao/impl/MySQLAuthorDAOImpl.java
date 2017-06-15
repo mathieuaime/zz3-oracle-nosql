@@ -8,7 +8,7 @@ package com.isima.zz3.oraclenosql.server.dao.impl;
 import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotFoundException;
 import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotSavedException;
 import com.isima.zz3.oraclenosql.server.dao.interfaces.EntityDAO;
-import com.isima.zz3.oraclenosql.server.dao.util.HibernateUtil;
+import com.isima.zz3.oraclenosql.server.dao.util.HSQLServerUtil;
 import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.entity.Author;
 import com.isima.zz3.oraclenosql.server.entity.Page;
@@ -32,7 +32,7 @@ public class MySQLAuthorDAOImpl implements EntityDAO<Author> {
     @Override
     public Author save(Author object) {
         Transaction trns = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HSQLServerUtil.getSessionFactory().openSession();) {
             trns = session.beginTransaction();
             session.saveOrUpdate(object);
             session.getTransaction().commit();
@@ -48,7 +48,7 @@ public class MySQLAuthorDAOImpl implements EntityDAO<Author> {
     @Override
     public void delete(Author object) {
         Transaction trns = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HSQLServerUtil.getSessionFactory().openSession();) {
             trns = session.beginTransaction();
             session.delete(object);
             session.getTransaction().commit();
@@ -62,7 +62,7 @@ public class MySQLAuthorDAOImpl implements EntityDAO<Author> {
 
     @Override
     public List<Author> get(String search) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HSQLServerUtil.getSessionFactory().openSession();) {
             return session
                     .createQuery("SELECT a FROM Author a WHERE a.name like :search", Author.class)
                     .setParameter("search", search + "%")
@@ -74,7 +74,7 @@ public class MySQLAuthorDAOImpl implements EntityDAO<Author> {
 
     @Override
     public Author get(long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HSQLServerUtil.getSessionFactory().openSession();) {
             Author author = session.load(Author.class, id);
             Hibernate.initialize(author);
             return author;

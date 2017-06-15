@@ -9,7 +9,6 @@ import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.entity.Author;
 import com.isima.zz3.oraclenosql.server.entity.Laboratory;
 import com.isima.zz3.oraclenosql.server.entity.University;
-import javax.annotation.PostConstruct;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -19,23 +18,19 @@ import org.slf4j.Logger;
 
 /**
  *
- * @author mathieu
+ * @author excilys
  */
 public class HibernateUtil {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(HibernateUtil.class);
 
-    private static SessionFactory sessionFactory;
-
-    /**
-     * Create the Session Factory.
-     * @return SessionFactory session factory
-     */
-    private static SessionFactory buildSessionFactory() {
+    public static SessionFactory newSessionFactory(final String pathToHibernateCfgXml) {
+        LOGGER.info("Loading Hibernate Session Factory with configurations from file "
+                + pathToHibernateCfgXml + "...");
         try {
             // Create the SessionFactory from hibernate.cfg.xml
             Configuration configuration = new Configuration();
-            configuration.configure("config/db/hibernate.cfg.xml");
+            configuration.configure(pathToHibernateCfgXml);
             configuration.addAnnotatedClass(Article.class);
             configuration.addAnnotatedClass(Author.class);
             configuration.addAnnotatedClass(Laboratory.class);
@@ -53,19 +48,7 @@ public class HibernateUtil {
         }
     }
 
-    /**
-     * get a singleton of SessionFactory.
-     * @return SessionFactory session factory
-     */
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            sessionFactory = buildSessionFactory();
-        }
-        return sessionFactory;
-    }
-
-    @PostConstruct
-    public void initApp() {
-        LOGGER.info("Hibernate configuring...");
+    public static SessionFactory newSessionFactory() {
+        return newSessionFactory("config/db/hibernate.cfg.xml");
     }
 }

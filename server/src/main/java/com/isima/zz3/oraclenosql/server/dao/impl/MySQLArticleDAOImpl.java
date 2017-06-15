@@ -8,7 +8,7 @@ package com.isima.zz3.oraclenosql.server.dao.impl;
 import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotFoundException;
 import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotSavedException;
 import com.isima.zz3.oraclenosql.server.dao.interfaces.EntityDAO;
-import com.isima.zz3.oraclenosql.server.dao.util.HibernateUtil;
+import com.isima.zz3.oraclenosql.server.dao.util.HSQLServerUtil;
 import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.entity.Page;
 import java.util.List;
@@ -31,7 +31,7 @@ public class MySQLArticleDAOImpl implements EntityDAO<Article> {
     @Override
     public Article save(Article object) {
         Transaction trns = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HSQLServerUtil.getSessionFactory().openSession();) {
             trns = session.beginTransaction();
             session.saveOrUpdate(object);
             session.getTransaction().commit();
@@ -47,7 +47,7 @@ public class MySQLArticleDAOImpl implements EntityDAO<Article> {
     @Override
     public void delete(Article object) {
         Transaction trns = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HSQLServerUtil.getSessionFactory().openSession();) {
             trns = session.beginTransaction();
             session.delete(object);
             session.getTransaction().commit();
@@ -61,7 +61,7 @@ public class MySQLArticleDAOImpl implements EntityDAO<Article> {
 
     @Override
     public List<Article> get(String search) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HSQLServerUtil.getSessionFactory().openSession();) {
             return session
                     .createQuery("SELECT a FROM Article a WHERE a.title like :search", Article.class)
                     .setParameter("search", search + "%")
@@ -73,7 +73,7 @@ public class MySQLArticleDAOImpl implements EntityDAO<Article> {
 
     @Override
     public Article get(long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HSQLServerUtil.getSessionFactory().openSession();) {
             Article article = session.load(Article.class, id);
             Hibernate.initialize(article);
             return article;

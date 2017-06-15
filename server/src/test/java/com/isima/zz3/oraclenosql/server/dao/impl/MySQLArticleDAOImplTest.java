@@ -5,29 +5,35 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.impl;
 
+import com.isima.zz3.oraclenosql.server.dao.util.HSQLServerUtil;
+import com.isima.zz3.oraclenosql.server.dao.util.HibernateUtil;
 import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.entity.Page;
 import java.util.List;
-import junit.framework.TestCase;
+import org.dbunit.DBTestCase;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.operation.DatabaseOperation;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.slf4j.Logger;
 
 /**
  *
  * @author mathieu
  */
-public class MySQLArticleDAOImplTest extends TestCase {
+public class MySQLArticleDAOImplTest extends DBTestCase {
+
+    private static SessionFactory sessionFactory;
+    protected Session session;
+
+    private static final String SAMPLE_TEST_XML = "src/test/resources/db-sample.xml";
+
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MySQLArticleDAOImplTest.class);
 
     public MySQLArticleDAOImplTest(String testName) {
         super(testName);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /**
@@ -48,13 +54,11 @@ public class MySQLArticleDAOImplTest extends TestCase {
      */
     public void testSave() {
         System.out.println("save");
-        Article object = null;
+        Article object = new Article.Builder("Title1").build();
         MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Article expResult = null;
+        Article expResult = object;
         Article result = instance.save(object);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -123,6 +127,56 @@ public class MySQLArticleDAOImplTest extends TestCase {
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
+    }
+
+    /**
+     * Start the server.
+     *
+     * @throws Exception in case of startup failure.
+     */
+    @Before
+    public void setUp() throws Exception {
+        HSQLServerUtil.getInstance().start("DBNAME");
+
+        LOGGER.info("Loading hibernate...");
+        if (sessionFactory == null) {
+            sessionFactory = HibernateUtil.newSessionFactory("hibernate.test.cfg.xml");
+        }
+
+        session = sessionFactory.openSession();
+
+        super.setUp();
+    }
+
+    /**
+     * shutdown the server.
+     *
+     * @throws Exception in case of errors.
+     */
+    @After
+    public void tearDown() throws Exception {
+        session.close();
+        super.tearDown();
+        HSQLServerUtil.getInstance().stop();
+    }
+
+    @Override
+    protected IDataSet getDataSet() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected DatabaseOperation getSetUpOperation() throws Exception {
+        return DatabaseOperation.REFRESH;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected DatabaseOperation getTearDownOperation() throws Exception {
+        return DatabaseOperation.NONE;
     }
 
 }

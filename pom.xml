@@ -26,6 +26,7 @@
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <dbUnit.version>2.4.9</dbUnit.version>
+        <hsqldb.version>2.4.0</hsqldb.version>
         <!-- Cobertura -->
         <cobertura.version>2.7</cobertura.version>
         <!-- Maven -->
@@ -34,6 +35,8 @@
         <!-- Checkstyle -->
         <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
         <maven-checkstyle-plugin.configLocation>config/checkstyle</maven-checkstyle-plugin.configLocation>
+
+        <hibernate.version>5.2.10.Final</hibernate.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -62,8 +65,22 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>5.2.10.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
+            
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>${hsqldb.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.dbunit</groupId>
+                <artifactId>dbunit</artifactId>
+                <version>${dbUnit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <!-- dependencies for all modules -->

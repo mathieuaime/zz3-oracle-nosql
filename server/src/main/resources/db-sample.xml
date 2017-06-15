@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+	<laboratory id='1' name='Labo1' />
+	<laboratory id='2' name='Labo2' />
+        
+	<university id='1' name='Univ1' />
+	<university id='2' name='Univ2' />
+        
+        <article id="1" title="Title1" />
+        <article id="2" title="Title2" />
+        
+        <author id="1" title="Title2" />
+        <authoe id="2" title="Title2" />
+</dataset>

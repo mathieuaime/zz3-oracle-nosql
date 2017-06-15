@@ -8,6 +8,7 @@ package com.isima.zz3.oraclenosql.server.dao.impl;
 import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotFoundException;
 import com.isima.zz3.oraclenosql.server.dao.exception.DAOEntityNotSavedException;
 import com.isima.zz3.oraclenosql.server.dao.interfaces.EntityDAO;
+import com.isima.zz3.oraclenosql.server.dao.util.HSQLServerUtil;
 import com.isima.zz3.oraclenosql.server.dao.util.HibernateUtil;
 import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.entity.Establishment;
@@ -32,7 +33,7 @@ public class MySQLEstablishmentDAOImpl implements EntityDAO<Establishment> {
     @Override
     public Establishment save(Establishment object) {
         Transaction trns = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HibernateUtil.newSessionFactory().openSession();) {
             trns = session.beginTransaction();
             session.saveOrUpdate(object);
             session.getTransaction().commit();
@@ -48,7 +49,7 @@ public class MySQLEstablishmentDAOImpl implements EntityDAO<Establishment> {
     @Override
     public void delete(Establishment object) {
         Transaction trns = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HibernateUtil.newSessionFactory().openSession();) {
             trns = session.beginTransaction();
             session.delete(object);
             session.getTransaction().commit();
@@ -62,7 +63,7 @@ public class MySQLEstablishmentDAOImpl implements EntityDAO<Establishment> {
 
     @Override
     public List<Establishment> get(String search) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HibernateUtil.newSessionFactory().openSession();) {
             return session
                     .createQuery("SELECT e FROM Establishment e WHERE e.name like :search", Establishment.class)
                     .setParameter("search", search + "%")
@@ -74,7 +75,7 @@ public class MySQLEstablishmentDAOImpl implements EntityDAO<Establishment> {
 
     @Override
     public Establishment get(long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession();) {
+        try (Session session = HibernateUtil.newSessionFactory().openSession();) {
             Establishment establishment = session.load(Establishment.class, id);
             Hibernate.initialize(establishment);
             return establishment;
