@@ -32,7 +32,7 @@ public abstract class Establishment implements Serializable {
     @Column
     protected String address;
 
-    @ManyToMany(mappedBy="authors")
+    @ManyToMany(mappedBy = "authors")
     private List<Author> authors;
 
     public Establishment() {
