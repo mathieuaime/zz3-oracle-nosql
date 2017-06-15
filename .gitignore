@@ -1,15 +1,17 @@
-/Oracle NoSQL/nbproject/private/
-/kv-4.2.10/
-/Oracle NoSQL/build/
-/Oracle NoSQL/dist/
-/OracleNoSQLServer/nbproject/private/
-/OracleNoSQLServer/build/
-/OracleNoSQLServer/dist/
-/ServerOracleNoSQL/nbproject/private/
-/ServerOracleNoSQL/build/
-/ServerOracleNoSQL/dist/
-/ClientWebOracleNoSQL/target/
-/ClientOracleNoSQL/target/
+.classpath
+.project
+.settings
+
 /server/nbproject/
 /server/src/main/resources/config/db/hibernate.cfg.xml
 /server/target/
+/server/.classpath
+/server/.project
+/server/settings
+
+/angular/target/
+
+/bin/
+/target/
+
+/kv-4.2.10/

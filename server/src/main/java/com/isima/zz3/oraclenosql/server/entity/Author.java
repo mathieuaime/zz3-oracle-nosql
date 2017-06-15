@@ -44,10 +44,10 @@ public class Author implements Serializable {
 
     @Column
     private String mail;
-    
+
     @ManyToMany
     private List<Article> articles;
-    
+
     @ManyToMany
     private List<Establishment> establishments;
 
@@ -105,7 +105,8 @@ public class Author implements Serializable {
 
     @Override
     public String toString() {
-        return name + "/" + firstName + "/" + address + "/" + phone + "/" + fax + "/" + mail;
+        return name + "/" + firstName + "/" + address + "/" + phone
+                + "/" + fax + "/" + mail;
     }
 
     public long getId() {

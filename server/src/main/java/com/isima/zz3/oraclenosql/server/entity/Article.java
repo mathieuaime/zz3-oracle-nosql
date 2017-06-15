@@ -21,32 +21,33 @@ import javax.persistence.ManyToMany;
  */
 @Entity
 public class Article implements Serializable {
-    
+
+    public Article() {
+    }
+
     @Id
     private long id;
-    
+
     @Column
     private String title;
-    
+
     @Column
     private String resume;
-    
+
     @Column
     private float price;
-    
+
     @Column
     private LocalDate reception;
-    
+
     @Column
     private LocalDate acceptation;
-    
+
     @Column
     private LocalDate publication;
 
-    @ManyToMany(mappedBy="authors")
+    @ManyToMany(mappedBy = "authors")
     private List<Author> authors;
-
-    public Article() {}
 
     public long getId() {
         return id;
@@ -105,42 +106,43 @@ public class Article implements Serializable {
     }
 
     public static class Builder {
+
         private final Article article;
 
         public Builder(String title) {
             article = new Article();
             article.title = title;
         }
-        
+
         public Builder resume(String resume) {
             article.resume = resume;
             return this;
         }
-        
+
         public Builder price(float price) {
             article.price = price;
             return this;
         }
-        
+
         public Builder reception(LocalDate reception) {
             article.reception = reception;
             return this;
         }
-        
+
         public Builder acceptation(LocalDate acceptation) {
             article.acceptation = acceptation;
             return this;
         }
-        
+
         public Builder publication(LocalDate publication) {
             article.publication = publication;
             return this;
         }
-        
+
         public Article build() {
             return article;
         }
-        
+
         public Article build(String[] article) throws ArticleBuildException {
             if (article.length < 6) {
                 throw new ArticleBuildException();
@@ -157,7 +159,8 @@ public class Article implements Serializable {
 
     @Override
     public String toString() {
-        return title + "/" + resume + "/" + price + "/" + reception + "/" + acceptation + "/" + publication;
+        return title + "/" + resume + "/" + price + "/" + reception
+                + "/" + acceptation + "/" + publication;
     }
 
     @Override
@@ -184,7 +187,8 @@ public class Article implements Serializable {
             return false;
         }
         final Article other = (Article) obj;
-        if (Float.floatToIntBits(this.price) != Float.floatToIntBits(other.price)) {
+        if (Float.floatToIntBits(this.price)
+                != Float.floatToIntBits(other.price)) {
             return false;
         }
         if (!Objects.equals(this.title, other.title)) {
