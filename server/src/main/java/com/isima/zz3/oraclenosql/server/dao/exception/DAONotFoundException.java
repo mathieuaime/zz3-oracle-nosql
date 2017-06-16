@@ -9,24 +9,24 @@ package com.isima.zz3.oraclenosql.server.dao.exception;
  *
  * @author mathieu
  */
-public class DAOEntityNotFoundException extends RuntimeException {
+public class DAONotFoundException extends RuntimeException {
 
-    public DAOEntityNotFoundException() {
+    public DAONotFoundException() {
     }
 
-    public DAOEntityNotFoundException(String message) {
+    public DAONotFoundException(String message) {
         super(message);
     }
 
-    public DAOEntityNotFoundException(String message, Throwable cause) {
+    public DAONotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public DAOEntityNotFoundException(Throwable cause) {
+    public DAONotFoundException(Throwable cause) {
         super(cause);
     }
 
-    public DAOEntityNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public DAONotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
     

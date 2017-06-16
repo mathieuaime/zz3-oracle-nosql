@@ -6,13 +6,19 @@
 package com.isima.zz3.oraclenosql.server.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  *
  * @author mathieu
  */
 @Entity
-@Table(name="university")
 public class University extends Establishment {
+
+    public University() {
+        super();
+    }
+
+    public University(String name, String address) {
+        super(name, address);
+    }
 }

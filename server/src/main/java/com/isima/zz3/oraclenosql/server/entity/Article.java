@@ -8,25 +8,27 @@ package com.isima.zz3.oraclenosql.server.entity;
 import com.isima.zz3.oraclenosql.server.entity.exception.ArticleBuildException;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author mathieu
  */
 @Entity
+@Table(name = "article")
 public class Article implements Serializable {
 
     public Article() {
     }
 
     @Id
-    private long id;
+    private Long id;
 
     @Column
     private String title;
@@ -35,7 +37,7 @@ public class Article implements Serializable {
     private String resume;
 
     @Column
-    private float price;
+    private Double price;
 
     @Column
     private LocalDate reception;
@@ -46,8 +48,8 @@ public class Article implements Serializable {
     @Column
     private LocalDate publication;
 
-    @ManyToMany(mappedBy = "authors")
-    private List<Author> authors;
+    @ManyToMany(mappedBy = "articles")
+    private Collection<Author> authors;
 
     public long getId() {
         return id;
@@ -73,11 +75,11 @@ public class Article implements Serializable {
         this.resume = resume;
     }
 
-    public float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -119,7 +121,7 @@ public class Article implements Serializable {
             return this;
         }
 
-        public Builder price(float price) {
+        public Builder price(Double price) {
             article.price = price;
             return this;
         }
@@ -149,7 +151,7 @@ public class Article implements Serializable {
             }
             return new Builder(article[0])
                     .resume(article[1])
-                    .price(Float.parseFloat(article[2]))
+                    .price(Double.parseDouble(article[2]))
                     .reception(LocalDate.parse(article[3]))
                     .acceptation(LocalDate.parse(article[4]))
                     .publication(LocalDate.parse(article[5]))
@@ -166,12 +168,13 @@ public class Article implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.title);
-        hash = 53 * hash + Objects.hashCode(this.resume);
-        hash = 53 * hash + Float.floatToIntBits(this.price);
-        hash = 53 * hash + Objects.hashCode(this.reception);
-        hash = 53 * hash + Objects.hashCode(this.acceptation);
-        hash = 53 * hash + Objects.hashCode(this.publication);
+        hash = 37 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 37 * hash + Objects.hashCode(this.title);
+        hash = 37 * hash + Objects.hashCode(this.resume);
+        hash = 37 * hash + (int) (Double.doubleToLongBits(this.price) ^ (Double.doubleToLongBits(this.price) >>> 32));
+        hash = 37 * hash + Objects.hashCode(this.reception);
+        hash = 37 * hash + Objects.hashCode(this.acceptation);
+        hash = 37 * hash + Objects.hashCode(this.publication);
         return hash;
     }
 
@@ -187,8 +190,10 @@ public class Article implements Serializable {
             return false;
         }
         final Article other = (Article) obj;
-        if (Float.floatToIntBits(this.price)
-                != Float.floatToIntBits(other.price)) {
+        if (this.id != other.id) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.price) != Double.doubleToLongBits(other.price)) {
             return false;
         }
         if (!Objects.equals(this.title, other.title)) {
@@ -203,6 +208,10 @@ public class Article implements Serializable {
         if (!Objects.equals(this.acceptation, other.acceptation)) {
             return false;
         }
-        return Objects.equals(this.publication, other.publication);
+        if (!Objects.equals(this.publication, other.publication)) {
+            return false;
+        }
+        return true;
     }
+
 }

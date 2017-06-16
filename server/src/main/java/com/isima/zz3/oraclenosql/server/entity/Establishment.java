@@ -6,21 +6,26 @@
 package com.isima.zz3.oraclenosql.server.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
 
 /**
  *
  * @author mathieu
  */
-@MappedSuperclass
-public abstract class Establishment implements Serializable {
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "establishment")
+public class Establishment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -32,8 +37,8 @@ public abstract class Establishment implements Serializable {
     @Column
     protected String address;
 
-    @ManyToMany(mappedBy = "authors")
-    private List<Author> authors;
+    @ManyToMany(mappedBy = "establishments")
+    private Collection<Author> authors;
 
     public Establishment() {
         this("", "");

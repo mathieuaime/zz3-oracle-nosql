@@ -5,48 +5,35 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.impl;
 
-import com.isima.zz3.oraclenosql.server.dao.util.HSQLServerUtil;
-import com.isima.zz3.oraclenosql.server.dao.util.HibernateUtil;
+import com.isima.zz3.oraclenosql.server.dao.interfaces.EntityDAO;
 import com.isima.zz3.oraclenosql.server.entity.Article;
 import com.isima.zz3.oraclenosql.server.entity.Page;
+import java.io.File;
 import java.util.List;
-import org.dbunit.DBTestCase;
 import org.dbunit.dataset.IDataSet;
-import org.dbunit.operation.DatabaseOperation;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.slf4j.Logger;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 
 /**
  *
  * @author mathieu
  */
-public class MySQLArticleDAOImplTest extends DBTestCase {
+public class MySQLArticleDAOImplTest extends HibernateDbUnitTestCase {
 
-    private static SessionFactory sessionFactory;
-    protected Session session;
+    private static final String SAMPLE_TEST_XML = "src/test/resources/db-sample/db-sample-article.xml";
 
-    private static final String SAMPLE_TEST_XML = "src/test/resources/db-sample.xml";
+    private final EntityDAO<Article> instance = new MySQLArticleDAOImpl();
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MySQLArticleDAOImplTest.class);
-
-    public MySQLArticleDAOImplTest(String testName) {
-        super(testName);
-    }
+    private final Article a1 = new Article.Builder("Title1").build();
+    private final Article a2 = new Article.Builder("Title2").build();
+    private final Article a3 = new Article.Builder("Title3").build();
 
     /**
      * Test of get method, of class MySQLArticleDAOImpl.
      */
     public void testGet_0args() {
         System.out.println("get");
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        List<Article> expResult = null;
         List<Article> result = instance.get();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(2, result.size());
     }
 
     /**
@@ -54,11 +41,20 @@ public class MySQLArticleDAOImplTest extends DBTestCase {
      */
     public void testSave() {
         System.out.println("save");
-        Article object = new Article.Builder("Title1").build();
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Article expResult = object;
+        Article object = a3;
         Article result = instance.save(object);
-        assertEquals(expResult, result);
+        assertEquals(a3.getTitle(), result.getTitle());
+    }
+
+    /**
+     * Test of save method, of class MySQLArticleDAOImpl.
+     */
+    public void testSave_Update() {
+        System.out.println("save");
+        Article object = new Article.Builder("NewTitle1").build();
+        object.setId(1L);
+        Article result = instance.save(object);
+        assertEquals(object.getTitle(), result.getTitle());
     }
 
     /**
@@ -66,11 +62,28 @@ public class MySQLArticleDAOImplTest extends DBTestCase {
      */
     public void testDelete() {
         System.out.println("delete");
-        Article object = null;
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
+        Article object = a1;
         instance.delete(object);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of get method, of class MySQLArticleDAOImpl.
+     */
+    public void testGet_String_Empty() {
+        System.out.println("get");
+        String search = "";
+        List<Article> result = instance.get(search);
+        assertEquals(2, result.size());
+    }
+
+    /**
+     * Test of get method, of class MySQLArticleDAOImpl.
+     */
+    public void testGet_String_Not_Found() {
+        System.out.println("get");
+        String search = "TTT";
+        List<Article> result = instance.get(search);
+        assertEquals(0, result.size());
     }
 
     /**
@@ -78,13 +91,9 @@ public class MySQLArticleDAOImplTest extends DBTestCase {
      */
     public void testGet_String() {
         System.out.println("get");
-        String search = "";
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        List<Article> expResult = null;
+        String search = "Title1";
         List<Article> result = instance.get(search);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(1, result.size());
     }
 
     /**
@@ -92,13 +101,10 @@ public class MySQLArticleDAOImplTest extends DBTestCase {
      */
     public void testGet_long() {
         System.out.println("get");
-        long id = 0L;
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Article expResult = null;
+        long id = 1L;
+        Article expResult = a1;
         Article result = instance.get(id);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult.getTitle(), result.getTitle());
     }
 
     /**
@@ -106,13 +112,9 @@ public class MySQLArticleDAOImplTest extends DBTestCase {
      */
     public void testGet_Page() {
         System.out.println("get");
-        Page page = null;
-        MySQLArticleDAOImpl instance = new MySQLArticleDAOImpl();
-        Page<Article> expResult = null;
+        Page page = new Page();
         Page<Article> result = instance.get(page);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(2, result.getObjects().size());
     }
 
     /**
@@ -130,53 +132,12 @@ public class MySQLArticleDAOImplTest extends DBTestCase {
     }
 
     /**
-     * Start the server.
-     *
-     * @throws Exception in case of startup failure.
+     * {@inheritDoc}
      */
-    @Before
-    public void setUp() throws Exception {
-        HSQLServerUtil.getInstance().start("DBNAME");
-
-        LOGGER.info("Loading hibernate...");
-        if (sessionFactory == null) {
-            sessionFactory = HibernateUtil.newSessionFactory("hibernate.test.cfg.xml");
-        }
-
-        session = sessionFactory.openSession();
-
-        super.setUp();
-    }
-
-    /**
-     * shutdown the server.
-     *
-     * @throws Exception in case of errors.
-     */
-    @After
-    public void tearDown() throws Exception {
-        session.close();
-        super.tearDown();
-        HSQLServerUtil.getInstance().stop();
-    }
-
     @Override
     protected IDataSet getDataSet() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
+        IDataSet dataSet = builder.build(new File(SAMPLE_TEST_XML));
+        return dataSet;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected DatabaseOperation getSetUpOperation() throws Exception {
-        return DatabaseOperation.REFRESH;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected DatabaseOperation getTearDownOperation() throws Exception {
-        return DatabaseOperation.NONE;
-    }
-
 }

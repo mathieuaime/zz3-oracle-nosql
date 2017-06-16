@@ -5,6 +5,7 @@
  */
 package com.isima.zz3.oraclenosql.server.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,9 +19,12 @@ public class Page<T> {
     private List objects;
 
     public Page() {
+        this.objects = new ArrayList();
+        this.search = "";
     }
     
     public Page(Page<?> page) {
+        this();
         this.search = page.search;
     }
 
@@ -35,7 +39,7 @@ public class Page<T> {
         return objects;
     }
 
-    public void setObjects(List articles) {
+    public void setObjects(List objects) {
         this.objects = objects;
     }
 

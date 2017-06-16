@@ -6,13 +6,20 @@
 package com.isima.zz3.oraclenosql.server.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  *
  * @author mathieu
  */
 @Entity
-@Table(name="laboratory")
 public class Laboratory extends Establishment {
+
+    public Laboratory() {
+        super();
+    }
+
+    public Laboratory(String nom, String address) {
+        super(nom, address);
+    }
+
 }

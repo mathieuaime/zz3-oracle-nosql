@@ -11,6 +11,10 @@ nb-configuration.xml
 /server/.project
 /server/settings
 
+/server/zz3-oraclenosql-db-test.log
+/server/zz3-oraclenosql-db-test.properties
+/server/zz3-oraclenosql-db-test.script
+
 /angular/target/
 
 /bin/

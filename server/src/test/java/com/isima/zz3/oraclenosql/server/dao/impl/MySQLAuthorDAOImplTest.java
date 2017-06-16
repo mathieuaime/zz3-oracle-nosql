@@ -5,42 +5,35 @@
  */
 package com.isima.zz3.oraclenosql.server.dao.impl;
 
+import com.isima.zz3.oraclenosql.server.dao.interfaces.EntityDAO;
 import com.isima.zz3.oraclenosql.server.entity.Author;
 import com.isima.zz3.oraclenosql.server.entity.Page;
+import java.io.File;
 import java.util.List;
-import junit.framework.TestCase;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 
 /**
  *
  * @author mathieu
  */
-public class MySQLAuthorDAOImplTest extends TestCase {
+public class MySQLAuthorDAOImplTest extends HibernateDbUnitTestCase {
+
+    private static final String SAMPLE_TEST_XML = "src/test/resources/db-sample/db-sample-author.xml";
     
-    public MySQLAuthorDAOImplTest(String testName) {
-        super(testName);
-    }
+    private final EntityDAO<Author> instance = new MySQLAuthorDAOImpl();
     
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-    
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+    private final Author a1 = new Author.Builder("Name1").build();
+    private final Author a2 = new Author.Builder("Name2").build();
+    private final Author a3 = new Author.Builder("Name3").build();
 
     /**
      * Test of get method, of class MySQLAuthorDAOImpl.
      */
     public void testGet_0args() {
         System.out.println("get");
-        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
-        List<Author> expResult = null;
         List<Author> result = instance.get();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(2, result.size());
     }
 
     /**
@@ -48,13 +41,20 @@ public class MySQLAuthorDAOImplTest extends TestCase {
      */
     public void testSave() {
         System.out.println("save");
-        Author object = null;
-        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
-        Author expResult = null;
+        Author object = a3;
         Author result = instance.save(object);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(a3.getName(), result.getName());
+    }
+
+    /**
+     * Test of save method, of class MySQLAuthorDAOImpl.
+     */
+    public void testSave_Update() {
+        System.out.println("save");
+        Author object = new Author.Builder("NewName1").build();
+        object.setId(1L);
+        Author result = instance.save(object);
+        assertEquals(object.getName(), result.getName());
     }
 
     /**
@@ -62,11 +62,28 @@ public class MySQLAuthorDAOImplTest extends TestCase {
      */
     public void testDelete() {
         System.out.println("delete");
-        Author object = null;
-        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
+        Author object = a1;
         instance.delete(object);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of get method, of class MySQLAuthorDAOImpl.
+     */
+    public void testGet_String_Empty() {
+        System.out.println("get");
+        String search = "";
+        List<Author> result = instance.get(search);
+        assertEquals(2, result.size());
+    }
+
+    /**
+     * Test of get method, of class MySQLAuthorDAOImpl.
+     */
+    public void testGet_String_Not_Found() {
+        System.out.println("get");
+        String search = "NNN";
+        List<Author> result = instance.get(search);
+        assertEquals(0, result.size());
     }
 
     /**
@@ -74,13 +91,10 @@ public class MySQLAuthorDAOImplTest extends TestCase {
      */
     public void testGet_String() {
         System.out.println("get");
-        String search = "";
-        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
-        List<Author> expResult = null;
+        String search = "Name1";
         List<Author> result = instance.get(search);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println(result);
+        assertEquals(1, result.size());
     }
 
     /**
@@ -88,13 +102,10 @@ public class MySQLAuthorDAOImplTest extends TestCase {
      */
     public void testGet_long() {
         System.out.println("get");
-        long id = 0L;
-        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
-        Author expResult = null;
+        long id = 1L;
+        Author expResult = a1;
         Author result = instance.get(id);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult.getName(), result.getName());
     }
 
     /**
@@ -102,13 +113,9 @@ public class MySQLAuthorDAOImplTest extends TestCase {
      */
     public void testGet_Page() {
         System.out.println("get");
-        Page page = null;
-        MySQLAuthorDAOImpl instance = new MySQLAuthorDAOImpl();
-        Page<Author> expResult = null;
+        Page page = new Page();
         Page<Author> result = instance.get(page);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(2, result.getObjects().size());
     }
 
     /**
@@ -123,6 +130,15 @@ public class MySQLAuthorDAOImplTest extends TestCase {
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IDataSet getDataSet() throws Exception {
+        FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
+        IDataSet dataSet = builder.build(new File(SAMPLE_TEST_XML));
+        return dataSet;
     }
     
 }

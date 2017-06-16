@@ -7,18 +7,20 @@ package com.isima.zz3.oraclenosql.server.entity;
 
 import com.isima.zz3.oraclenosql.server.entity.exception.AuthorBuildException;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author mathieu
  */
 @Entity
+@Table(name = "author")
 public class Author implements Serializable {
 
     public Author() {
@@ -46,10 +48,10 @@ public class Author implements Serializable {
     private String mail;
 
     @ManyToMany
-    private List<Article> articles;
+    private Collection<Article> articles;
 
     @ManyToMany
-    private List<Establishment> establishments;
+    private Collection<Establishment> establishments;
 
     public static class Builder {
 

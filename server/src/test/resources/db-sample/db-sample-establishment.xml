@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+	<establishment id='1' name='Labo1' DTYPE="laboratory"/>
+	<establishment id='2' name='Labo2' DTYPE="laboratory"/>
+	<establishment id='3' name='Labo3' DTYPE="laboratory"/>
+
+	<establishment id='4' name='Univ1' DTYPE="university"/>
+	<establishment id='5' name='Univ2' DTYPE="university"/>
+	<establishment id='6' name='Univ3' DTYPE="university"/>
+</dataset>

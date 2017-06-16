@@ -9,24 +9,24 @@ package com.isima.zz3.oraclenosql.server.dao.exception;
  *
  * @author mathieu
  */
-public class DAOEntityNotSavedException extends RuntimeException {
+public class DAONotSavedException extends RuntimeException {
 
-    public DAOEntityNotSavedException() {
+    public DAONotSavedException() {
     }
 
-    public DAOEntityNotSavedException(String message) {
+    public DAONotSavedException(String message) {
         super(message);
     }
 
-    public DAOEntityNotSavedException(String message, Throwable cause) {
+    public DAONotSavedException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public DAOEntityNotSavedException(Throwable cause) {
+    public DAONotSavedException(Throwable cause) {
         super(cause);
     }
 
-    public DAOEntityNotSavedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public DAONotSavedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
